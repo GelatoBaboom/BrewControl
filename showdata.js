@@ -27,14 +27,27 @@ var SerialPort = require('serialport');
 		});
 	});
 	//var port = new SerialPort('COM5');
+	var serialData='';
+	var readyToWrite = false;
 	var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
 	port.on('data', function (data) {
+		if(data=='ready') readyToWrite = true;
+		serialData = data;
 		console.log('Data: ' + data);
-	});  
+	});
+	/*while(!readyToWrite)
+	{
+		console.log('waiting..');
+		if(readyToWrite)
+		port.write('f1');
+	}*/
+	
 
 app.use('/getSerial.json', function (req, res, next) {
-	
-	res.json({result: pos});
+	var url = require('url');
+	var q = url.parse(req.url, true).query;
+	port.write(q.f);
+	res.json({result: ''+serialData});
 	next();
 	
 	
