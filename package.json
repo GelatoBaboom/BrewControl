@@ -1,0 +1,31 @@
+{
+  "name": "BrewControl",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "^2.1.1",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cheerio": "latest",
+    "cookie-parser": "^1.4.3",
+    "d3": "4.2.8",
+    "express": "latest",
+    "fast-csv": "^2.3.0",
+    "jsdom": "5.6.1",
+    "minimist": "^1.2.0",
+    "mysql": "^2.11.1",
+    "node-sass": "^3.10.1",
+    "request": "latest",
+    "requirejs": "^2.3.2",
+    "serve-favicon": "^2.3.2",
+    "serve-static": "^1.11.1",
+    "techan": "~0.8.0",
+    "vue": "^2.0.3",
+    "vue-material": "^0.5.2",
+    "vue-router": "^2.1.0",
+	"serialport":"^4.0.7"
+    
+  },
+  "scripts": {
+    "showdata": "showdata.js"
+  }
+}

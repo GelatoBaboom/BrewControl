@@ -1,0 +1,186 @@
+﻿<html>
+	<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+		<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+		
+		<link rel="stylesheet" href="/node_modules/vue-material/dist/vue-material.css">
+		<script data-main="main" src="/node_modules/requirejs/require.js"></script>
+<style>
+html,
+body,
+.app-viewport {
+  height: 100%;
+  overflow: hidden;
+}
+
+.app-viewport {
+  display: flex;
+  flex-flow: column;
+}
+
+.md-fab {
+  margin: 0;
+  position: absolute;
+  bottom: -20px;
+  left: 16px;
+  
+  .md-icon {
+    color: #fff;
+  }
+}
+
+.md-title {
+  padding-left: 8px;
+  color: #fff;
+}
+
+.md-list {
+  overflow: auto;
+}
+
+.md-list-action .md-icon {
+  color: rgba(#000, .26);
+}
+
+.md-avatar-icon .md-icon {
+  color: #fff !important;
+}
+
+.md-sidenav .md-list-text-container > :nth-child(2) {
+  color: rgba(#fff, .54);
+}
+
+.md-account-header {
+  .md-list-item:hover .md-button:hover {
+    background-color: inherit;
+  }
+
+  .md-avatar-list .md-list-item-container:hover {
+    background: none !important;
+  }
+}
+</style>
+</head>
+	<body>
+<div class="app-viewport" id="file-list">
+  <md-sidenav class="md-left md-fixed" ref="sidebar">
+    <md-toolbar class="md-account-header">
+      <md-list class="md-transparent">
+        <md-list-item class="md-avatar-list">
+          <md-avatar class="md-large">
+            <img src="https://placeimg.com/64/64/people/8" alt="People">
+          </md-avatar>
+  
+          <span style="flex: 1"></span>
+  
+          <md-avatar>
+            <img src="https://placeimg.com/40/40/people/3" alt="People">
+          </md-avatar>
+  
+          <md-avatar>
+            <img src="https://placeimg.com/40/40/people/4" alt="People">
+          </md-avatar>
+        </md-list-item>
+  
+        <md-list-item>
+          <div class="md-list-text-container">
+            <span>John Doe</span>
+            <span>johndoe@email.com</span>
+          </div>
+  
+          <md-button class="md-icon-button md-list-action">
+            <md-icon>arrow_drop_down</md-icon>
+          </md-button>
+        </md-list-item>
+      </md-list>
+    </md-toolbar>
+  
+    <md-list>
+      <md-list-item @click="$refs.sidebar.toggle()" class="md-primary">
+        <md-icon>insert_drive_file</md-icon> <span>OPCIONES DE CONTROL</span>
+      </md-list-item>
+  
+      <md-list-item @click="$refs.sidebar.toggle()">
+        <md-icon>people</md-icon> <span>Shared with me</span>
+      </md-list-item>
+  
+      <md-list-item @click="$refs.sidebar.toggle()">
+        <md-icon>access_time</md-icon> <span>Recent</span>
+      </md-list-item>
+  
+      <md-list-item @click="$refs.sidebar.toggle()">
+        <md-icon>start</md-icon> <span>Starred</span>
+      </md-list-item>
+  
+      <md-list-item @click="$refs.sidebar.toggle()">
+        <md-icon>delete</md-icon> <span>Trash</span>
+      </md-list-item>
+    </md-list>
+  </md-sidenav>
+  
+  <md-whiteframe md-elevation="3">
+    <md-toolbar class="md-large">
+      <div class="md-toolbar-container">
+        <md-button class="md-icon-button" @click="$refs.sidebar.toggle()">
+          <md-icon>menu</md-icon>
+        </md-button>
+  
+        <span style="flex: 1"></span>
+  
+   
+      </div>
+  
+      <div class="md-toolbar-container">
+        <h2 class="md-title">CONTROL DE FERMENTADORES</h2>
+  
+  
+      </div>
+    </md-toolbar>
+  </md-whiteframe>
+  
+  <md-list class="md-double-line">
+
+ 
+  
+    <md-subheader class="md-inset">Fermentadores</md-subheader>
+  
+    <md-list-item>
+      <md-avatar class="md-avatar-icon md-primary">
+        <md-icon>insert_drive_file</md-icon>
+      </md-avatar>
+  
+      <div class="md-list-text-container">
+        <span>Fermentador 001</span>
+        <p>Tipo: IPA, Inicio: 12/01</p>
+		<p>Temp: 19.5 ºC</p>
+      </div>
+		
+ 
+    </md-list-item>
+	
+	 <md-list-item>
+      <md-avatar class="md-avatar-icon md-primary">
+        <md-icon>insert_drive_file</md-icon>
+      </md-avatar>
+  
+      <div class="md-list-text-container">
+        <span>Fermentador 002</span>
+        <p>Tipo: Golden ALE, Inicio: 28/12</p>
+		<p>Temp: 20.3 ºC</p>
+		</div>
+	  
+  
+
+    </md-list-item>
+  
+	
+  
+   
+  </md-list>
+</div>
+
+</body>
+</html>
