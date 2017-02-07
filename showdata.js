@@ -61,7 +61,7 @@ app.use('/getFermData.json', function (req, res, next) {
 
 	
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque;", function(err, resultsData, fields) {
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque;", function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
@@ -73,10 +73,12 @@ app.use('/getFermData.json', function (req, res, next) {
 			var ferm = {
 				id: resultsData[i].id,
 				nombre_fermentacion: resultsData[i].nombre_fermentacion,
+				profile: resultsData[i].profile,
 				tanque_code: resultsData[i].tanque_code,
 				tanque_descripcion: resultsData[i].tanque_descripcion,
 				total_hours: resultsData[i].total_hours,
-				duration : resultsData[i].duration
+				duration : resultsData[i].duration,
+				currentTemp: resultsData[i].currentTemp
 			}
 			ferms.push(ferm);
 		}

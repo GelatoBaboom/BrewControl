@@ -83,29 +83,23 @@ body,
       <md-list class="md-transparent">
         <md-list-item class="md-avatar-list">
           <md-avatar class="md-large">
-            <img src="https://placeimg.com/64/64/people/8" alt="People">
+            <img src="imgs/logo.png" alt="People">
           </md-avatar>
   
           <span style="flex: 1"></span>
   
-          <md-avatar>
-            <img src="https://placeimg.com/40/40/people/3" alt="People">
-          </md-avatar>
-  
-          <md-avatar>
-            <img src="https://placeimg.com/40/40/people/4" alt="People">
-          </md-avatar>
+         
         </md-list-item>
   
         <md-list-item>
           <div class="md-list-text-container">
-            <span>John Doe</span>
-            <span>johndoe@email.com</span>
+            <span>{{brand}}</span>
+            <span>{{brandDesc}}</span>
           </div>
   
-          <md-button class="md-icon-button md-list-action">
+          <!-- <md-button class="md-icon-button md-list-action">
             <md-icon>arrow_drop_down</md-icon>
-          </md-button>
+          </md-button> -->
         </md-list-item>
       </md-list>
     </md-toolbar>
@@ -163,7 +157,7 @@ body,
 	  <div class="md-list-text-container">
 		<span>Fermentador {{frm.tanque_code}}</span>
 		<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}hs/{{frm.duration}}hs</p>
-		<p>Temp: 19.5 ºC</p>
+		<p>Prof: {{frm.profile}}, Temp: {{frm.currentTemp}} ºC</p>
 	  </div>
 	</md-list-item>
 		

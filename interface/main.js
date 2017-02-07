@@ -37,7 +37,9 @@ new Vue({
 	el: '#file-list',
 	data : function(){
 	  return{
-		  fermentadores:[]
+		  fermentadores:[],
+		  brand: 'LoLog',
+		  brandDesc:'Cerveceria'
 	  }
 	},
 		created: function(){
