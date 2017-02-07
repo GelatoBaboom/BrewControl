@@ -49,11 +49,11 @@ void loop() {
     //Serial.println(inData);
     if(inData.startsWith("f1"))
     {
-      outData = "f1_t:20.5";
+      outData = "{\"f\":\"f1\",\"t\":\"20.5\"}";
     }
     if(inData.startsWith("f2"))
     {
-      outData = "f2_t:20.5";
+      outData = "{\"f\":\"f2\",\"t\":\"19.2\"}";
     }
     if(outData=="")
     {
