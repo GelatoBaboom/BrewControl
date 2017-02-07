@@ -65,6 +65,18 @@ body,
 </style>
 </head>
 	<body>
+<script type="text/x-template" id="fermItemTemplate">
+    <md-list-item>
+      <md-avatar class="md-avatar-icon md-primary">
+        <md-icon>insert_drive_file</md-icon>
+      </md-avatar>
+      <div class="md-list-text-container">
+        <span>Fermentador 001</span>
+        <p>Tipo: IPA, Inicio: 12/01</p>
+		<p>Temp: 19.5 ºC</p>
+      </div>
+    </md-list-item>
+</script>
 <div class="app-viewport" id="file-list">
   <md-sidenav class="md-left md-fixed" ref="sidebar">
     <md-toolbar class="md-account-header">
@@ -142,44 +154,24 @@ body,
   </md-whiteframe>
   
   <md-list class="md-double-line">
-
- 
-  
     <md-subheader class="md-inset">Fermentadores</md-subheader>
-  
-    <md-list-item>
-      <md-avatar class="md-avatar-icon md-primary">
-        <md-icon>insert_drive_file</md-icon>
-      </md-avatar>
-  
-      <div class="md-list-text-container">
-        <span>Fermentador 001</span>
-        <p>Tipo: IPA, Inicio: 12/01</p>
-		<p>Temp: 19.5 ºC</p>
-      </div>
+		
+		<fermItem v-for="frm in fermentadores" :key="frm.nombre_fermentacion+frm.id" 
+		:nombre_fermentacion="frm.nombre_fermentacion"
+		:tanque_code="frm.tanque_code"
+		:tanque_descripcion="frm.tanque_descripcion"
+		:total_hours="frm.total_hours"
+		:duration="frm.duration"
+		>
+		</fermItem>
 		
  
-    </md-list-item>
-	
-	 <md-list-item>
-      <md-avatar class="md-avatar-icon md-primary">
-        <md-icon>insert_drive_file</md-icon>
-      </md-avatar>
-  
-      <div class="md-list-text-container">
-        <span>Fermentador 002</span>
-        <p>Tipo: Golden ALE, Inicio: 28/12</p>
-		<p>Temp: 20.3 ºC</p>
-		</div>
-	  
-  
-
-    </md-list-item>
-  
-	
-  
-   
   </md-list>
+	<ul id="example-2">
+	  <li v-for="frm in fermentadores">
+		{{ frm.nombre_fermentacion }}
+	  </li>
+	</ul>
 </div>
 
 </body>

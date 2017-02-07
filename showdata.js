@@ -19,40 +19,73 @@ app.use("/", serveStatic('public'));
 var pos= 0;
 var SerialPort = require('serialport');
 	
-	SerialPort.list(function (err, ports) {
-		ports.forEach(function(port) {
-			console.log(port.comName);
-			console.log(port.pnpId);
-			console.log(port.manufacturer);
-		});
+SerialPort.list(function (err, ports) {
+	ports.forEach(function(port) {
+		console.log(port.comName);
+		console.log(port.pnpId);
+		console.log(port.manufacturer);
 	});
-	//var port = new SerialPort('COM5');
-	var serialData='';
-	var readyToWrite = false;
-	var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
-	port.on('data', function (data) {
-		if(data=='ready') readyToWrite = true;
-		serialData = data;
-		console.log('Data: ' + data);
-	});
-	/*while(!readyToWrite)
-	{
-		console.log('waiting..');
-		if(readyToWrite)
-		port.write('f1');
-	}*/
+});
+//var port = new SerialPort('COM5');
+var serialData='';
+var readyToWrite = false;
+/*
+var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
+port.on('data', function (data) {
+	if(data=='ready') readyToWrite = true;
+	serialData = data;
+	console.log('Data: ' + data);
 	
-
+		
+});*/
+/*port.on('close', function (data) {
+	port.open();
+});*/
+/*while(!readyToWrite)
+{
+	console.log('waiting..');
+	if(readyToWrite)
+	port.write('f1');
+}*/
 app.use('/getSerial.json', function (req, res, next) {
 	var url = require('url');
 	var q = url.parse(req.url, true).query;
 	port.write(q.f);
-	res.json({result: ''+serialData});
-	next();
+	res.json({result: ''+q.f});
+	
+});
+app.use('/getFermData.json', function (req, res, next) {
+	var mysqlconfig = require("./dbconfig.js").out;
+	var mysql = require('mysql');
+	var url = require('url');
+
+	
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque;", function(err, resultsData, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		//console.log(resultsData)
+		var ferms = [];
+		for(var i = 0; i < resultsData.length; i++)
+		{
+			var ferm = {
+				id: resultsData[i].id,
+				nombre_fermentacion: resultsData[i].nombre_fermentacion,
+				tanque_code: resultsData[i].tanque_code,
+				tanque_descripcion: resultsData[i].tanque_descripcion,
+				total_hours: resultsData[i].total_hours,
+				duration : resultsData[i].duration
+			}
+			ferms.push(ferm);
+		}
+		res.json(ferms);
+				
+	});
 	
 	
 	
 });
-
 //app.use("/", serveStatic('public'));
 var server = app.listen(httpport);
