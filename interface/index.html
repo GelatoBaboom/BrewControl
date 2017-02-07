@@ -156,22 +156,19 @@ body,
   <md-list class="md-double-line">
     <md-subheader class="md-inset">Fermentadores</md-subheader>
 		
-		<fermItem v-for="frm in fermentadores" :key="frm.nombre_fermentacion+frm.id" 
-		:nombre_fermentacion="frm.nombre_fermentacion"
-		:tanque_code="frm.tanque_code"
-		:tanque_descripcion="frm.tanque_descripcion"
-		:total_hours="frm.total_hours"
-		:duration="frm.duration"
-		>
-		</fermItem>
+	<md-list-item v-for="frm in fermentadores">
+	  <md-avatar class="md-avatar-icon md-primary">
+		<md-icon>insert_drive_file</md-icon>
+	  </md-avatar>
+	  <div class="md-list-text-container">
+		<span>Fermentador {{frm.tanque_code}}</span>
+		<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}hs/{{frm.duration}}hs</p>
+		<p>Temp: 19.5 ºC</p>
+	  </div>
+	</md-list-item>
 		
  
   </md-list>
-	<ul id="example-2">
-	  <li v-for="frm in fermentadores">
-		{{ frm.nombre_fermentacion }}
-	  </li>
-	</ul>
 </div>
 
 </body>
