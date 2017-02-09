@@ -27,6 +27,7 @@
 String outData = "";    
 String inData = "";         
 boolean serialAvailable = false;
+//bind an event to this variables to turn on/off relays
 boolean r1 = false;
 boolean r2 = false;
 void setup() {
