@@ -27,6 +27,8 @@
 String outData = "";    
 String inData = "";         
 boolean serialAvailable = false;
+boolean r1 = false;
+boolean r2 = false;
 void setup() {
   // start serial port at 9600 bps:
   Serial.begin(9600);
@@ -47,20 +49,31 @@ void loop() {
     inData = Serial.readString();
     inData.trim();
     //Serial.println(inData);
-    if(inData.startsWith("f1"))
+    if(inData.startsWith("f1t"))
     {
-      outData = "{\"f\":\"f1\",\"t\":\"20.5\"}";
+      outData = "{\"f\":\"f1\",\"t\":20.5,\"r\":"+String(r1)+"}";
     }
-    if(inData.startsWith("f2"))
+    if(inData.startsWith("f2t"))
     {
-      outData = "{\"f\":\"f2\",\"t\":\"19.2\"}";
+      outData = "{\"f\":\"f2\",\"t\":19.2,\"r\":"+String(r2)+"}";
+    }
+    if(inData.startsWith("f1r"))
+    {
+      r1=!r1;
+      outData ="n/r";
+    }
+    if(inData.startsWith("f2r"))
+    {
+      r2=!r2;
+      outData ="n/r";
     }
     if(outData=="")
     {
       outData = "YDU";
     }
-    Serial.println(outData);
-     
+    if(outData !="n/r"){
+      Serial.println(outData);
+    }
   }
   outData="";
   inData="";

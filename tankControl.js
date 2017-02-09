@@ -1,5 +1,6 @@
 var SerialPort = require('serialport');
-	
+var mysqlconfig = require("./dbconfig.js").out;
+var mysql = require('mysql');
 /* SerialPort.list(function (err, ports) {
 	ports.forEach(function(port) {
 		console.log(port.comName);
@@ -7,15 +8,22 @@ var SerialPort = require('serialport');
 		console.log(port.manufacturer);
 	});
 }); */
-var serialData='';
-var readyToWrite = false;
+
+var readyToSerialWrite = false;
+
+setInterval(function(){
+	if(readyToSerialWrite){
+		checkFermentadores();
+	}
+},5000);
 
 var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
 port.on('data', function (data) {
 	if(data.toString().match(/ready/i)){
-		readyToWrite = true;
+		readyToSerialWrite  = true;
 		console.log('Port: ' + data.toString());
-		checkFermentadores();
+		//linea de abajo solo test
+		
 	}else{
 		console.log('Data: ' + data.toString());
 		analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
@@ -26,8 +34,41 @@ port.on('data', function (data) {
 
 function analizeTank(obj)
 {
-	console.log('resp fowarded');
-	console.log(obj.t);
+	var insParams = [];
+	var getTempParams = [];
+	var connection = mysql.createConnection(mysqlconfig);
+	var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
+	insParams = insParams.concat([obj.f,obj.t]);
+	connection.query(insQry,insParams,function(err, resultsData, fields) {});
+	getTempParams = getTempParams.concat([obj.f,obj.f]);
+	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia;"
+	connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		var r = results[0];
+		var progTemp = r.temp;
+		var progTolerancia = r.tolerancia;
+		console.log("temp map: " + r.temp + " tol: " + r.tolerancia);
+		var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
+		console.log("temp ref: " + tempRef);
+		if(obj.t>tempRef)
+		{
+			if(obj.r == 0 ){
+				port.write(obj.f+'r0');
+				console.log("Turn On R: " + obj.f);
+			}
+		}else
+		{
+			if(obj.r == 1 ){
+				port.write(obj.f+'r0');
+				console.log("Turn Off R: " + obj.f);
+			}
+		}
+		
+
+	});
 	
 }
 /*port.on('close', function (data) {
@@ -40,8 +81,7 @@ function analizeTank(obj)
 	port.write('f1');
 }*/
 function checkFermentadores(){
-	var mysqlconfig = require("./dbconfig.js").out;
-	var mysql = require('mysql');
+	
 	
 	
 	var connection = mysql.createConnection(mysqlconfig);
@@ -54,7 +94,7 @@ function checkFermentadores(){
 		var ferms = [];
 		for(var i = 0; i < resultsData.length; i++)
 		{
-			port.write(resultsData[i].tanque_code);
+			port.write(resultsData[i].tanque_code+'t');
 			var ferm = {
 				id: resultsData[i].id,
 				nombre_fermentacion: resultsData[i].nombre_fermentacion,
