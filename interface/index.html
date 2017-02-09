@@ -106,24 +106,21 @@ body,
   
     <md-list>
       <md-list-item @click="$refs.sidebar.toggle()" class="md-primary">
-        <md-icon>insert_drive_file</md-icon> <span>OPCIONES DE CONTROL</span>
+        <md-icon>settings</md-icon> <span>OPCIONES DE CONTROL</span>
       </md-list-item>
   
-      <md-list-item @click="$refs.sidebar.toggle()">
-        <md-icon>people</md-icon> <span>Shared with me</span>
+      <md-list-item @click="$refs.sidebar.toggle()" v-on:click="startNewFerm">
+        <md-icon>add_circle</md-icon> <span>Nueva fermentacion</span>
+      </md-list-item>
+	  
+	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="getActiveFerms()">
+        <md-icon>home</md-icon> <span>Fermentaciones activas</span>
       </md-list-item>
   
-      <md-list-item @click="$refs.sidebar.toggle()">
-        <md-icon>access_time</md-icon> <span>Recent</span>
+      <md-list-item @click="$refs.sidebar.toggle()" v-on:click="getArchivedFerms()">
+        <md-icon>restore</md-icon> <span>Fermentaciones archivadas</span>
       </md-list-item>
   
-      <md-list-item @click="$refs.sidebar.toggle()">
-        <md-icon>start</md-icon> <span>Starred</span>
-      </md-list-item>
-  
-      <md-list-item @click="$refs.sidebar.toggle()">
-        <md-icon>delete</md-icon> <span>Trash</span>
-      </md-list-item>
     </md-list>
   </md-sidenav>
   
@@ -133,36 +130,52 @@ body,
         <md-button class="md-icon-button" @click="$refs.sidebar.toggle()">
           <md-icon>menu</md-icon>
         </md-button>
-  
         <span style="flex: 1"></span>
-  
-   
       </div>
-  
       <div class="md-toolbar-container">
-        <h2 class="md-title">CONTROL DE FERMENTADORES</h2>
-  
-  
+        <h2 class="md-title">{{headerTitle}}</h2>
       </div>
     </md-toolbar>
   </md-whiteframe>
   
-  <md-list class="md-double-line">
+  <md-list v-if="viewList" class="md-double-line">
     <md-subheader class="md-inset">Fermentadores</md-subheader>
 		
-	<md-list-item v-for="frm in fermentadores">
+	<md-list-item  v-for="frm in fermentadores" v-on:click="viewList=!viewList" >
 	  <md-avatar class="md-avatar-icon md-primary">
 		<md-icon>insert_drive_file</md-icon>
 	  </md-avatar>
 	  <div class="md-list-text-container">
 		<span>Fermentador {{frm.tanque_code}}</span>
-		<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}hs/{{frm.duration}}hs</p>
-		<p>Prof: {{frm.profile}}, Temp: {{frm.currentTemp}} ºC</p>
+		<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
+		<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
 	  </div>
 	</md-list-item>
-		
+	
+	 </md-list>
+	 
+	<form v-if="viewAddNew" @submit.prevent="doThis" novalidate @submit.stop.prevent="submit" >
+	  <md-input-container>
+		<label>Nombre de la fermentacion</label>
+		<md-input v-model="nombre"></md-input>
+	  </md-input-container>
+	  <md-input-container>
+		<label for="tanque">Tanque</label>
+		<md-select name="tanque" id="tanque" v-model="tanque">
+			<md-option v-for="tnq in tanques" :value="tnq.id">{{tnq.descripcion}}</md-option>
+		</md-select>
+	  </md-input-container>
+		<md-input-container>
+		<label for="perfil">Perfil</label>
+		<md-select name="perfil" id="perfil" v-model="perfil">
+			<md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
+		</md-select>
+	  </md-input-container>
+	  <md-button class="md-raised md-primary" v-on:click="" >CREAR AHORA</md-button>
+  
+	</form>
  
-  </md-list>
+ 
 </div>
 
 </body>

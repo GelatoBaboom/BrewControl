@@ -8,6 +8,9 @@ var favicon = require('serve-favicon');
 var https = require('https')
 var fs = require('fs') */
 var serveStatic = require('serve-static')
+var mysqlconfig = require("./dbconfig.js").out;
+var mysql = require('mysql');
+var url = require('url');
 
 var httpport = 85;
 //app.use('/get/ticker.json', gettableexpress.expressjson("tickers"));
@@ -54,22 +57,73 @@ app.use('/getSerial.json', function (req, res, next) {
 	res.json({result: ''+q.f});
 	
 });
-app.use('/getFermData.json', function (req, res, next) {
-	var mysqlconfig = require("./dbconfig.js").out;
-	var mysql = require('mysql');
-	var url = require('url');
-
-	
+app.use('/getProfiles.json', function (req, res, next) {
+	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque;", function(err, resultsData, fields) {
+	connection.query("SELECT * FROM profiles;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
 		}
-		//console.log(resultsData)
+		
+		var profiles = [];
+		for(var i = 0; i < resultsData.length; i++)
+		{
+			
+			var prof = {
+				id: resultsData[i].id,
+				nombre: resultsData[i].nombre,
+				duration: resultsData[i].duration,
+			}
+			profiles.push(prof);
+		}
+		res.json(profiles);
+				
+	});
+	
+});
+app.use('/getTanques.json', function (req, res, next) {
+	var selParams = [];
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query("SELECT * FROM tanques;",selParams, function(err, resultsData, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		
+		var tanks = [];
+		for(var i = 0; i < resultsData.length; i++)
+		{
+			
+			var tanque = {
+				id: resultsData[i].id,
+				code: resultsData[i].code,
+				descripcion: resultsData[i].descripcion,
+			}
+			tanks.push(tanque);
+		}
+		res.json(tanks);
+				
+	});
+	
+});
+app.use('/getFermData.json', function (req, res, next) {
+	
+	var q = url.parse(req.url, true).query;
+	var selParams = [];
+	console.log((q.activo=='1'?true:false));
+	selParams = selParams.concat([(q.activo=='1'?true:false)]);
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.activo = ?;",selParams, function(err, resultsData, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		
 		var ferms = [];
 		for(var i = 0; i < resultsData.length; i++)
 		{
+			console.log(resultsData[i]);
 			var ferm = {
 				id: resultsData[i].id,
 				nombre_fermentacion: resultsData[i].nombre_fermentacion,
@@ -78,15 +132,14 @@ app.use('/getFermData.json', function (req, res, next) {
 				tanque_descripcion: resultsData[i].tanque_descripcion,
 				total_hours: resultsData[i].total_hours,
 				duration : resultsData[i].duration,
-				currentTemp: resultsData[i].currentTemp
+				currentTemp: resultsData[i].currentTemp,
+				progTemp: resultsData[i].progTemp
 			}
 			ferms.push(ferm);
 		}
 		res.json(ferms);
 				
 	});
-	
-	
 	
 });
 //app.use("/", serveStatic('public'));

@@ -38,26 +38,95 @@ new Vue({
 	data : function(){
 	  return{
 		  fermentadores:[],
+		  tanques:[],
+		  profiles:[],
 		  brand: 'LoLog',
-		  brandDesc:'Cerveceria'
+		  brandDesc:'Cerveceria',
+		  headerTitle:'CONTROL DE FERMENTADORES',
+		  viewList:true,
+		  viewAddNew:false,
+		  refreshInterval:null
+		  
 	  }
 	},
 		created: function(){
 			this.getActiveFerms();
+			this.getTanques();
+			this.getProfiles();
 	},
 	methods: {
+		getArchivedFerms:function(){
+			this.viewList = true;
+			this.viewAddNew=false;
+			this.getFerms(0);
+			if(this.refreshInterval!=null)
+			{
+				clearInterval(this.refreshInterval);
+			}
+			this.refreshInterval =  setInterval(function(){
+			
+				this.getFerms(0);
+			
+			}.bind(this),5000);
+			
+		},
 		getActiveFerms:function(){
-			this.$http.get('/getFermData.json').then(function(response){
+			this.viewList = true;
+			this.viewAddNew=false;
+			this.getFerms(1);
+			if(this.refreshInterval!=null)
+			{
+				clearInterval(this.refreshInterval);
+			}
+			this.refreshInterval =  setInterval(function(){
+			
+				this.getFerms(1);
+			
+			}.bind(this),5000);
+		}, 
+		getFerms:function(active){
+			this.$http.get('/getFermData.json?activo='+active).then(function(response){
 				this.fermentadores = response.body;
 				return this.fermentadores;
-				/*for(var i = 0; i < d.length; i++){
-					var t = d[i];
-					console.log(t);*/
-				
 			}, function(){ 
 				//error 
 			});
-		}
+		},
+		getTanques:function(){
+			this.$http.get('/getTanques.json').then(function(response){
+				this.tanques = response.body;
+				return this.tanques;
+			}, function(){ 
+				//error 
+			});
+		},
+		getProfiles:function(){
+			this.$http.get('/getProfiles.json').then(function(response){
+				this.profiles = response.body;
+				return this.profiles;
+			}, function(){ 
+				//error 
+			});
+		},
+		startNewFerm: function(){
+			if(this.refreshInterval!=null)
+			{
+				clearInterval(this.refreshInterval);
+				this.viewList=false;
+				this.viewAddNew=true;
+				
+			}
+			
+			
+		},
+		createFerm:function(){
+			this.viewList=true;
+			this.viewAddNew=false;
+			
+			
+		},
+		doThis:function(){console.log("enviado");}
 	}
 })
 })
+			
