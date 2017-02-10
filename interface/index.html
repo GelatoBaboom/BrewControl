@@ -135,19 +135,19 @@ body,
     <md-subheader class="md-inset">Fermentaciones activas</md-subheader>
 		<md-list-item v-for="frm in fermentadores"  >
 		  <md-avatar class="md-avatar-icon md-primary">
-			<md-icon>insert_drive_file</md-icon>
+			<md-icon>delete_sweep</md-icon>
 		  </md-avatar>
 			<div class="md-list-text-container">
 				<span>Fermentador {{frm.tanque_code}}</span>
 				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
-				<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
+				<p>Perf: {{frm.profile}}, Temp: <b>{{frm.currentTemp}}</b>/{{frm.progTemp}} ºC</p>
 			</div>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
 					<md-icon>more_vert</md-icon>
 				</md-button>
 				<md-menu-content>
-					<md-menu-item>
+					<md-menu-item v-on:click="viewFermentacion(frm.id)">
 						<md-icon>timeline</md-icon>
 						<span>Ver detalles</span>
 					</md-menu-item>
@@ -157,7 +157,7 @@ body,
 						<span>Archivar</span>
 					</md-menu-item>
 
-					<md-menu-item>
+					<md-menu-item v-on:click="manageFerm(frm.id,'delete')">
 						<md-icon>delete</md-icon>
 						<span>Eliminar</span>
 					</md-menu-item>
@@ -166,27 +166,27 @@ body,
 		</md-list-item>
 	</md-list>
 	<md-list v-if="viewListAchived" class="md-double-line">
-    <md-subheader class="md-inset">Fermentaciones archivadas</md-subheader>
+		<md-subheader class="md-inset">Fermentaciones archivadas</md-subheader>
 		<md-list-item v-for="frm in fermentadores"  >
 		  <md-avatar class="md-avatar-icon md-primary">
-			<md-icon>insert_drive_file</md-icon>
+			<md-icon>content_paste</md-icon>
 		  </md-avatar>
 			<div class="md-list-text-container">
 				<span>Fermentador {{frm.tanque_code}}</span>
-				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
-				<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
+				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.duration}}hs</p>
+				<p>Perf: {{frm.profile}}, Temp promedio: {{frm.promTemp}} ºC</p>
 			</div>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
 					<md-icon>more_vert</md-icon>
 				</md-button>
 				<md-menu-content>
-					<md-menu-item>
+					<md-menu-item v-on:click="viewFermentacion(frm.id)">
 						<md-icon>timeline</md-icon>
 						<span>Ver detalles</span>
 					</md-menu-item>
 
-					<md-menu-item>
+					<md-menu-item v-on:click="manageFerm(frm.id,'delete')">
 						<md-icon>delete</md-icon>
 						<span>Eliminar</span>
 					</md-menu-item>
@@ -215,6 +215,17 @@ body,
 	  <md-button class="md-raised md-primary" v-on:click="createFerm" >CREAR AHORA</md-button>
   
 	</form>
+	<md-tabs md-fixed v-if="viewFerm">
+	  <md-tab id="grafico" md-label="Grafico" >
+			<md-subheader class="md-inset">Grafico progresion temperatura</md-subheader>
+			<object  v-bind:data="'/getSvg.svg?id=' + fermSel.id " type="image/svg+xml" style="overflow-x:scroll;">
+	  </md-tab>
+	  <md-tab id="detalles" md-label="Detalles">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+	  </md-tab>
+	</md-tabs>
+	
  
  
 </div>

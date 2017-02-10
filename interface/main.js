@@ -8,13 +8,15 @@ requirejs.config({
 	  "vue-material": "/node_modules/vue-material/dist/vue-material",
 	  "vue-resource": "//cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min",
       "moment": "//cdn.jsdelivr.net/momentjs/2.17.0/moment-with-locales.min",
-	  "polyfill": "//cdn.polyfill.io/v2/polyfill.min.js"
-    }
+	  "polyfill": "//cdn.polyfill.io/v2/polyfill.min.js",
+	  
+	}
 });
 requirejs (["polyfill", "vue", "vue-material","vue-resource"],
 function(Polyfill, Vue, VueMaterial, VueResource ){
 Vue.use(VueMaterial)
 Vue.use(VueResource)
+
 
 Vue.material.registerTheme({
   default: {
@@ -44,17 +46,22 @@ new Vue({
 			brandDesc:'Cerveceria',
 			headerTitle:'CONTROL DE FERMENTADORES'
 		  },
+		  fermSel:{
+			  id:0			  
+		  },
 		  viewList:true,
 		  viewAddNew:false,
 		  viewListAchived:false,
+		  viewFerm:false,
 		  refreshInterval:null
 		  
 	  }
 	},
-		created: function(){
+	created: function(){
 			this.getActiveFerms();
 			this.getTanques();
 			this.getProfiles();
+			
 	},
 	methods: {
 		getArchivedFerms:function(){
@@ -77,6 +84,7 @@ new Vue({
 			this.viewList = true;
 			this.viewListAchived = false;
 			this.viewAddNew=false;
+			this.viewFerm = false;
 			this.getFerms(1);
 			if(this.refreshInterval!=null)
 			{
@@ -119,6 +127,7 @@ new Vue({
 				this.viewList=false;
 				this.viewListAchived = false;
 				this.viewAddNew=true;
+				this.viewFerm = false;
 				
 			}
 			
@@ -126,7 +135,10 @@ new Vue({
 		},
 		createFerm:function(){
 			this.viewList=true;
+			this.viewListAchived = false;
 			this.viewAddNew=false;
+			this.viewFerm = false;
+			
 			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
 				this.fermModel = {nombre:'',tanque:0, perfil:0};
 			}, function(){ 
@@ -141,6 +153,15 @@ new Vue({
 				//error 
 			});
 			this.refreshInterval();
+			
+		},
+		viewFermentacion:function(argId){
+			this.fermSel.id = argId;
+			this.viewList=false;
+			this.viewListAchived = false;
+			this.viewAddNew=false;
+			this.viewFerm = true;
+			
 			
 		}
 	}
