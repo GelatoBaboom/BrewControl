@@ -40,6 +40,7 @@ new Vue({
 		  fermentadores:[],
 		  tanques:[],
 		  profiles:[],
+		  fermModel:{nombre:'',tanque:0, perfil:0},
 		  brand: 'LoLog',
 		  brandDesc:'Cerveceria',
 		  headerTitle:'CONTROL DE FERMENTADORES',
@@ -122,10 +123,9 @@ new Vue({
 		createFerm:function(){
 			this.viewList=true;
 			this.viewAddNew=false;
+			 this.$http.post('/createFerm.json', JSON.stringify(this.fermModel));
 			
-			
-		},
-		doThis:function(){console.log("enviado");}
+		}
 	}
 })
 })

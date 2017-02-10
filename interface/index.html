@@ -157,21 +157,21 @@ body,
 	<form v-if="viewAddNew" @submit.prevent="doThis" novalidate @submit.stop.prevent="submit" >
 	  <md-input-container>
 		<label>Nombre de la fermentacion</label>
-		<md-input v-model="nombre"></md-input>
+		<md-input v-model="fermModel.nombre"></md-input>
 	  </md-input-container>
 	  <md-input-container>
 		<label for="tanque">Tanque</label>
-		<md-select name="tanque" id="tanque" v-model="tanque">
+		<md-select name="tanque" id="tanque" v-model="fermModel.tanque">
 			<md-option v-for="tnq in tanques" :value="tnq.id">{{tnq.descripcion}}</md-option>
 		</md-select>
 	  </md-input-container>
 		<md-input-container>
 		<label for="perfil">Perfil</label>
-		<md-select name="perfil" id="perfil" v-model="perfil">
+		<md-select name="perfil" id="perfil" v-model="fermModel.perfil">
 			<md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
 		</md-select>
 	  </md-input-container>
-	  <md-button class="md-raised md-primary" v-on:click="" >CREAR AHORA</md-button>
+	  <md-button class="md-raised md-primary" v-on:click="createFerm" >CREAR AHORA</md-button>
   
 	</form>
  

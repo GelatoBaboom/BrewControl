@@ -2,11 +2,11 @@ var express = require('express');
 var app = express();
 /* var argv = require('minimist')(process.argv.slice(2));
 var gettableexpress = require("./gettableexpress.js")
-var bodyParser = require('body-parser')
 var jsonParser = bodyParser.json()
 var favicon = require('serve-favicon');
 var https = require('https')
 var fs = require('fs') */
+var bodyParser = require('body-parser')
 var serveStatic = require('serve-static')
 var mysqlconfig = require("./dbconfig.js").out;
 var mysql = require('mysql');
@@ -19,9 +19,10 @@ app.use("/interface", function (req, res, next) {
 }, serveStatic('interface'));
 app.use("/node_modules", serveStatic('node_modules'));
 app.use("/", serveStatic('public'));
-var pos= 0;
+
+
+
 var SerialPort = require('serialport');
-	
 SerialPort.list(function (err, ports) {
 	ports.forEach(function(port) {
 		console.log(port.comName);
@@ -29,32 +30,31 @@ SerialPort.list(function (err, ports) {
 		console.log(port.manufacturer);
 	});
 });
-//var port = new SerialPort('COM5');
-var serialData='';
-var readyToWrite = false;
-/*
-var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
-port.on('data', function (data) {
-	if(data=='ready') readyToWrite = true;
-	serialData = data;
-	console.log('Data: ' + data);
-	
-		
-});*/
-/*port.on('close', function (data) {
-	port.open();
-});*/
-/*while(!readyToWrite)
-{
-	console.log('waiting..');
-	if(readyToWrite)
-	port.write('f1');
-}*/
+
+
 app.use('/getSerial.json', function (req, res, next) {
 	var url = require('url');
 	var q = url.parse(req.url, true).query;
 	port.write(q.f);
 	res.json({result: ''+q.f});
+	
+});
+app.use('/createFerm.json', function (req, res, next) {
+	
+	console.log(req.body);
+	var selParams = [];
+	var connection = mysql.createConnection(mysqlconfig);
+	var q = url.parse(req.url, true).query;
+	
+	selParams = selParams.concat([req.body.nombre,req.body.tanque,req.body.perfil]);
+	connection.query("call insertFermentacion(?,?,?);",selParams, function(err, resultsData, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		
+				
+	});
 	
 });
 app.use('/getProfiles.json', function (req, res, next) {
@@ -82,6 +82,9 @@ app.use('/getProfiles.json', function (req, res, next) {
 	});
 	
 });
+
+
+
 app.use('/getTanques.json', function (req, res, next) {
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
