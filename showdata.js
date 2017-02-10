@@ -6,10 +6,10 @@ var jsonParser = bodyParser.json()
 var favicon = require('serve-favicon');
 var https = require('https')
 var fs = require('fs') */
-var bodyParser = require('body-parser')
-var serveStatic = require('serve-static')
 var mysqlconfig = require("./dbconfig.js").out;
 var mysql = require('mysql');
+var bodyParser = require('body-parser')
+var serveStatic = require('serve-static')
 var url = require('url');
 
 var httpport = 85;
@@ -39,25 +39,40 @@ app.use('/getSerial.json', function (req, res, next) {
 	res.json({result: ''+q.f});
 	
 });
+app.use(bodyParser.json());
 app.use('/createFerm.json', function (req, res, next) {
-	
+
 	console.log(req.body);
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	var q = url.parse(req.url, true).query;
-	
 	selParams = selParams.concat([req.body.nombre,req.body.tanque,req.body.perfil]);
 	connection.query("call insertFermentacion(?,?,?);",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
 		}
-		
-				
-	});
-	
+	})
+	connection.end();
 });
+app.use('/manageFerm.json', function (req, res, next) {
+
+	var connection = mysql.createConnection(mysqlconfig);
+	if(req.body.action == 'archivar')
+	{
+		var params = [];
+		params = params.concat([req.body.id]);
+		connection.query("update fermentadores set activo=0 where id = ?;",params, function(err, resultsData, fields) {
+			if (err) 
+			{
+				throw err;
+			}
+		})
+		connection.end();
+	}
+});
+
 app.use('/getProfiles.json', function (req, res, next) {
+
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("SELECT * FROM profiles;",selParams, function(err, resultsData, fields) {
@@ -79,16 +94,18 @@ app.use('/getProfiles.json', function (req, res, next) {
 		}
 		res.json(profiles);
 				
-	});
+	})
+	connection.end();
 	
 });
 
 
 
 app.use('/getTanques.json', function (req, res, next) {
+
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("SELECT * FROM tanques;",selParams, function(err, resultsData, fields) {
+	connection.query("SELECT * FROM tanques where id not in(select tanque from fermentadores where activo = 1);",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
@@ -107,11 +124,12 @@ app.use('/getTanques.json', function (req, res, next) {
 		}
 		res.json(tanks);
 				
-	});
+	})
+	connection.end();
 	
 });
 app.use('/getFermData.json', function (req, res, next) {
-	
+
 	var q = url.parse(req.url, true).query;
 	var selParams = [];
 	console.log((q.activo=='1'?true:false));
@@ -120,7 +138,9 @@ app.use('/getFermData.json', function (req, res, next) {
 	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.activo = ?;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
-			throw err;
+			//throw err;
+			console.log('ERROR SQL');
+			console.log(err);
 		}
 		
 		var ferms = [];
@@ -142,7 +162,8 @@ app.use('/getFermData.json', function (req, res, next) {
 		}
 		res.json(ferms);
 				
-	});
+	})
+	connection.end();
 	
 });
 //app.use("/", serveStatic('public'));

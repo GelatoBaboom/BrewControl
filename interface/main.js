@@ -5,15 +5,14 @@ requirejs.config({
       "app": "../app",
       "jquery": "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min",
       "vue": "/node_modules/vue/dist/vue",
-	  "fermItemjs": "interface/fermItem",
-      "vue-material": "/node_modules/vue-material/dist/vue-material",
+	  "vue-material": "/node_modules/vue-material/dist/vue-material",
 	  "vue-resource": "//cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min",
       "moment": "//cdn.jsdelivr.net/momentjs/2.17.0/moment-with-locales.min",
 	  "polyfill": "//cdn.polyfill.io/v2/polyfill.min.js"
     }
 });
-requirejs (["polyfill", "vue", "vue-material","vue-resource","fermItemjs"],
-function(Polyfill, Vue, VueMaterial, VueResource, fermItemjs ){
+requirejs (["polyfill", "vue", "vue-material","vue-resource"],
+function(Polyfill, Vue, VueMaterial, VueResource ){
 Vue.use(VueMaterial)
 Vue.use(VueResource)
 
@@ -31,7 +30,6 @@ Vue.material.registerTheme({
     accent: 'green'
   },
 })
-Vue.component("fermItem", fermItemjs)
 
 new Vue({
 	el: '#file-list',
@@ -41,11 +39,14 @@ new Vue({
 		  tanques:[],
 		  profiles:[],
 		  fermModel:{nombre:'',tanque:0, perfil:0},
-		  brand: 'LoLog',
-		  brandDesc:'Cerveceria',
-		  headerTitle:'CONTROL DE FERMENTADORES',
+		  strs:{
+			brand: 'LoLog',
+			brandDesc:'Cerveceria',
+			headerTitle:'CONTROL DE FERMENTADORES'
+		  },
 		  viewList:true,
 		  viewAddNew:false,
+		  viewListAchived:false,
 		  refreshInterval:null
 		  
 	  }
@@ -57,7 +58,8 @@ new Vue({
 	},
 	methods: {
 		getArchivedFerms:function(){
-			this.viewList = true;
+			this.viewList = false;
+			this.viewListAchived = true;
 			this.viewAddNew=false;
 			this.getFerms(0);
 			if(this.refreshInterval!=null)
@@ -73,6 +75,7 @@ new Vue({
 		},
 		getActiveFerms:function(){
 			this.viewList = true;
+			this.viewListAchived = false;
 			this.viewAddNew=false;
 			this.getFerms(1);
 			if(this.refreshInterval!=null)
@@ -114,6 +117,7 @@ new Vue({
 			{
 				clearInterval(this.refreshInterval);
 				this.viewList=false;
+				this.viewListAchived = false;
 				this.viewAddNew=true;
 				
 			}
@@ -123,10 +127,22 @@ new Vue({
 		createFerm:function(){
 			this.viewList=true;
 			this.viewAddNew=false;
-			 this.$http.post('/createFerm.json', JSON.stringify(this.fermModel));
+			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
+				this.fermModel = {nombre:'',tanque:0, perfil:0};
+			}, function(){ 
+				//error 
+			});
+			this.getActiveFerms();
+		},
+		manageFerm:function(argId, argAction){
+			this.$http.post('/manageFerm.json', JSON.stringify({id:argId,action:argAction})).then(function(reponse){
+			
+			}, function(){ 
+				//error 
+			});
+			this.refreshInterval();
 			
 		}
 	}
 })
 })
-			

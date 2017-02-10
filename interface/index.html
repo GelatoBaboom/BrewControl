@@ -62,21 +62,13 @@ body,
     background: none !important;
   }
 }
+/*ajustes*/
+.md-toolbar.md-large{min-height: 80px;}
+.md-toolbar.md-large .md-toolbar-container:nth-child(2) .md-title:first-child {margin-left: 0px;}
 </style>
 </head>
-	<body>
-<script type="text/x-template" id="fermItemTemplate">
-    <md-list-item>
-      <md-avatar class="md-avatar-icon md-primary">
-        <md-icon>insert_drive_file</md-icon>
-      </md-avatar>
-      <div class="md-list-text-container">
-        <span>Fermentador 001</span>
-        <p>Tipo: IPA, Inicio: 12/01</p>
-		<p>Temp: 19.5 ºC</p>
-      </div>
-    </md-list-item>
-</script>
+<body>
+
 <div class="app-viewport" id="file-list">
   <md-sidenav class="md-left md-fixed" ref="sidebar">
     <md-toolbar class="md-account-header">
@@ -93,8 +85,8 @@ body,
   
         <md-list-item>
           <div class="md-list-text-container">
-            <span>{{brand}}</span>
-            <span>{{brandDesc}}</span>
+            <span>{{strs.brand}}</span>
+            <span>{{strs.brandDesc}}</span>
           </div>
   
           <!-- <md-button class="md-icon-button md-list-action">
@@ -124,35 +116,84 @@ body,
     </md-list>
   </md-sidenav>
   
-  <md-whiteframe md-elevation="3">
-    <md-toolbar class="md-large">
-      <div class="md-toolbar-container">
-        <md-button class="md-icon-button" @click="$refs.sidebar.toggle()">
-          <md-icon>menu</md-icon>
-        </md-button>
-        <span style="flex: 1"></span>
-      </div>
-      <div class="md-toolbar-container">
-        <h2 class="md-title">{{headerTitle}}</h2>
-      </div>
-    </md-toolbar>
-  </md-whiteframe>
+	<md-whiteframe md-elevation="3">
+		<md-toolbar class="md-large">
+		  <div class="md-toolbar-container">
+			<md-button class="md-icon-button" @click="$refs.sidebar.toggle()">
+			  <md-icon>menu</md-icon>
+			</md-button>
+			 <div class="md-toolbar-container">
+				<h2 class="md-title">{{strs.headerTitle}}</h2>
+			  </div>
+			<span style="flex: 1"></span>
+		  </div>
+		 
+		</md-toolbar>
+	</md-whiteframe>
   
-  <md-list v-if="viewList" class="md-double-line">
-    <md-subheader class="md-inset">Fermentadores</md-subheader>
-		
-	<md-list-item  v-for="frm in fermentadores" v-on:click="viewList=!viewList" >
-	  <md-avatar class="md-avatar-icon md-primary">
-		<md-icon>insert_drive_file</md-icon>
-	  </md-avatar>
-	  <div class="md-list-text-container">
-		<span>Fermentador {{frm.tanque_code}}</span>
-		<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
-		<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
-	  </div>
-	</md-list-item>
-	
-	 </md-list>
+	<md-list v-if="viewList" class="md-double-line">
+    <md-subheader class="md-inset">Fermentaciones activas</md-subheader>
+		<md-list-item v-for="frm in fermentadores"  >
+		  <md-avatar class="md-avatar-icon md-primary">
+			<md-icon>insert_drive_file</md-icon>
+		  </md-avatar>
+			<div class="md-list-text-container">
+				<span>Fermentador {{frm.tanque_code}}</span>
+				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
+				<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
+			</div>
+			<md-menu md-size="4">
+				<md-button class="md-icon-button" md-menu-trigger>
+					<md-icon>more_vert</md-icon>
+				</md-button>
+				<md-menu-content>
+					<md-menu-item>
+						<md-icon>timeline</md-icon>
+						<span>Ver detalles</span>
+					</md-menu-item>
+
+					<md-menu-item v-on:click="manageFerm(frm.id,'archivar')">
+						<md-icon>assignment_returned</md-icon>
+						<span>Archivar</span>
+					</md-menu-item>
+
+					<md-menu-item>
+						<md-icon>delete</md-icon>
+						<span>Eliminar</span>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+		</md-list-item>
+	</md-list>
+	<md-list v-if="viewListAchived" class="md-double-line">
+    <md-subheader class="md-inset">Fermentaciones archivadas</md-subheader>
+		<md-list-item v-for="frm in fermentadores"  >
+		  <md-avatar class="md-avatar-icon md-primary">
+			<md-icon>insert_drive_file</md-icon>
+		  </md-avatar>
+			<div class="md-list-text-container">
+				<span>Fermentador {{frm.tanque_code}}</span>
+				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
+				<p>Perf: {{frm.profile}}, Temp: {{frm.currentTemp}}/{{frm.progTemp}} ºC</p>
+			</div>
+			<md-menu md-size="4">
+				<md-button class="md-icon-button" md-menu-trigger>
+					<md-icon>more_vert</md-icon>
+				</md-button>
+				<md-menu-content>
+					<md-menu-item>
+						<md-icon>timeline</md-icon>
+						<span>Ver detalles</span>
+					</md-menu-item>
+
+					<md-menu-item>
+						<md-icon>delete</md-icon>
+						<span>Eliminar</span>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+		</md-list-item>
+	</md-list>
 	 
 	<form v-if="viewAddNew" @submit.prevent="doThis" novalidate @submit.stop.prevent="submit" >
 	  <md-input-container>
