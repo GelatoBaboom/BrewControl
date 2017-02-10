@@ -22,7 +22,8 @@
     "vue": "^2.0.3",
     "vue-material": "^0.5.2",
     "vue-router": "^2.1.0",
-	"serialport":"^4.0.7"
+	"serialport":"^4.0.7",
+	"memory-streams": "^0.1.0"
     
   },
   "scripts": {
