@@ -40,6 +40,7 @@ function analizeTank(obj)
 	var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
 	insParams = insParams.concat([obj.f,obj.t]);
 	connection.query(insQry,insParams,function(err, resultsData, fields) {});
+	
 	getTempParams = getTempParams.concat([obj.f,obj.f]);
 	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia;"
 	connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
@@ -68,7 +69,8 @@ function analizeTank(obj)
 		}
 		
 
-	});
+	})
+	connection.end();
 	
 }
 /*port.on('close', function (data) {
@@ -109,5 +111,6 @@ function checkFermentadores(){
 		}
 		
 				
-	});
+	})
+	connection.end();
 }
