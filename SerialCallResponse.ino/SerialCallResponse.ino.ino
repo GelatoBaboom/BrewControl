@@ -2,6 +2,13 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #define ONE_WIRE_BUS_PIN 3
+//relays
+#define RY1 13
+#define RY2 12
+#define RY3 8
+#define RY4 7
+#define RY5 4
+#define RY6 2
 
 //Setup sensor on one wire pin
 OneWire oneWire(ONE_WIRE_BUS_PIN);
@@ -16,7 +23,16 @@ boolean serialAvailable = false;
 //bind an event to this variables to turn on/off relays
 boolean r1 = false;
 boolean r2 = false;
+
 void setup() {
+  //setup Relay OUTPUT
+   pinMode(RY1, OUTPUT);
+   pinMode(RY2, OUTPUT);
+   pinMode(RY3, OUTPUT);
+   pinMode(RY4, OUTPUT);
+   pinMode(RY5, OUTPUT);
+   pinMode(RY6, OUTPUT);
+   
   //sensors begin
   sensors.begin();
   // set the resolution to 10 bit (Can be 9 to 12 bits .. lower is faster)
@@ -55,11 +71,13 @@ void loop() {
     if(inData.startsWith("f1r"))
     {
       r1=!r1;
+      digitalWrite(RY1,r1);
       outData ="n/r";
     }
     if(inData.startsWith("f2r"))
     {
       r2=!r2;
+      digitalWrite(RY2,r2);
       outData ="n/r";
     }
     if(outData=="")
