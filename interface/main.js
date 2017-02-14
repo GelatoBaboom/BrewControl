@@ -53,6 +53,7 @@ new Vue({
 		  viewAddNew:false,
 		  viewListAchived:false,
 		  viewFerm:false,
+		  viewProfiles:false,
 		  refreshInterval:null
 		  
 	  }
@@ -68,6 +69,10 @@ new Vue({
 			this.viewList = false;
 			this.viewListAchived = true;
 			this.viewAddNew=false;
+			this.viewFerm = false;
+			this.viewProfiles=false;
+			
+						
 			this.getFerms(0);
 			if(this.refreshInterval!=null)
 			{
@@ -85,6 +90,7 @@ new Vue({
 			this.viewListAchived = false;
 			this.viewAddNew=false;
 			this.viewFerm = false;
+			this.viewProfiles=false;
 			this.getFerms(1);
 			if(this.refreshInterval!=null)
 			{
@@ -128,6 +134,7 @@ new Vue({
 				this.viewListAchived = false;
 				this.viewAddNew=true;
 				this.viewFerm = false;
+				this.viewProfiles=false;
 				
 			}
 			
@@ -138,6 +145,7 @@ new Vue({
 			this.viewListAchived = false;
 			this.viewAddNew=false;
 			this.viewFerm = false;
+			this.viewProfiles=false;
 			
 			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
 				this.fermModel = {nombre:'',tanque:0, perfil:0};
@@ -161,7 +169,16 @@ new Vue({
 			this.viewListAchived = false;
 			this.viewAddNew=false;
 			this.viewFerm = true;
+			this.viewProfiles=false;
 			
+			
+		},
+		editProfiles:function(){
+			this.viewList=false;
+			this.viewListAchived = false;
+			this.viewAddNew=false;
+			this.viewFerm = false;
+			this.viewProfiles=true;
 			
 		}
 	}
