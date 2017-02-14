@@ -1,4 +1,4 @@
-function chart(d3, techan, csvData, vwidth, vheight) {
+﻿function chart(d3, techan, csvData, vwidth, vheight) {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
@@ -74,8 +74,8 @@ function chart(d3, techan, csvData, vwidth, vheight) {
                 .text("Temperatura Cº");
 		 
         x.domain(data.map(close.accessor().d));
-        y.domain(techan.scale.plot.ohlc(data, close.accessor()).domain());
-
+        //y.domain(techan.scale.plot.ohlc(data, close.accessor()).domain());
+		y.domain([0.00,65.00]);
         svg.selectAll("g.close").datum(data).call(close);
         svg.selectAll("g.x.axis").call(xAxis);
         svg.selectAll("g.y.axis").call(yAxis);

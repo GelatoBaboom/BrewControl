@@ -219,7 +219,7 @@ app.use('/getSvg.svg', function (req, res, next) {
 		
 		csvdatad3 = writer.toString()
 		
-		console.log(csvdatad3)
+		//console.log(csvdatad3)
 		var csvData = d3.csvParse(csvdatad3.trim())//;
 		//console.log(csvData)
 		var document = require('jsdom').jsdom();
