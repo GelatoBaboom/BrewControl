@@ -82,34 +82,53 @@ app.use('/manageFerm.json', function (req, res, next) {
 });
 
 app.use('/getProfiles.json', function (req, res, next) {
-
-	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("SELECT * FROM profiles;",selParams, function(err, resultsData, fields) {
+	connection.query("SELECT p.id,p.duration,p.nombre,mt.id as tId, mt.tempFrom, mt.tempTo, mt.temp, mt.tolerancia FROM profiles as p left join mapatemp as mt on p.id = mt.profile order by p.id;", function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
 		}
-		
-		var profiles = [];
-		for(var i = 0; i < resultsData.length; i++)
-		{
+		if(resultsData.length>0){
 			
-			var prof = {
-				id: resultsData[i].id,
-				nombre: resultsData[i].nombre,
-				duration: resultsData[i].duration,
-			}
-			profiles.push(prof);
-		}
-		res.json(profiles);
+			var currentId = resultsData[0].id ;
+			var profiles = [];
+			var tempMap=[];
+			for(var i = 0; i <= resultsData.length; i++)
+			{
+				console.log((i +' vs '+ resultsData.length));
 				
-	})
-	connection.end();
-	
-});
-
-
+				console.log('currentId: '+ currentId);
+				if(currentId != (i>=resultsData.length? 0 : resultsData[i].id))
+				{
+					currentId = i>=resultsData.length? currentId : resultsData[i].id ;
+					var prof = {
+						id: resultsData[i-1].id,
+						nombre: resultsData[i-1].nombre,
+						duration: resultsData[i-1].duration,
+						mapa: tempMap
+					}
+					profiles.push(prof);
+					tempMap=[];
+				}
+				if(i < resultsData.length)
+				{
+					
+					var tp = {
+						id: resultsData[i].tId,
+						tempFrom: resultsData[i].tempFrom,
+						tempTo: resultsData[i].tempTo,
+						temp: resultsData[i].temp,
+						tolerancia: resultsData[i].tolerancia
+					}
+					tempMap.push(tp);
+				}
+			}
+			
+			res.json(profiles);
+		}
+		});
+		connection.end();
+	});
 
 app.use('/getTanques.json', function (req, res, next) {
 

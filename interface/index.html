@@ -252,8 +252,8 @@ body,
 		  <label>Mapa de temperatura</label>
 				<md-list-expand>
 					<md-list>
-						<md-list-item class="md-inset">
-							hora 1
+						<md-list-item class="md-inset" v-for="mp in prf.mapa">
+							{{mp.temp}}
 						</md-list-item>
 				</md-list-expand>
 		  </md-list-item>

@@ -47,7 +47,9 @@ new Vue({
 			headerTitle:'CONTROL DE FERMENTADORES'
 		  },
 		  fermSel:{
-			  id:0			  
+			id:0,
+			nombre: ''
+			
 		  },
 		  viewList:true,
 		  viewAddNew:false,
@@ -156,7 +158,7 @@ new Vue({
 		},
 		manageFerm:function(argId, argAction){
 			this.$http.post('/manageFerm.json', JSON.stringify({id:argId,action:argAction})).then(function(reponse){
-			
+				this.getTanques();
 			}, function(){ 
 				//error 
 			});
@@ -165,6 +167,7 @@ new Vue({
 		},
 		viewFermentacion:function(argId){
 			this.fermSel.id = argId;
+			//get fermentacion by id $http via, and fill obj
 			this.viewList=false;
 			this.viewListAchived = false;
 			this.viewAddNew=false;
@@ -179,7 +182,7 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=true;
-			
+			//do a watch of the profiles array and commit the changes to db
 		}
 	}
 })

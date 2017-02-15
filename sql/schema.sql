@@ -30,7 +30,7 @@ CREATE TABLE `fermentadores` (
   `fecha_inicio` datetime DEFAULT NULL,
   `activo` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `mapatemp` (
   `tolerancia` decimal(3,1) DEFAULT NULL,
   `profile` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,8 +79,9 @@ CREATE TABLE `registrotemp` (
   `date` datetime DEFAULT NULL,
   `temp_reg` decimal(3,1) DEFAULT NULL,
   `temp_prog` decimal(3,1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `ix_fermentador` (`fermentador`)
+) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,4 +308,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-10 18:44:32
+-- Dump completed on 2017-02-15 16:55:32

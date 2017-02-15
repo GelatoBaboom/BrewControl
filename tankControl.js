@@ -15,7 +15,7 @@ setInterval(function(){
 	if(readyToSerialWrite){
 		checkFermentadores();
 	}
-},5000);
+},30000);
 
 var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
 port.on('data', function (data) {
