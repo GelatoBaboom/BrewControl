@@ -9,11 +9,12 @@ requirejs.config({
 	  "vue-resource": "//cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min",
       "moment": "//cdn.jsdelivr.net/momentjs/2.17.0/moment-with-locales.min",
 	  "polyfill": "//cdn.polyfill.io/v2/polyfill.min.js",
+	  "loadsh":"//unpkg.com/lodash@4.13.1/lodash.min"
 	  
 	}
 });
-requirejs (["polyfill", "vue", "vue-material","vue-resource"],
-function(Polyfill, Vue, VueMaterial, VueResource ){
+requirejs (["polyfill", "vue", "vue-material","vue-resource","loadsh"],
+function(Polyfill, Vue, VueMaterial, VueResource,loadsh ){
 Vue.use(VueMaterial)
 Vue.use(VueResource)
 
@@ -56,7 +57,8 @@ new Vue({
 		  viewListAchived:false,
 		  viewFerm:false,
 		  viewProfiles:false,
-		  refreshInterval:null
+		  refreshInterval:null,
+		  profileUnWatch:null
 		  
 	  }
 	},
@@ -182,8 +184,73 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=true;
-			//do a watch of the profiles array and commit the changes to db
+			this.attachWatchToProfiles();
+			var viewUnwatch = this.$watch('viewProfiles',function(){
+				console.log('detach!');
+				this.profileUnWatch();
+				viewUnwatch();
+			},{
+				deep: true
+			});
+		},
+		attachWatchToProfiles:function(){
+			console.log('attach!');
+			this.profileUnWatch =  this.$watch('profiles',_.debounce(function(nVal,oVal){
+				this.$http.post('/profUpdate.json', JSON.stringify(nVal)).then(function(reponse){}, function(){ /*error*/});
+				
+			},500),{
+				deep: true
+			});
+			
+			
+		},
+		deleteMapPoint:function(argProfId, argMapId){
+			for(var i = 0; i < this.profiles.length; i++){
+				if(this.profiles[i].id == argProfId)
+				{
+					for(var ii = 0; ii < this.profiles[i].mapa.length; ii++){
+						if(this.profiles[i].mapa[ii].id == argMapId)
+						{
+							var context = this;
+							this.profiles[i].mapa[ii].delete = true;
+							this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function(reponse){
+								setTimeout(function(){	context.getProfiles();},1000);
+								
+							}, function(){ /*error*/});
+						}
+					}
+				}
+			}
+		},
+		createMapPoint:function(argProfId){
+			this.profileUnWatch();
+			for(var i = 0; i < this.profiles.length; i++){
+				if(this.profiles[i].id == argProfId)
+				{
+					var context = this;
+					var prf = {
+						id:0,
+						tempFrom:0,
+						tempTo:0,
+						temp:0,
+						tolerancia:0,
+						insert:true
+					}
+					console.log('insert');
+					 this.profiles[i].mapa.push(prf);
+					this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function(reponse){
+						setTimeout(function(){	
+							context.getProfiles();
+							//reattach watch to profiles
+							context.attachWatchToProfiles();
+						},1000);
+					}, function(){ });  
+					
+				}
+			}
+			
 		}
+		
 	}
 })
 })

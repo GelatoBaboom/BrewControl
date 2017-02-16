@@ -252,19 +252,57 @@ body,
 		  <label>Mapa de temperatura</label>
 				<md-list-expand>
 					<md-list>
-						<md-list-item class="md-inset" v-for="mp in prf.mapa">
-							{{mp.temp}}
+						<md-list-item  class="md-inset" v-for="mp in prf.mapa">
+							<md-table>
+								<md-table-body>
+									<md-table-row>
+										<md-table-cell>
+											<md-input-container>
+												<label>Desde la hora</label>
+												<md-input v-model="mp.tempFrom"></md-input>
+											</md-input-container>
+										</md-table-cell>
+										<md-table-cell>
+											<md-input-container>
+												<label>Hasta la hora</label>
+												<md-input v-model="mp.tempTo"></md-input>
+											</md-input-container>
+										</md-table-cell>
+										<md-table-cell>
+											<md-input-container>
+												<label>Temperatura</label>
+												<md-input v-model="mp.temp"></md-input>
+											</md-input-container>
+										</md-table-cell>
+										<md-table-cell>
+											<md-input-container>
+												<label>Tolerancia</label>
+												<md-input v-model="mp.tolerancia"></md-input>
+											</md-input-container>
+										</md-table-cell>
+										<md-table-cell>
+										<md-button class="md-icon-button" v-on:click="deleteMapPoint(prf.id,mp.id)">
+											<md-icon>delete</md-icon>
+										</md-button>
+										</md-table-cell>
+									</md-table-row>
+								</md-table-body>
+							</md-table>
+						</md-list-item>
+						<md-list-item>
+						<md-button class="md-icon-button md-raised md-primary" v-on:click="createMapPoint(prf.id)">
+							<md-icon>add</md-icon>
+						</md-button>
 						</md-list-item>
 				</md-list-expand>
-		  </md-list-item>
+			</md-list-item>
         </md-list>
       </md-list-expand>
     </md-list-item>
-
   </md-list>
-	</div>
- 
- 
+
+ </div>
+  
 </div>
 
 </body>

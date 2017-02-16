@@ -40,7 +40,6 @@ app.use('/getSerial.json', function (req, res, next) {
 app.use(bodyParser.json());
 app.use('/createFerm.json', function (req, res, next) {
 
-	console.log(req.body);
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
 	selParams = selParams.concat([req.body.nombre,req.body.tanque,req.body.perfil]);
@@ -51,6 +50,32 @@ app.use('/createFerm.json', function (req, res, next) {
 		}
 	})
 	connection.end();
+});
+app.use('/profUpdate.json', function (req, res, next) {
+	
+	var connection = mysql.createConnection(mysqlconfig);
+	for(var i = 0; i < req.body.length; i++){
+		var selParams = [];
+		selParams = selParams.concat([req.body[i].nombre,req.body[i].duration,req.body[i].id]);
+		connection.query("UPDATE Profiles SET nombre = ?, duration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+		for(var ii = 0; ii < req.body[i].mapa.length; ii++){
+			var selMapaParams = [];
+			if(req.body[i].mapa[ii].delete ==true)
+			{
+				selMapaParams = selMapaParams.concat([req.body[i].mapa[ii].id]);
+				connection.query("DELETE FROM mapatemp where id = ?;",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
+			}else if(req.body[i].mapa[ii].insert ==true){
+				console.log('-------------------insert---------------------');
+				selMapaParams = selMapaParams.concat([req.body[i].id]);
+				connection.query("INSERT INTO mapatemp (tempFrom, tempTo, temp, tolerancia, profile) values(0,0,0,0,?);",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
+			}else{
+				selMapaParams = selMapaParams.concat([req.body[i].mapa[ii].tempFrom,req.body[i].mapa[ii].tempTo,req.body[i].mapa[ii].temp,req.body[i].mapa[ii].tolerancia,req.body[i].mapa[ii].id]);
+				connection.query("UPDATE mapatemp SET tempFrom = ?, tempTo = ?, temp = ?, tolerancia = ? where id = ?;",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
+			}
+		}
+	}
+	connection.end();
+	res.json({'done':true});
 });
 app.use('/manageFerm.json', function (req, res, next) {
 
@@ -260,3 +285,4 @@ app.use('/getSvg.svg', function (req, res, next) {
 });
 //app.use("/", serveStatic('public'));
 var server = app.listen(httpport);
+			var selMapaParams = [];

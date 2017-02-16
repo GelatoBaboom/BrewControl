@@ -75,7 +75,7 @@
 		 
         x.domain(data.map(close.accessor().d));
         //y.domain(techan.scale.plot.ohlc(data, close.accessor()).domain());
-		y.domain([0.00,65.00]);
+		y.domain([0.00,40.00]);
         svg.selectAll("g.close").datum(data).call(close);
         svg.selectAll("g.x.axis").call(xAxis);
         svg.selectAll("g.y.axis").call(yAxis);
