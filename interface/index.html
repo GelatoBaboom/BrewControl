@@ -12,9 +12,10 @@
 html,
 body,
 .app-viewport {
-  height: 100%;
+  min-height: 100%;
   overflow: hidden;
-}
+  
+ }
 
 .app-viewport {
   display: flex;
@@ -126,9 +127,12 @@ body,
 			  <md-icon>menu</md-icon>
 			</md-button>
 			 <div class="md-toolbar-container">
-				<h2 class="md-title">{{strs.headerTitle}}</h2>
+				<h2 class="md-title" >{{strs.headerTitle}}</h2>
 			  </div>
 			<span style="flex: 1"></span>
+			 <md-button class="md-icon-button" v-on:click="getActiveFerms()">
+				<md-icon>home</md-icon>
+			 </md-button>
 		  </div>
 		 
 		</md-toolbar>
@@ -225,20 +229,50 @@ body,
 			<object  v-bind:data="'/getSvg.svg?id=' + fermSel.id " type="image/svg+xml" style="overflow-x:scroll;"></object>
 	  </md-tab>
 	  <md-tab id="detalles" md-label="Detalles">
-		<md-subheader class="md-inset">que ondaaaa</md-subheader>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+		<md-card md-with-hover >
+		 <md-toolbar class="md-warn">
+			<div class="md-title">{{selectedFerm.nombre_fermentacion}}</div>
+			</md-toolbar>
+		  <md-card-header>
+		 	<div class="md-subhead">
+			<md-icon>info_outline</md-icon>
+			<span>Perfil usado: <b>{{selectedFerm.profile}}</b></span>
+			</div>
+		  </md-card-header>
+
+		  <md-card-content>
+			<div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Temperatura promedio: <b>{{selectedFerm.promTemp}}</b></span>
+			 </div>
+			 <div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Temperatura actual: <b>{{selectedFerm.currentTemp}}</b></span>
+			 </div>
+			 <div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Duracion total: <b>{{selectedFerm.duration}}</b></span>
+			 </div>
+		  </md-card-content>
+
+		  <md-card-actions>
+			<md-button class="md-raised md-accent" v-on:click="manageFerm(frm.id,'archivar')">Archivar</md-button>
+		  </md-card-actions>
+		</md-card>
 	  </md-tab>
 	</md-tabs>
 	
-
-	<md-list v-if="viewProfiles">
+	<div v-if="viewProfiles">
+	<md-list>
     <md-list-item v-for="prf in profiles">
       <md-icon>folder</md-icon>
       <md-input-container>
 		<label>Nombre del perfil</label>
 		<md-input v-model="prf.nombre"></md-input>
 	  </md-input-container>
-
+		<md-button class="md-icon-button" v-on:click="deleteProf(prf.id)">
+			<md-icon>delete</md-icon>
+		</md-button>
       <md-list-expand>
         <md-list>
           <md-list-item class="md-inset">
@@ -250,9 +284,9 @@ body,
           <md-list-item class="md-inset">
 		  <md-icon>broken_image</md-icon>
 		  <label>Mapa de temperatura</label>
-				<md-list-expand>
+				<md-list-expand >
 					<md-list>
-						<md-list-item  class="md-inset" v-for="mp in prf.mapa">
+						<md-list-item md-flex="true" class="md-inset" :key="mp.id" v-if="prf.mapa.length != 0"  v-for="mp in prf.mapa">
 							<md-table>
 								<md-table-body>
 									<md-table-row>
@@ -299,8 +333,10 @@ body,
         </md-list>
       </md-list-expand>
     </md-list-item>
+	
   </md-list>
-
+  <md-button class="md-raised md-accent" v-on:click="createProfile()">Agregar</md-button>
+	</div>	
  </div>
   
 </div>

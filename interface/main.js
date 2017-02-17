@@ -58,7 +58,9 @@ new Vue({
 		  viewFerm:false,
 		  viewProfiles:false,
 		  refreshInterval:null,
-		  profileUnWatch:null
+		  profileUnWatch:null,
+		  selectedFerm:null
+		  
 		  
 	  }
 	},
@@ -169,12 +171,18 @@ new Vue({
 		},
 		viewFermentacion:function(argId){
 			this.fermSel.id = argId;
+			this.$http.get('/getFermDataById.json?id='+argId).then(function(response){
+				this.selectedFerm = response.body;
+				this.viewList=false;
+				this.viewListAchived = false;
+				this.viewAddNew=false;
+				this.viewFerm = true;
+				this.viewProfiles=false;
+			}, function(){ 
+				//error 
+			});
 			//get fermentacion by id $http via, and fill obj
-			this.viewList=false;
-			this.viewListAchived = false;
-			this.viewAddNew=false;
-			this.viewFerm = true;
-			this.viewProfiles=false;
+			
 			
 			
 		},
@@ -236,19 +244,50 @@ new Vue({
 						tolerancia:0,
 						insert:true
 					}
-					console.log('insert');
-					 this.profiles[i].mapa.push(prf);
+					this.profiles[i].mapa.push(prf);
 					this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function(reponse){
 						setTimeout(function(){	
 							context.getProfiles();
 							//reattach watch to profiles
 							context.attachWatchToProfiles();
-						},1000);
+						},2000);
 					}, function(){ });  
 					
 				}
 			}
 			
+		},
+		deleteProf:function(argProfId){
+			for(var i = 0; i < this.profiles.length; i++){
+				if(this.profiles[i].id == argProfId)
+				{
+					var context = this;
+					this.profiles[i].delete = true;
+					this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function(reponse){
+						setTimeout(function(){	context.getProfiles();},1000);
+						
+					}, function(){ /*error*/});
+				}
+			}
+		},
+		createProfile:function(){
+			this.profileUnWatch();
+			var context = this;
+			var prf = {
+				id:0,
+				nombre:'',
+				duration:0,
+				mapa:[],
+				insert:true
+			}
+			this.profiles.push(prf);
+			this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function(reponse){
+				setTimeout(function(){	
+					context.getProfiles();
+					//reattach watch to profiles
+					context.attachWatchToProfiles();
+				},1000);
+			}, function(){ });  
 		}
 		
 	}

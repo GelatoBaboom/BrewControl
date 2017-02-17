@@ -56,8 +56,17 @@ app.use('/profUpdate.json', function (req, res, next) {
 	var connection = mysql.createConnection(mysqlconfig);
 	for(var i = 0; i < req.body.length; i++){
 		var selParams = [];
-		selParams = selParams.concat([req.body[i].nombre,req.body[i].duration,req.body[i].id]);
-		connection.query("UPDATE Profiles SET nombre = ?, duration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+		if(req.body[i].delete ==true)
+		{
+			selParams = selParams.concat([req.body[i].id]);
+			connection.query("DELETE FROM Profiles WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
+				
+		}else if(req.body[i].insert ==true){
+			connection.query("INSERT INTO Profiles(nombre,duration) VALUES(\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
+		}else{
+			selParams = selParams.concat([req.body[i].nombre,req.body[i].duration,req.body[i].id]);
+			connection.query("UPDATE Profiles SET nombre = ?, duration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+		}
 		for(var ii = 0; ii < req.body[i].mapa.length; ii++){
 			var selMapaParams = [];
 			if(req.body[i].mapa[ii].delete ==true)
@@ -65,7 +74,6 @@ app.use('/profUpdate.json', function (req, res, next) {
 				selMapaParams = selMapaParams.concat([req.body[i].mapa[ii].id]);
 				connection.query("DELETE FROM mapatemp where id = ?;",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
 			}else if(req.body[i].mapa[ii].insert ==true){
-				console.log('-------------------insert---------------------');
 				selMapaParams = selMapaParams.concat([req.body[i].id]);
 				connection.query("INSERT INTO mapatemp (tempFrom, tempTo, temp, tolerancia, profile) values(0,0,0,0,?);",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
 			}else{
@@ -73,6 +81,7 @@ app.use('/profUpdate.json', function (req, res, next) {
 				connection.query("UPDATE mapatemp SET tempFrom = ?, tempTo = ?, temp = ?, tolerancia = ? where id = ?;",selMapaParams, function(err, resultsData, fields) { if (err){throw err;}});
 			}
 		}
+		
 	}
 	connection.end();
 	res.json({'done':true});
@@ -178,6 +187,38 @@ app.use('/getTanques.json', function (req, res, next) {
 		}
 		res.json(tanks);
 				
+	})
+	connection.end();
+	
+});
+app.use('/getFermDataById.json', function (req, res, next) {
+	var q = url.parse(req.url, true).query;
+	var selParams = [];
+	console.log(q.id);
+	selParams = selParams.concat([q.id]);
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.id = ?;",selParams, function(err, resultsData, fields) {
+		if (err) 
+		{
+			//throw err;
+			console.log('ERROR SQL');
+			console.log(err);
+		}
+		if(resultsData.length>0){
+			var ferm = {
+				id: resultsData[0].id,
+				nombre_fermentacion: resultsData[0].nombre_fermentacion,
+				profile: resultsData[0].profile,
+				tanque_code: resultsData[0].tanque_code,
+				tanque_descripcion: resultsData[0].tanque_descripcion,
+				total_hours: (resultsData[0].total_hours <= resultsData[0].duration ? resultsData[0].total_hours: resultsData[0].duration),
+				duration : resultsData[0].duration,
+				currentTemp: resultsData[0].currentTemp,
+				progTemp: resultsData[0].progTemp,
+				promTemp: resultsData[0].promTemp
+			}
+			res.json(ferm);
+		}	
 	})
 	connection.end();
 	
