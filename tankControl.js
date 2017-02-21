@@ -41,15 +41,15 @@ function analizeTank(obj)
 	insParams = insParams.concat([obj.f,obj.t]);
 	connection.query(insQry,insParams,function(err, resultsData, fields) {});
 	
-	getTempParams = getTempParams.concat([obj.f,obj.f]);
-	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia;"
+	getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
+	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal;"
 	connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
 		if (err) 
 		{
 			throw err;
 		}
 		var r = results[0];
-		var progTemp = r.temp;
+		var progTemp = r.temp + r.cal;
 		var progTolerancia = r.tolerancia;
 		console.log("temp map: " + r.temp + " tol: " + r.tolerancia);
 		var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;

@@ -51,6 +51,27 @@ app.use('/createFerm.json', function (req, res, next) {
 	})
 	connection.end();
 });
+
+app.use('/tankUpdate.json', function (req, res, next) {
+	
+	var connection = mysql.createConnection(mysqlconfig);
+	for(var i = 0; i < req.body.length; i++){
+		var selParams = [];
+		if(req.body[i].delete ==true)
+		{
+			selParams = selParams.concat([req.body[i].id]);
+			connection.query("DELETE FROM Tanques WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
+				
+		}else if(req.body[i].insert ==true){
+			connection.query("INSERT INTO Tanques(code,descripcion,temp_calibration) VALUES(\'\',\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
+		}else{
+			selParams = selParams.concat([req.body[i].code,req.body[i].descripcion,req.body[i].cal,req.body[i].id]);
+			connection.query("UPDATE Tanques SET code = ?, descripcion = ?, temp_calibration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+		}
+	}
+	connection.end();
+	res.json({'done':true});
+});
 app.use('/profUpdate.json', function (req, res, next) {
 	
 	var connection = mysql.createConnection(mysqlconfig);
@@ -129,9 +150,7 @@ app.use('/getProfiles.json', function (req, res, next) {
 			var tempMap=[];
 			for(var i = 0; i <= resultsData.length; i++)
 			{
-				console.log((i +' vs '+ resultsData.length));
 				
-				console.log('currentId: '+ currentId);
 				if(currentId != (i>=resultsData.length? 0 : resultsData[i].id))
 				{
 					currentId = i>=resultsData.length? currentId : resultsData[i].id ;
@@ -168,7 +187,7 @@ app.use('/getTanques.json', function (req, res, next) {
 
 	var selParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("SELECT * FROM tanques where id not in(select tanque from fermentadores where activo = 1);",selParams, function(err, resultsData, fields) {
+	connection.query("SELECT id, code, descripcion, temp_calibration,  ifnull((select id from fermentadores where tanque = tqs.id and activo = 1 limit 1) ,0) > 0 as inUse  FROM tanques as tqs;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
@@ -182,6 +201,8 @@ app.use('/getTanques.json', function (req, res, next) {
 				id: resultsData[i].id,
 				code: resultsData[i].code,
 				descripcion: resultsData[i].descripcion,
+				cal: resultsData[i].temp_calibration,
+				inUse: resultsData[i].inUse
 			}
 			tanks.push(tanque);
 		}
@@ -194,7 +215,6 @@ app.use('/getTanques.json', function (req, res, next) {
 app.use('/getFermDataById.json', function (req, res, next) {
 	var q = url.parse(req.url, true).query;
 	var selParams = [];
-	console.log(q.id);
 	selParams = selParams.concat([q.id]);
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.id = ?;",selParams, function(err, resultsData, fields) {

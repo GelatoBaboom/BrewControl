@@ -116,7 +116,11 @@ body,
 
       <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editProfiles()">
         <md-icon>show_chart</md-icon> <span>Editar perfiles</span>
-      </md-list-item>	  
+      </md-list-item>	
+	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editTanques()">
+        <md-icon>stay_current_portrait</md-icon> <span>Editar tanques</span>
+      </md-list-item>
+	  
     </md-list>
   </md-sidenav>
   
@@ -211,7 +215,7 @@ body,
 	  <md-input-container>
 		<label for="tanque">Tanque</label>
 		<md-select name="tanque" id="tanque" v-model="fermModel.tanque">
-			<md-option v-for="tnq in tanques" :value="tnq.id">{{tnq.descripcion}}</md-option>
+			<md-option v-for="tnq in getInactiveTanks()" :value="tnq.id">{{tnq.descripcion}}</md-option>
 		</md-select>
 	  </md-input-container>
 		<md-input-container>
@@ -336,9 +340,43 @@ body,
 	
   </md-list>
   <md-button class="md-raised md-accent" v-on:click="createProfile()">Agregar</md-button>
-	</div>	
+	
  </div>
-  
+<div v-if="viewTanques" >
+	<md-subheader class="md-inset">Tanques de fermentacion</md-subheader>
+	<md-table>
+		<md-table-body>
+			<md-table-row v-for="tk in tanques" >
+				<md-table-cell>
+					<md-input-container>
+						<label>Descripcion</label>
+						<md-input v-model="tk.descripcion"></md-input>
+					</md-input-container>
+				</md-table-cell>
+				<md-table-cell>
+					<md-input-container>
+						<label>Codigo</label>
+						<md-input v-model="tk.code"></md-input>
+					</md-input-container>
+				</md-table-cell>
+				<md-table-cell>
+					<md-input-container>
+						<label>Calibracion</label>
+						<md-input v-model="tk.cal"></md-input>
+					</md-input-container>
+				</md-table-cell>
+				<md-table-cell>
+					<md-button class="md-icon-button" v-on:click="deleteTank(tk.id)">
+						<md-icon>delete</md-icon>
+					</md-button>
+				</md-table-cell>
+				
+			</md-table-row>
+		<md-table-body>								
+	</md-table>	
+	<md-button class="md-raised md-accent" v-on:click="createTank()">Agregar</md-button>
+	
+</div>
 </div>
 
 </body>

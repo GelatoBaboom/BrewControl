@@ -57,9 +57,11 @@ new Vue({
 		  viewListAchived:false,
 		  viewFerm:false,
 		  viewProfiles:false,
+		  viewTanques:false,
 		  refreshInterval:null,
 		  profileUnWatch:null,
-		  selectedFerm:null
+		  selectedFerm:null,
+		  tanquesUnWatch:null
 		  
 		  
 	  }
@@ -77,6 +79,7 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=false;
+			this.viewTanques=false;
 			
 						
 			this.getFerms(0);
@@ -97,6 +100,7 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=false;
+			this.viewTanques=false;
 			this.getFerms(1);
 			if(this.refreshInterval!=null)
 			{
@@ -124,6 +128,10 @@ new Vue({
 				//error 
 			});
 		},
+		getInactiveTanks:function(){
+			console.log(this.tanques);
+			return this.tanques.filter(function (t) {return t.inUse == 0})
+		},
 		getProfiles:function(){
 			this.$http.get('/getProfiles.json').then(function(response){
 				this.profiles = response.body;
@@ -141,6 +149,7 @@ new Vue({
 				this.viewAddNew=true;
 				this.viewFerm = false;
 				this.viewProfiles=false;
+				this.viewTanques=false;
 				
 			}
 			
@@ -152,7 +161,8 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=false;
-			
+			this.viewTanques=false;
+			console.log(this.fermModel);
 			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
 				this.fermModel = {nombre:'',tanque:0, perfil:0};
 			}, function(){ 
@@ -178,10 +188,11 @@ new Vue({
 				this.viewAddNew=false;
 				this.viewFerm = true;
 				this.viewProfiles=false;
+				this.viewTanques=false;
 			}, function(){ 
 				//error 
 			});
-			//get fermentacion by id $http via, and fill obj
+			
 			
 			
 			
@@ -192,6 +203,7 @@ new Vue({
 			this.viewAddNew=false;
 			this.viewFerm = false;
 			this.viewProfiles=true;
+			this.viewTanques=false;
 			this.attachWatchToProfiles();
 			var viewUnwatch = this.$watch('viewProfiles',function(){
 				console.log('detach!');
@@ -288,7 +300,67 @@ new Vue({
 					context.attachWatchToProfiles();
 				},1000);
 			}, function(){ });  
-		}
+		},
+		editTanques:function(){
+			this.viewList=false;
+			this.viewListAchived = false;
+			this.viewAddNew=false;
+			this.viewFerm = false;
+			this.viewProfiles=false;
+			this.viewTanques=true;
+			
+			this.attachWatchToTanques();
+			var viewUnwatch = this.$watch('viewTanques',function(){
+				this.tanquesUnWatch();
+				viewUnwatch();
+			},{
+				deep: true
+			});
+			
+			
+		},
+		attachWatchToTanques: function(){
+			this.tanquesUnWatch =  this.$watch('tanques',_.debounce(function(nVal,oVal){
+				this.$http.post('/tankUpdate.json', JSON.stringify(nVal)).then(function(reponse){}, function(){ /*error*/});
+				
+			},500),{
+				deep: true
+			});
+			
+		},
+		createTank: function(){
+			this.tanquesUnWatch();
+			var context = this;
+			var tk = {
+				id:0,
+				descripcion:'',
+				code:'',
+				cal:0,
+				insert:true
+			}
+			this.tanques.push(tk);
+			this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function(reponse){
+				setTimeout(function(){	
+					context.getTanques();
+					//reattach watch to profiles
+					context.attachWatchToTanques();
+				},1000);
+			}, function(){ });  
+			
+		},
+		deleteTank:function(argTankId){
+			for(var i = 0; i < this.tanques.length; i++){
+				if(this.tanques[i].id == argTankId)
+				{
+					var context = this;
+					this.tanques[i].delete = true;
+					this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function(reponse){
+						setTimeout(function(){	context.getTanques();},1000);
+						
+					}, function(){ /*error*/});
+				}
+			}
+		},
 		
 	}
 })
