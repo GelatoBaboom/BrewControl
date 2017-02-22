@@ -162,7 +162,7 @@ new Vue({
 			this.viewFerm = false;
 			this.viewProfiles=false;
 			this.viewTanques=false;
-			console.log(this.fermModel);
+			this.getTanques();
 			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
 				this.fermModel = {nombre:'',tanque:0, perfil:0};
 			}, function(){ 
