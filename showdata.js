@@ -60,13 +60,13 @@ app.use('/tankUpdate.json', function (req, res, next) {
 		if(req.body[i].delete ==true)
 		{
 			selParams = selParams.concat([req.body[i].id]);
-			connection.query("DELETE FROM Tanques WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
+			connection.query("DELETE FROM tanques WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
 				
 		}else if(req.body[i].insert ==true){
-			connection.query("INSERT INTO Tanques(code,descripcion,temp_calibration) VALUES(\'\',\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
+			connection.query("INSERT INTO tanques(code,descripcion,temp_calibration) VALUES(\'\',\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
 		}else{
 			selParams = selParams.concat([req.body[i].code,req.body[i].descripcion,req.body[i].cal,req.body[i].id]);
-			connection.query("UPDATE Tanques SET code = ?, descripcion = ?, temp_calibration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+			connection.query("UPDATE tanques SET code = ?, descripcion = ?, temp_calibration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
 		}
 	}
 	connection.end();
@@ -80,13 +80,13 @@ app.use('/profUpdate.json', function (req, res, next) {
 		if(req.body[i].delete ==true)
 		{
 			selParams = selParams.concat([req.body[i].id]);
-			connection.query("DELETE FROM Profiles WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
+			connection.query("DELETE FROM profiles WHERE id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});			
 				
 		}else if(req.body[i].insert ==true){
-			connection.query("INSERT INTO Profiles(nombre,duration) VALUES(\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
+			connection.query("INSERT INTO profiles(nombre,duration) VALUES(\'\',0);",function(err, resultsData, fields) { if (err){throw err;}});			
 		}else{
 			selParams = selParams.concat([req.body[i].nombre,req.body[i].duration,req.body[i].id]);
-			connection.query("UPDATE Profiles SET nombre = ?, duration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
+			connection.query("UPDATE profiles SET nombre = ?, duration = ? where id = ?;",selParams, function(err, resultsData, fields) { if (err){throw err;}});
 		}
 		for(var ii = 0; ii < req.body[i].mapa.length; ii++){
 			var selMapaParams = [];
