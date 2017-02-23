@@ -118,7 +118,7 @@ body,
         <md-icon>show_chart</md-icon> <span>Editar perfiles</span>
       </md-list-item>	
 	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editTanques()">
-        <md-icon>stay_current_portrait</md-icon> <span>Editar tanques</span>
+        <md-icon>stay_current_portrait</md-icon> <span>Configurar tanques</span>
       </md-list-item>
 	  
     </md-list>
@@ -343,6 +343,25 @@ body,
 	
  </div>
 <div v-if="viewTanques" >
+	
+	<md-subheader class="md-inset">Configuraciones varias</md-subheader>
+	<md-card md-with-hover >
+		<md-card-content>
+			<md-input-container>
+			<label for="tanque">Puerto de comunicacion</label>
+			<md-select name="port" id="port" v-model="config.comport">
+				<md-option v-for="p in config.availablePorts" :value="p.comName">{{p.comName}}</md-option>
+			</md-select>
+			<md-input-container>
+				<label>Temperatura refrigeracion</label>
+				<md-input v-model="config.refritemp"></md-input>
+			</md-input-container>
+		  </md-input-container>
+	  </md-card-content>
+  </md-card>
+  <br/>
+  <md-card md-with-hover >
+		<md-card-content>
 	<md-subheader class="md-inset">Tanques de fermentacion</md-subheader>
 	<md-table>
 		<md-table-body>
@@ -375,6 +394,8 @@ body,
 		<md-table-body>								
 	</md-table>	
 	<md-button class="md-raised md-accent" v-on:click="createTank()">Agregar</md-button>
+	 </md-card-content>
+  </md-card>
 	
 </div>
 </div>

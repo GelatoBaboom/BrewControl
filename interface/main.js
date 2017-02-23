@@ -38,6 +38,11 @@ new Vue({
 	el: '#file-list',
 	data : function(){
 	  return{
+		  config:{
+			  comport:'',
+			  availablePorts:[],
+			  refritemp:0
+		  },
 		  fermentadores:[],
 		  tanques:[],
 		  profiles:[],
@@ -70,6 +75,8 @@ new Vue({
 			this.getActiveFerms();
 			this.getTanques();
 			this.getProfiles();
+			this.getConfigs();
+			this.getPorts();
 			
 	},
 	methods: {
@@ -361,6 +368,26 @@ new Vue({
 				}
 			}
 		},
+		getConfigs:function(){
+			this.$http.get('/getConfigs.json').then(function(response){
+				console.log(response.body);
+				this.config.comport = response.body.comport;
+				this.config.refritemp = response.body.refritemp;
+				
+			}, function(){ 
+				//error 
+			});
+			
+		},
+		getPorts:function(){
+			this.$http.get('/getPorts.json').then(function(response){
+				console.log(response.body);
+				this.config.availablePorts = response.body;
+			}, function(){ 
+				//error 
+			});
+			
+		}
 		
 	}
 })

@@ -40,6 +40,31 @@ app.use('/getSerial.json', function (req, res, next) {
 	
 });
 app.use(bodyParser.json());
+app.use('/getConfigs.json', function (req, res, next) {
+
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query("SELECT * FROM	configs LIMIT 1;", function(err, resultsData, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		
+			
+		var config = {
+			id: resultsData[0].id,
+			comport: resultsData[0].comport,
+			refritemp: resultsData[0].refritemp
+		}
+		res.json(config);
+	})
+	connection.end();
+});
+app.use('/getPorts.json', function (req, res, next) {
+	var ports = [];
+	SerialPort.list(function (err, ports) {
+		res.json(ports);
+	});
+});
 app.use('/createFerm.json', function (req, res, next) {
 
 	var selParams = [];
