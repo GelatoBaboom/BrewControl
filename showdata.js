@@ -25,9 +25,11 @@ app.use("/", serveStatic('public'));
 var SerialPort = require('serialport');
 SerialPort.list(function (err, ports) {
 	ports.forEach(function(port) {
+		console.log("----Port-----");
 		console.log(port.comName);
 		console.log(port.pnpId);
 		console.log(port.manufacturer);
+		console.log("--End Port---");
 	});
 });
 app.use('/getSerial.json', function (req, res, next) {
