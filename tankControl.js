@@ -16,22 +16,35 @@ setInterval(function(){
 		checkFermentadores();
 	}
 },30000);
+initializePort();
 
-var port = new SerialPort('/dev/ttyUSB0', { autoOpen: true, baudRate: 9600 });
-port.on('data', function (data) {
-	if(data.toString().match(/ready/i)){
-		readyToSerialWrite  = true;
-		console.log('Port: ' + data.toString());
-		//linea de abajo solo test
-		
-	}else{
-		console.log('Data: ' + data.toString());
-		analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
-	}
-	port.flush();
-		
-});
+//functions
+var port = null;
+function initializePort(){
+connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		var COM_PORT = results[0].comport;
+		port = new SerialPort(COM_PORT, { autoOpen: true, baudRate: 9600 });
 
+		port.on('data', function (data) {
+			if(data.toString().match(/ready/i)){
+				readyToSerialWrite  = true;
+				console.log('Port: ' + data.toString());
+				//linea de abajo solo test
+				
+			}else{
+				console.log('Data: ' + data.toString());
+				analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
+			}
+			port.flush();
+				
+		});
+	})
+	connection.end();
+}
 function analizeTank(obj)
 {
 	var insParams = [];

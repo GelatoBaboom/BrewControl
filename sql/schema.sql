@@ -230,7 +230,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `getTempCalibration`(tCode int) RETURNS decimal(3,1)
 BEGIN
-RETURN (SELECT temp_calibration FROM tanques where code = tCode);
+RETURN (SELECT temp_calibration FROM tanques where code = tCode limit 1);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -329,4 +329,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-21 19:03:26
+-- Dump completed on 2017-02-23 17:36:04
