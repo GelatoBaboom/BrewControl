@@ -17,7 +17,7 @@ setInterval(function(){
 	}
 },30000);
 
-var port = new SerialPort('COM3', { autoOpen: true, baudRate: 9600 });
+var port = new SerialPort('/dev/ttyUSB0', { autoOpen: true, baudRate: 9600 });
 port.on('data', function (data) {
 	if(data.toString().match(/ready/i)){
 		readyToSerialWrite  = true;
