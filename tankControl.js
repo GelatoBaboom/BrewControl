@@ -21,7 +21,8 @@ initializePort();
 //functions
 var port = null;
 function initializePort(){
-connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
 		if (err) 
 		{
 			throw err;
