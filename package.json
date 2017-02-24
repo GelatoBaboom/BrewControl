@@ -10,7 +10,7 @@
     "d3": "4.2.8",
     "express": "latest",
     "fast-csv": "^2.3.0",
-    "jsdom": "5.6.1",
+    "jsdom": "^9.11.0",
     "minimist": "^1.2.0",
     "mysql": "^2.11.1",
     "node-sass": "^3.10.1",
@@ -27,6 +27,7 @@
     
   },
   "scripts": {
-    "showdata": "showdata.js"
+    "showdata": "showdata.js",
+	"tankControl":"tankControl.js"
   }
 }
