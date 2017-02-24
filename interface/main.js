@@ -46,7 +46,7 @@ new Vue({
 		  fermentadores:[],
 		  tanques:[],
 		  profiles:[],
-		  fermModel:{nombre:'',tanque:0, perfil:0},
+		  fermModel:{nombre:'',tanque:0, perfil:0,notas:''},
 		  strs:{
 			brand: 'LoLog',
 			brandDesc:'Cerveceria',
@@ -171,7 +171,7 @@ new Vue({
 			this.viewTanques=false;
 			this.getTanques();
 			this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function(reponse){
-				this.fermModel = {nombre:'',tanque:0, perfil:0};
+				this.fermModel = {nombre:'',tanque:0, perfil:0,notas:''};
 			}, function(){ 
 				//error 
 			});
@@ -196,12 +196,23 @@ new Vue({
 				this.viewFerm = true;
 				this.viewProfiles=false;
 				this.viewTanques=false;
+				//watch
+				var unwatchFerm = this.$watch('selectedFerm',_.debounce(function(nVal,oVal){
+				nVal.action = 'update';
+				this.$http.post('/manageFerm.json', JSON.stringify(nVal)).then(function(reponse){}, function(){ /*error*/});
+				},500),{
+					deep: true
+				});
+				var viewUnwatch = this.$watch('viewFerm',function(){
+					unwatchFerm();
+					viewUnwatch();
+				},{
+					deep: true
+				});
+				
 			}, function(){ 
 				//error 
 			});
-			
-			
-			
 			
 		},
 		editProfiles:function(){
@@ -213,7 +224,6 @@ new Vue({
 			this.viewTanques=false;
 			this.attachWatchToProfiles();
 			var viewUnwatch = this.$watch('viewProfiles',function(){
-				console.log('detach!');
 				this.profileUnWatch();
 				viewUnwatch();
 			},{
@@ -225,7 +235,7 @@ new Vue({
 			this.profileUnWatch =  this.$watch('profiles',_.debounce(function(nVal,oVal){
 				this.$http.post('/profUpdate.json', JSON.stringify(nVal)).then(function(reponse){}, function(){ /*error*/});
 				
-			},500),{
+			},2000),{
 				deep: true
 			});
 			

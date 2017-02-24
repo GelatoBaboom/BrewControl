@@ -264,6 +264,15 @@ body,
 		  </md-card-actions>
 		</md-card>
 	  </md-tab>
+	  <md-tab id="notas" md-label="Notas">
+		<md-subheader class="md-inset">Notas</md-subheader>
+			<md-card md-with-hover >
+				<md-input-container>
+				<label>Area de notas</label>
+				<md-textarea v-model="selectedFerm.notas"></md-textarea>
+				</md-input-container>
+			</md-card>
+	  </md-tab>
 	</md-tabs>
 	
 	<div v-if="viewProfiles">

@@ -161,6 +161,18 @@ app.use('/manageFerm.json', function (req, res, next) {
 		})
 		connection.end();
 	}
+	if(req.body.action == 'update')
+	{
+		var params = [];
+		params = params.concat([req.body.notas, req.body.id]);
+		connection.query("update fermentadores SET notas = ? where id = ?;",params, function(err, resultsData, fields) {
+			if (err) 
+			{
+				throw err;
+			}
+		})
+		connection.end();
+	}
 });
 
 app.use('/getProfiles.json', function (req, res, next) {
@@ -244,7 +256,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 	var selParams = [];
 	selParams = selParams.concat([q.id]);
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.id = ?;",selParams, function(err, resultsData, fields) {
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.notas from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.id = ?;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			//throw err;
@@ -262,7 +274,8 @@ app.use('/getFermDataById.json', function (req, res, next) {
 				duration : resultsData[0].duration,
 				currentTemp: resultsData[0].currentTemp,
 				progTemp: resultsData[0].progTemp,
-				promTemp: resultsData[0].promTemp
+				promTemp: resultsData[0].promTemp,
+				notas: resultsData[0].notas
 			}
 			res.json(ferm);
 		}	
