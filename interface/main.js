@@ -397,6 +397,9 @@ new Vue({
 				//error 
 			});
 			
+		},
+		gimmeError:function(){
+			alert('Hole!');
 		}
 		
 	}

@@ -66,6 +66,7 @@ body,
 /*ajustes*/
 .md-toolbar.md-large{min-height: 80px;}
 .md-toolbar.md-large .md-toolbar-container:nth-child(2) .md-title:first-child {margin-left: 0px;}
+.innerButton{    padding: 0;    margin: 0;    min-width: 0;}
 </style>
 </head>
 <body>
@@ -98,8 +99,8 @@ body,
     </md-toolbar>
   
     <md-list>
-      <md-list-item @click="$refs.sidebar.toggle()" class="md-primary">
-        <md-icon>settings</md-icon> <span>OPCIONES DE CONTROL</span>
+      <md-list-item  class="md-primary">
+		<span>OPCIONES DE CONTROL</span>
       </md-list-item>
   
       <md-list-item @click="$refs.sidebar.toggle()" v-on:click="startNewFerm">
@@ -118,7 +119,7 @@ body,
         <md-icon>show_chart</md-icon> <span>Editar perfiles</span>
       </md-list-item>	
 	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editTanques()">
-        <md-icon>stay_current_portrait</md-icon> <span>Configurar tanques</span>
+        <md-icon>settings</md-icon> <span>Configurar tanques</span>
       </md-list-item>
 	  
     </md-list>
@@ -153,6 +154,11 @@ body,
 				<p>Perf: {{frm.profile}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
 				<p>Temp: <b>{{frm.currentTemp}}</b>ºC</p>
 			</div>
+			<md-button v-if="false" v-on:click="gimmeError" class="innerButton">
+			<md-avatar class="md-avatar-icon md-accent innerButton" style="margin:3;">
+			<md-icon>error</md-icon>
+			</md-avatar>
+			</md-button>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
 					<md-icon>more_vert</md-icon>
@@ -186,7 +192,7 @@ body,
 			<div class="md-list-text-container">
 				<span>{{frm.tanque_code}} - {{frm.nombre_fermentacion}}</span>
 				<p>Perf: {{frm.profile}}, {{frm.duration}}hs</p>
-				<p>, Temp promedio: {{frm.promTemp}} ºC</p>
+				<p>Temp promedio: {{frm.promTemp}} ºC</p>
 			</div>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
@@ -362,7 +368,7 @@ body,
 				<md-option v-for="p in config.availablePorts" :value="p.comName">{{p.comName}}</md-option>
 			</md-select>
 			<md-input-container>
-				<label>Temperatura refrigeracion</label>
+				<label>Temperatura banco de frio</label>
 				<md-input v-model="config.refritemp"></md-input>
 			</md-input-container>
 		  </md-input-container>
