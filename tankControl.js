@@ -10,16 +10,59 @@ var mysql = require('mysql');
 }); */
 
 var readyToSerialWrite = false;
-
+var ferms = [];
+var checkingFerms = false;
 setInterval(function(){
 	if(readyToSerialWrite){
-		checkFermentadores();
+		if(ferms.length==0){
+			getFermentadores();
+		}else{
+			if(!checkingFerms){
+				checkFerms();
+			}
+		}
 	}
 },5000);
 initializePort();
 
 //functions
 var port = null;
+function checkFerms(){
+	checkingFerms=true;
+	setInterval(function(){
+				var clearArray=true;
+				for(var i = 0; i < ferms.length; i++)
+				{
+					if(ferms[i].status == 'pending')
+					{
+						ferms[i].status = 'waiting';
+						writePort(ferms[i].tanque_code);
+						clearArray = false;
+						break;
+						
+					}
+					else if(ferms[i].status == 'waiting')
+					{
+						clearArray = false;
+						break;
+					}
+				}
+				if(clearArray)			
+				{
+					checkingFerms=false;
+					ferms = [];
+				}
+			},500);
+	
+}
+function writePort(argTankCode){
+	console.log('Writting: ' +resultsData[i].tanque_code+'t' );
+	port.write(argTankCode+'t', function(err){
+		if(err){
+			console.log('Error on write: ' + err.message );
+		}
+	});
+}
 function initializePort(){
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
@@ -48,6 +91,14 @@ function initializePort(){
 }
 function analizeTank(obj)
 {
+	for(var i = 0; i < ferms.length; i++)
+	{
+		if(ferms[i].tanque_code == obj.f)
+		{
+			ferms[i].status == 'done';
+			break;
+		}
+	}
 	var insParams = [];
 	var getTempParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
@@ -95,16 +146,7 @@ function analizeTank(obj)
 	connection.end();
 	
 }
-/*port.on('close', function (data) {
-	port.open();
-});*/
-/*while(!readyToWrite)
-{
-	console.log('waiting..');
-	if(readyToWrite)
-	port.write('f1');
-}*/
-function checkFermentadores(){
+function getFermentadores(){
 	
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;", function(err, resultsData, fields) {
@@ -116,27 +158,13 @@ function checkFermentadores(){
 		var ferms = [];
 		for(var i = 0; i < resultsData.length; i++)
 		{
-			console.log('Writting: ' +resultsData[i].tanque_code+'t' );
-			port.write(resultsData[i].tanque_code+'t', function(err){
-				if(err){
-					console.log('Error on write: ' + err.message );
-				}
-			});
-			//el obj de abajo esta al cuete!
 			var ferm = {
 				id: resultsData[i].id,
-				nombre_fermentacion: resultsData[i].nombre_fermentacion,
-				profile: resultsData[i].profile,
 				tanque_code: resultsData[i].tanque_code,
-				tanque_descripcion: resultsData[i].tanque_descripcion,
-				total_hours: resultsData[i].total_hours,
-				duration : resultsData[i].duration,
-				currentTemp: resultsData[i].currentTemp
+				status : 'pending'
 			}
-		
+			ferms.push(ferm);
 		}
-		
-				
 	})
 	connection.end();
 }
