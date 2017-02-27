@@ -8,7 +8,7 @@
 #define RY3 8
 #define RY4 7
 #define RY5 4
-#define RY6 2
+#define PUMP01 2
 
 //Setup sensor on one wire pin
 OneWire oneWire(ONE_WIRE_BUS_PIN);
@@ -31,7 +31,7 @@ void setup() {
    pinMode(RY3, OUTPUT);
    pinMode(RY4, OUTPUT);
    pinMode(RY5, OUTPUT);
-   pinMode(RY6, OUTPUT);
+   pinMode(PUMP01, OUTPUT);
    
   //sensors begin
   sensors.begin();
@@ -92,7 +92,10 @@ void loop() {
   inData="";
   //Serial.flush();
 }
-
+void switchPump()
+{
+  
+}
 void establishContact() {
   while (Serial.available() <= 0 && serialAvailable==false) {
     Serial.println("ready");   
