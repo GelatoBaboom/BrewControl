@@ -14,6 +14,7 @@ var ferms = [];
 var checkingFerms = false;
 setInterval(function(){
 	if(readyToSerialWrite){
+		
 		if(ferms.length==0){
 			getFermentadores();
 		}else{
@@ -28,8 +29,13 @@ initializePort();
 //functions
 var port = null;
 function checkFerms(){
+	console.log('chequear las ferms');
+	console.log(ferms);
 	checkingFerms=true;
-	setInterval(function(){
+	var COUNT_LOOPS = 20;
+	var waitLoops = COUNT_LOOPS;
+	
+	var thisInter =  setInterval(function(){
 				var clearArray=true;
 				for(var i = 0; i < ferms.length; i++)
 				{
@@ -38,6 +44,7 @@ function checkFerms(){
 						ferms[i].status = 'waiting';
 						writePort(ferms[i].tanque_code);
 						clearArray = false;
+						 waitLoops = COUNT_LOOPS;
 						break;
 						
 					}
@@ -47,16 +54,18 @@ function checkFerms(){
 						break;
 					}
 				}
-				if(clearArray)			
+				if(clearArray || waitLoops<=0)			
 				{
 					checkingFerms=false;
 					ferms = [];
+					clearInterval(thisInter);
 				}
+				waitLoops--;
 			},500);
 	
 }
 function writePort(argTankCode){
-	console.log('Writting: ' +resultsData[i].tanque_code+'t' );
+	console.log('Writting: ' +argTankCode+'t' );
 	port.write(argTankCode+'t', function(err){
 		if(err){
 			console.log('Error on write: ' + err.message );
@@ -95,7 +104,7 @@ function analizeTank(obj)
 	{
 		if(ferms[i].tanque_code == obj.f)
 		{
-			ferms[i].status == 'done';
+			ferms[i].status = 'done';
 			break;
 		}
 	}
@@ -124,7 +133,8 @@ function analizeTank(obj)
 		
 		//Chequeo de temperatura
 		var progTolerancia = r.tolerancia;
-		console.log("temp map: " + obj.t + " tol: " + r.tolerancia);
+		console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal);
+		console.log("temp calibrada: " + progTemp);
 		var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 		console.log("temp ref: " + tempRef);
 		if(obj.t>tempRef)
@@ -155,7 +165,7 @@ function getFermentadores(){
 			throw err;
 		}
 		//console.log(resultsData)
-		var ferms = [];
+		
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var ferm = {
@@ -168,3 +178,4 @@ function getFermentadores(){
 	})
 	connection.end();
 }
+

@@ -153,7 +153,7 @@ app.use('/manageFerm.json', function (req, res, next) {
 	{
 		var params = [];
 		params = params.concat([req.body.id]);
-		connection.query("delete from fermentadores where id = ?;",params, function(err, resultsData, fields) {
+		connection.query("call deleteFerms(?);",params, function(err, resultsData, fields) {
 			if (err) 
 			{
 				throw err;
