@@ -149,9 +149,9 @@ body,
 			<md-icon>delete_sweep</md-icon>
 		  </md-avatar>
 			<div class="md-list-text-container">
-				<span>Fermentador {{frm.tanque_code}}</span>
-				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
-				<p>Perf: {{frm.profile}}, Temp: <b>{{frm.currentTemp}}</b>/{{frm.progTemp}} ºC</p>
+				<span>{{frm.tanque_code}} - {{frm.nombre_fermentacion}}</span>
+				<p>Perf: {{frm.profile}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
+				<p>, Temp: <b>{{frm.currentTemp}}</b>ºC</p>
 			</div>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
@@ -184,9 +184,9 @@ body,
 			<md-icon>content_paste</md-icon>
 		  </md-avatar>
 			<div class="md-list-text-container">
-				<span>Fermentador {{frm.tanque_code}}</span>
-				<p>Tipo: {{frm.nombre_fermentacion}}, {{frm.duration}}hs</p>
-				<p>Perf: {{frm.profile}}, Temp promedio: {{frm.promTemp}} ºC</p>
+				<span>{{frm.tanque_code}} - {{frm.nombre_fermentacion}}</span>
+				<p>Perf: {{frm.profile}}, {{frm.duration}}hs</p>
+				<p>, Temp promedio: {{frm.promTemp}} ºC</p>
 			</div>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
@@ -266,12 +266,12 @@ body,
 	  </md-tab>
 	  <md-tab id="notas" md-label="Notas">
 		<md-subheader class="md-inset">Notas</md-subheader>
-			<md-card md-with-hover >
+			
 				<md-input-container>
 				<label>Area de notas</label>
 				<md-textarea v-model="selectedFerm.notas"></md-textarea>
 				</md-input-container>
-			</md-card>
+			
 	  </md-tab>
 	</md-tabs>
 	
