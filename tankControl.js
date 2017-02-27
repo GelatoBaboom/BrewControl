@@ -67,7 +67,9 @@ function analizeTank(obj)
 		//Inserta los valores corregidos en la BDD
 		var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
 		insParams = insParams.concat([obj.f,progTemp]);
-		connection.query(insQry,insParams,function(err, resultsData, fields) {});
+		var conn2 = mysql.createConnection(mysqlconfig);
+		conn2.query(insQry,insParams,function(err, resultsData, fields) {})
+		conn2.end();
 		
 		//Chequeo de temperatura
 		var progTolerancia = r.tolerancia;
