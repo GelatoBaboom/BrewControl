@@ -51,9 +51,7 @@ function analizeTank(obj)
 	var insParams = [];
 	var getTempParams = [];
 	var connection = mysql.createConnection(mysqlconfig);
-	var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
-	insParams = insParams.concat([obj.f,obj.t]);
-	connection.query(insQry,insParams,function(err, resultsData, fields) {});
+	
 	
 	getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
 	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal;"
@@ -62,10 +60,18 @@ function analizeTank(obj)
 		{
 			throw err;
 		}
+		
+		
 		var r = results[0];
-		var progTemp = r.temp + r.cal;
+		var progTemp = obj.t + r.cal;
+		//Inserta los valores corregidos en la BDD
+		var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
+		insParams = insParams.concat([obj.f,progTemp]);
+		connection.query(insQry,insParams,function(err, resultsData, fields) {});
+		
+		//Chequeo de temperatura
 		var progTolerancia = r.tolerancia;
-		console.log("temp map: " + r.temp + " tol: " + r.tolerancia);
+		console.log("temp map: " + obj.t + " tol: " + r.tolerancia);
 		var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 		console.log("temp ref: " + tempRef);
 		if(obj.t>tempRef)
@@ -111,6 +117,7 @@ function checkFermentadores(){
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			port.write(resultsData[i].tanque_code+'t');
+			//el obj de abajo esta al cuete!
 			var ferm = {
 				id: resultsData[i].id,
 				nombre_fermentacion: resultsData[i].nombre_fermentacion,
