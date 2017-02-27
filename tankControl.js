@@ -15,7 +15,7 @@ setInterval(function(){
 	if(readyToSerialWrite){
 		checkFermentadores();
 	}
-},30000);
+},5000);
 initializePort();
 
 //functions
