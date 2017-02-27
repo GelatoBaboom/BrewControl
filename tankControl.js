@@ -116,6 +116,7 @@ function checkFermentadores(){
 		var ferms = [];
 		for(var i = 0; i < resultsData.length; i++)
 		{
+			console.log('Writting: ' +resultsData[i].tanque_code+'t' );
 			port.write(resultsData[i].tanque_code+'t', function(err){
 				if(err){
 					console.log('Error on write: ' + err.message );
