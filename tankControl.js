@@ -106,8 +106,6 @@ function analizeTank(obj)
 }*/
 function checkFermentadores(){
 	
-	
-	
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;", function(err, resultsData, fields) {
 		if (err) 
@@ -118,7 +116,11 @@ function checkFermentadores(){
 		var ferms = [];
 		for(var i = 0; i < resultsData.length; i++)
 		{
-			port.write(resultsData[i].tanque_code+'t');
+			port.write(resultsData[i].tanque_code+'t', function(err){
+				if(err){
+					console.log('Error on write: ' + err.message );
+				}
+			});
 			//el obj de abajo esta al cuete!
 			var ferm = {
 				id: resultsData[i].id,
