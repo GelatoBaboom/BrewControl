@@ -10,12 +10,12 @@ var mysql = require('mysql');
 }); */
 
 var readyToSerialWrite = false;
-var ferms = [];
+var tanks = [];
 var checkingFerms = false;
 setInterval(function(){
 	if(readyToSerialWrite){
 		
-		if(ferms.length==0){
+		if(tanks.length==0){
 			getFermentadores();
 		}else{
 			if(!checkingFerms){
@@ -29,26 +29,26 @@ initializePort();
 //functions
 var port = null;
 function checkFerms(){
-	console.log('chequear las ferms');
-	console.log(ferms);
+	console.log('chequear los tanks');
+	console.log(tanks);
 	checkingFerms=true;
 	var COUNT_LOOPS = 20;
 	var waitLoops = COUNT_LOOPS;
 	
 	var thisInter =  setInterval(function(){
 				var clearArray=true;
-				for(var i = 0; i < ferms.length; i++)
+				for(var i = 0; i < tanks.length; i++)
 				{
-					if(ferms[i].status == 'pending')
+					if(tanks[i].status == 'pending')
 					{
-						ferms[i].status = 'waiting';
-						writePort(ferms[i].tanque_code);
+						tanks[i].status = 'waiting';
+						writePort(tanks[i].tanque_code);
 						clearArray = false;
 						 waitLoops = COUNT_LOOPS;
 						break;
 						
 					}
-					else if(ferms[i].status == 'waiting')
+					else if(tanks[i].status == 'waiting')
 					{
 						clearArray = false;
 						break;
@@ -57,7 +57,7 @@ function checkFerms(){
 				if(clearArray || waitLoops<=0)			
 				{
 					checkingFerms=false;
-					ferms = [];
+					tanks = [];
 					clearInterval(thisInter);
 				}
 				waitLoops--;
@@ -100,60 +100,97 @@ function initializePort(){
 }
 function analizeTank(obj)
 {
-	for(var i = 0; i < ferms.length; i++)
+	for(var i = 0; i < tanks.length; i++)
 	{
-		if(ferms[i].tanque_code == obj.f)
+		if(tanks[i].tanque_code == obj.f)
 		{
-			ferms[i].status = 'done';
+			tanks[i].status = 'done';
 			break;
 		}
 	}
-	var insParams = [];
-	var getTempParams = [];
-	var connection = mysql.createConnection(mysqlconfig);
-	
-	
-	getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
-	var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal;"
-	connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
-		if (err) 
-		{
-			throw err;
-		}
-		
-		
-		var r = results[0];
-		var progTemp = obj.t + r.cal;
-		//Inserta los valores corregidos en la BDD
-		var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
-		insParams = insParams.concat([obj.f,progTemp]);
-		var conn2 = mysql.createConnection(mysqlconfig);
-		conn2.query(insQry,insParams,function(err, resultsData, fields) {})
-		conn2.end();
-		
-		//Chequeo de temperatura
-		var progTolerancia = r.tolerancia;
-		console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal);
-		console.log("temp calibrada: " + progTemp);
-		var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
-		console.log("temp ref: " + tempRef);
-		if(obj.t>tempRef)
-		{
-			if(obj.r == 0 ){
-				port.write(obj.f+'r0');
-				console.log("Turn On R: " + obj.f);
+	if(obj.f.startsWith('f'))
+	{
+		var insParams = [];
+		var getTempParams = [];
+		var connection = mysql.createConnection(mysqlconfig);
+		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
+		var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal;"
+		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
+			if (err) 
+			{
+				throw err;
 			}
-		}else
-		{
-			if(obj.r == 1 ){
-				port.write(obj.f+'r0');
-				console.log("Turn Off R: " + obj.f);
+			
+			
+			var r = results[0];
+			var tankTemp = obj.t + r.cal;
+			var progTemp = r.temp ;
+			//Inserta los valores corregidos en la BDD
+			var insQry = "call insertTempReg(getFermentadorFormTanqueCurrent(?),?);";
+			insParams = insParams.concat([obj.f,tankTemp]);
+			var conn2 = mysql.createConnection(mysqlconfig);
+			conn2.query(insQry,insParams,function(err, resultsData, fields) {})
+			conn2.end();
+			
+			//Chequeo de temperatura
+			var progTolerancia = r.tolerancia;
+			console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal);
+			console.log("temp calibrada: " + tankTemp);
+			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
+			console.log("temp ref: " + tempRef);
+			if(tankTemp>tempRef)
+			{
+				if(obj.r == 0 ){
+					port.write(obj.f+'r0');
+					console.log("Turn On R: " + obj.f);
+				}
+			}else
+			{
+				if(obj.r == 1 ){
+					port.write(obj.f+'r0');
+					console.log("Turn Off R: " + obj.f);
+				}
 			}
-		}
-		
+			
 
-	})
-	connection.end();
+		})
+		connection.end();
+	}else if(obj.f.startsWith('bf'))
+	{
+		var connection = mysql.createConnection(mysqlconfig);
+		var selTempProgQry ="SELECT refritemp, tolerancia FROM configs;"
+		connection.query(selTempProgQry,function(err, results, fields) {
+			if (err) 
+			{
+				throw err;
+			}
+			var r = results[0];
+			
+			var progTemp = r.refritemp;
+			var tankTemp = obj.t;
+			
+			//Chequeo de temperatura
+			var progTolerancia = r.tolerancia;
+			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
+			if(tankTemp>tempRef)
+			{
+				if(obj.r == 0 ){
+					port.write(obj.f+'r0');
+					console.log("Turn On R: " + obj.f);
+				}
+			}else
+			{
+				if(obj.r == 1 ){
+					port.write(obj.f+'r0');
+					console.log("Turn Off R: " + obj.f);
+				}
+			}
+			
+
+		})
+		connection.end();
+		
+	}
 	
 }
 function getFermentadores(){
@@ -171,10 +208,12 @@ function getFermentadores(){
 			var ferm = {
 				id: resultsData[i].id,
 				tanque_code: resultsData[i].tanque_code,
-				status : 'pending'
+				status : 'pending',
+				isFermentador : true
 			}
-			ferms.push(ferm);
+			tanks.push(ferm);
 		}
+		tanks.push({id:0,tanque_code:'bf1',status : 'pending',isFermentador : false});
 	})
 	connection.end();
 }
