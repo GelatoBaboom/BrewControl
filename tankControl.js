@@ -113,8 +113,8 @@ function analizeTank(obj)
 		var insParams = [];
 		var getTempParams = [];
 		var connection = mysql.createConnection(mysqlconfig);
-		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
-		var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal;"
+		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f,obj.f]);
+		var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as alerta;"
 		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
 			if (err) 
 			{
@@ -131,6 +131,9 @@ function analizeTank(obj)
 			var conn2 = mysql.createConnection(mysqlconfig);
 			conn2.query(insQry,insParams,function(err, resultsData, fields) {})
 			conn2.end();
+			//chequea las alertas aca abajo antes de enviar datos al arduino para saber si debe apagar algo
+			//zona
+			
 			
 			//Chequeo de temperatura
 			var progTolerancia = r.tolerancia;
@@ -191,12 +194,49 @@ function analizeTank(obj)
 		connection.end();
 		
 	}
+	checkFailures(obj);
 	
+}
+function checkFailures(obj){
+		
+		var getTempParams = [];
+		var connection = mysql.createConnection(mysqlconfig);
+		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
+		var selTempProgQry ="select checkTempErrorTooCold(getFermentadorFormTanqueCurrent(?)) as fc, checkTempErrorNotCooling(getFermentadorFormTanqueCurrent(?)) as ps;"
+		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
+
+			if (err) 
+			{
+				throw err;
+			}
+			
+			
+			var r = results[0];
+			var error='00000';
+			if(r.ps==1 || r.fc ==1){
+				if(r.ps==1){
+					error='000ps';
+				}else if(r.fc==1)
+				{
+					error='000fc';
+				}
+				var params = [];
+				params = params.concat([obj.f,error]);
+				var qry = "update fermentadores set alerta = (select id from alertas where code = ?) where getFermentadorFormTanqueCurrent(?);";
+				var conn2 = mysql.createConnection(mysqlconfig);
+				conn2.query(qry,params,function(err, resultsData, fields) {})
+				conn2.end();
+			}
+			
+
+		})
+		connection.end();
 }
 function getFermentadores(){
 	
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, t.descripcion as tanque_descripcion from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque where f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;", function(err, resultsData, fields) {
+	var qry="select f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id where f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
+	connection.query(qry, function(err, resultsData, fields) {
 		if (err) 
 		{
 			throw err;
@@ -208,12 +248,12 @@ function getFermentadores(){
 			var ferm = {
 				id: resultsData[i].id,
 				tanque_code: resultsData[i].tanque_code,
-				status : 'pending',
-				isFermentador : true
+				alerta: resultsData[i].alerta,
+				status : 'pending'
 			}
 			tanks.push(ferm);
 		}
-		tanks.push({id:0,tanque_code:'bf1',status : 'pending',isFermentador : false});
+		tanks.push({id:0,tanque_code:'bf1', alerta:'00000', status : 'pending'});
 	})
 	connection.end();
 }

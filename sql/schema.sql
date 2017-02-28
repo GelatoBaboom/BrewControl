@@ -16,6 +16,22 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `alertas`
+--
+
+DROP TABLE IF EXISTS `alertas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `alertas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(5) DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `descripcion` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `configs`
 --
 
@@ -26,6 +42,7 @@ CREATE TABLE `configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `comport` varchar(100) DEFAULT 'COM3',
   `refritemp` decimal(3,1) DEFAULT '1.0',
+  `tolerancia` decimal(3,1) DEFAULT '0.0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -44,8 +61,10 @@ CREATE TABLE `fermentadores` (
   `nombre` varchar(200) DEFAULT NULL,
   `fecha_inicio` datetime DEFAULT NULL,
   `activo` tinyint(1) DEFAULT NULL,
+  `notas` text,
+  `alerta` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +116,7 @@ CREATE TABLE `registrotemp` (
   `temp_prog` decimal(3,1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ix_fermentador` (`fermentador`)
-) ENGINE=InnoDB AUTO_INCREMENT=1722 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2713 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,12 +132,70 @@ CREATE TABLE `tanques` (
   `descripcion` varchar(200) DEFAULT NULL,
   `temp_calibration` decimal(3,1) DEFAULT '0.0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping routines for database 'brewcontrol'
 --
+/*!50003 DROP FUNCTION IF EXISTS `checkTempErrorNotCooling` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `checkTempErrorNotCooling`(fermId int) RETURNS int(11)
+BEGIN
+RETURN  (SELECT min(temp_reg)> max(temp_prog) as tempHighError FROM registrotemp where fermentador = fermId and timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE)) < timestamp(date)  order by id desc);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `checkTempErrorTooCold` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `checkTempErrorTooCold`(fermId int) RETURNS int(11)
+BEGIN
+RETURN (SELECT max(temp_reg)<min(temp_prog) as tempError FROM registrotemp where fermentador = fermId and timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE)) < timestamp(date)  order by id desc);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `getAlertaByFermentador` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `getAlertaByFermentador`(fermId int) RETURNS varchar(5) CHARSET latin1
+BEGIN
+ RETURN (select ifnull(a.code,'00000') from fermentadores as f left join alertas as a on f.alerta = a.id where f.id = fermId);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP FUNCTION IF EXISTS `getFermentadorFormTanqueCurrent` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -243,7 +320,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `getTempCalibration`(tCode int) RETURNS decimal(3,1)
+CREATE DEFINER=`root`@`localhost` FUNCTION `getTempCalibration`(tCode VARCHAR(4)) RETURNS decimal(3,1)
 BEGIN
 RETURN (SELECT temp_calibration FROM tanques where code = tCode limit 1);
 END ;;
@@ -265,6 +342,27 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `getTempPromedio`(ferm INT) RETURNS decimal(3,1)
 BEGIN
 return (select avg(rt.temp_reg) from registrotemp as rt where rt.fermentador = ferm);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `deleteFerms` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteFerms`(fermId int)
+BEGIN
+delete from fermentadores where id = fermId;
+delete from registrotemp where fermentador = fermId;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -344,4 +442,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-23 18:47:39
+-- Dump completed on 2017-02-28 19:20:50
