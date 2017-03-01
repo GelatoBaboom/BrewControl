@@ -66,7 +66,7 @@ body,
 /*ajustes*/
 .md-toolbar.md-large{min-height: 80px;}
 .md-toolbar.md-large .md-toolbar-container:nth-child(2) .md-title:first-child {margin-left: 0px;}
-.innerButton{    padding: 0;    margin: 0;    min-width: 0;}
+.innerButton{padding: 0;margin: 0;min-width: 0;}
 </style>
 </head>
 <body>
@@ -87,8 +87,8 @@ body,
   
         <md-list-item>
           <div class="md-list-text-container">
-            <span>{{strs.brand}}</span>
-            <span>{{strs.brandDesc}}</span>
+            <span>INTEGRA Chronos</span>
+            <span>Sistema de control de fermentación</span>
           </div>
   
           <!-- <md-button class="md-icon-button md-list-action">
@@ -154,7 +154,7 @@ body,
 				<p>Perf: {{frm.profile}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
 				<p>Temp: <b>{{frm.currentTemp}}</b>ºC</p>
 			</div>
-			<md-button v-if="false" v-on:click="gimmeError" class="innerButton">
+			<md-button v-if="frm.alerta==1" v-on:click="gimmeError" class="innerButton">
 			<md-avatar class="md-avatar-icon md-accent innerButton" style="margin:3;">
 			<md-icon>error</md-icon>
 			</md-avatar>

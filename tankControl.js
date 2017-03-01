@@ -1,13 +1,7 @@
 var SerialPort = require('serialport');
 var mysqlconfig = require("./dbconfig.js").out;
 var mysql = require('mysql');
-/* SerialPort.list(function (err, ports) {
-	ports.forEach(function(port) {
-		console.log(port.comName);
-		console.log(port.pnpId);
-		console.log(port.manufacturer);
-	});
-}); */
+
 
 var readyToSerialWrite = false;
 var tanks = [];
@@ -36,34 +30,35 @@ function checkFerms(){
 	var waitLoops = COUNT_LOOPS;
 	
 	var thisInter =  setInterval(function(){
-				var clearArray=true;
-				for(var i = 0; i < tanks.length; i++)
-				{
-					if(tanks[i].status == 'pending')
-					{
-						tanks[i].status = 'waiting';
-						writePort(tanks[i].tanque_code);
-						clearArray = false;
-						 waitLoops = COUNT_LOOPS;
-						break;
-						
-					}
-					else if(tanks[i].status == 'waiting')
-					{
-						clearArray = false;
-						break;
-					}
-				}
-				if(clearArray || waitLoops<=0)			
-				{
-					checkingFerms=false;
-					tanks = [];
-					clearInterval(thisInter);
-				}
-				waitLoops--;
-			},500);
+		var clearArray=true;
+		for(var i = 0; i < tanks.length; i++)
+		{
+			if(tanks[i].status == 'pending')
+			{
+				tanks[i].status = 'waiting';
+				writePort(tanks[i].tanque_code);
+				clearArray = false;
+				 waitLoops = COUNT_LOOPS;
+				break;
+				
+			}
+			else if(tanks[i].status == 'waiting')
+			{
+				clearArray = false;
+				break;
+			}
+		}
+		if(clearArray || waitLoops<=0)			
+		{
+			checkingFerms=false;
+			tanks = [];
+			clearInterval(thisInter);
+		}
+		waitLoops--;
+	},500);
 	
 }
+
 function writePort(argTankCode){
 	console.log('Writting: ' +argTankCode+'t' );
 	port.write(argTankCode+'t', function(err){
@@ -72,6 +67,7 @@ function writePort(argTankCode){
 		}
 	});
 }
+
 function initializePort(){
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
@@ -98,6 +94,7 @@ function initializePort(){
 	})
 	connection.end();
 }
+
 function analizeTank(obj)
 {
 	for(var i = 0; i < tanks.length; i++)
@@ -120,8 +117,6 @@ function analizeTank(obj)
 			{
 				throw err;
 			}
-			
-			
 			var r = results[0];
 			var tankTemp = obj.t + r.cal;
 			var progTemp = r.temp ;
@@ -134,28 +129,52 @@ function analizeTank(obj)
 			//chequea las alertas aca abajo antes de enviar datos al arduino para saber si debe apagar algo
 			//zona
 			
-			
+			var error = false;
+			switch(r.alerta)
+			{
+				case '000ps'://error bomba atascada
+					error = true;
+					//apaga la bomba
+					port.write('pmpOff');
+				break;
+				case '000fc'://error descenso de temperatura en ferms
+					error = true;
+					//apaga la bomba
+					port.write('pmpOff');
+					//intenta cerrar la valvula nuevamente
+					//con delay para esperar al arduino
+					setTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
+					
+				break;
+				
+			}
+			if(error)
+			{
+				console.log('-----------ALERTA------------');
+				console.log(r.alerta);
+				console.log('-----------------------------');
+			}
 			//Chequeo de temperatura
 			var progTolerancia = r.tolerancia;
 			console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal);
 			console.log("temp calibrada: " + tankTemp);
 			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 			console.log("temp ref: " + tempRef);
-			if(tankTemp>tempRef)
-			{
-				if(obj.r == 0 ){
-					port.write(obj.f+'r0');
-					console.log("Turn On R: " + obj.f);
-				}
-			}else
-			{
-				if(obj.r == 1 ){
-					port.write(obj.f+'r0');
-					console.log("Turn Off R: " + obj.f);
+			if(!error){
+				if(tankTemp>tempRef)
+				{
+					if(obj.r == 0 ){
+						port.write(obj.f+'r');
+						console.log("Turn On R: " + obj.f);
+					}
+				}else
+				{
+					if(obj.r == 1 ){
+						port.write(obj.f+'r');
+						console.log("Turn Off R: " + obj.f);
+					}
 				}
 			}
-			
-
 		})
 		connection.end();
 	}else if(obj.f.startsWith('bf'))
@@ -188,29 +207,22 @@ function analizeTank(obj)
 					console.log("Turn Off R: " + obj.f);
 				}
 			}
-			
-
 		})
 		connection.end();
-		
 	}
 	checkFailures(obj);
-	
 }
 function checkFailures(obj){
 		
 		var getTempParams = [];
 		var connection = mysql.createConnection(mysqlconfig);
 		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
-		var selTempProgQry ="select checkTempErrorTooCold(getFermentadorFormTanqueCurrent(?)) as fc, checkTempErrorNotCooling(getFermentadorFormTanqueCurrent(?)) as ps;"
+		var selTempProgQry ="select checkTempErrorTooCold(getFermentadorFormTanqueCurrent(?)) as fc, checkTempErrorNotCooling(getFermentadorFormTanqueCurrent(?)) as ps, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as currentAlerta;"
 		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
-
 			if (err) 
 			{
 				throw err;
 			}
-			
-			
 			var r = results[0];
 			var error='00000';
 			if(r.ps==1 || r.fc ==1){
@@ -226,9 +238,19 @@ function checkFailures(obj){
 				var conn2 = mysql.createConnection(mysqlconfig);
 				conn2.query(qry,params,function(err, resultsData, fields) {})
 				conn2.end();
+			}else
+			{
+				if(r.currentAlerta!='00000'){
+					var params = [];
+					params = params.concat([obj.f]);
+					var qry = "update fermentadores set alerta = 0 where getFermentadorFormTanqueCurrent(?);";
+					var conn2 = mysql.createConnection(mysqlconfig);
+					conn2.query(qry,params,function(err, resultsData, fields) {})
+					conn2.end();
+					
+				}
+				
 			}
-			
-
 		})
 		connection.end();
 }

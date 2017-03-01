@@ -8,7 +8,7 @@
 #define RY3 8
 #define RY4 7
 #define RY5 4
-#define RY6 3
+#define RY6 5
 #define PUMP01 2
 
 //Setup sensor on one wire pin
@@ -137,7 +137,14 @@ void loop() {
       outData ="n/r";
     }
     //Decide si prender la bomba
-    switchPump();
+     if(inData.startsWith("pmpOff"))
+    {
+      switchPump(true);
+      outData ="n/r";
+    }else
+    {
+      switchPump(false);
+    }
     //response
     if(outData=="")
     {
@@ -151,13 +158,17 @@ void loop() {
   inData="";
   //Serial.flush();
 }
-void switchPump()
+void switchPump(bool error)
 {
-  if(r1&&r2&&r3&&r4&&r5)
+  if((!r1&&!r2&&!r3&&!r4&&!r5)||error)
   {
-      r7=!r7;
-      digitalWrite(PUMP01,r7);
+      r7=false;
+      
+  }else
+  {
+      r7=true;
   }
+  digitalWrite(PUMP01,r7);
 }
 void establishContact() {
   while (Serial.available() <= 0 && serialAvailable==false) {

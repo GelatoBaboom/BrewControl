@@ -21,7 +21,7 @@ Vue.use(VueResource)
 
 Vue.material.registerTheme({
   default: {
-    primary: 'purple',
+    primary: 'blue',
     accent: 'red'
   },
   green: {
@@ -48,8 +48,6 @@ new Vue({
 		  profiles:[],
 		  fermModel:{nombre:'',tanque:0, perfil:0,notas:''},
 		  strs:{
-			brand: 'LoLog',
-			brandDesc:'Cerveceria',
 			headerTitle:'CONTROL DE FERMENTADORES'
 		  },
 		  fermSel:{
@@ -87,7 +85,7 @@ new Vue({
 			this.viewFerm = false;
 			this.viewProfiles=false;
 			this.viewTanques=false;
-			
+			this.strs.headerTitle = 'HISTORIAL';
 						
 			this.getFerms(0);
 			if(this.refreshInterval!=null)
@@ -102,6 +100,7 @@ new Vue({
 			
 		},
 		getActiveFerms:function(){
+			this.strs.headerTitle = 'CONTROL DE FERMENTADORES';
 			this.viewList = true;
 			this.viewListAchived = false;
 			this.viewAddNew=false;
@@ -150,6 +149,7 @@ new Vue({
 		startNewFerm: function(){
 			if(this.refreshInterval!=null)
 			{
+				this.strs.headerTitle = 'NUEVA FERMENTACIÓN';
 				clearInterval(this.refreshInterval);
 				this.viewList=false;
 				this.viewListAchived = false;
@@ -216,6 +216,7 @@ new Vue({
 			
 		},
 		editProfiles:function(){
+			this.strs.headerTitle = 'PERFILES';
 			this.viewList=false;
 			this.viewListAchived = false;
 			this.viewAddNew=false;
@@ -319,6 +320,7 @@ new Vue({
 			}, function(){ });  
 		},
 		editTanques:function(){
+			this.strs.headerTitle = 'TANQUES FERMENTADORES';
 			this.viewList=false;
 			this.viewListAchived = false;
 			this.viewAddNew=false;
