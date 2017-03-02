@@ -6,7 +6,7 @@ var mysql = require('mysql');
 var readyToSerialWrite = false;
 var tanks = [];
 var checkingFerms = false;
-SETInterval(function(){
+setInterval(function(){
 	if(readyToSerialWrite){
 		
 		if(tanks.length==0){
@@ -29,7 +29,7 @@ function checkFerms(){
 	var COUNT_LOOPS = 20;
 	var waitLoops = COUNT_LOOPS;
 	
-	var thisInter =  SETInterval(function(){
+	var thisInter =  setInterval(function(){
 		var clearArray=true;
 		for(var i = 0; i < tanks.length; i++)
 		{
