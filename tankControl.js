@@ -105,7 +105,7 @@ function analizeTank(obj)
 			break;
 		}
 	}
-	if(obj.f.startsWith('f'))
+	if(obj.f.startsWith('tank'))
 	{
 		var insParams = [];
 		var getTempParams = [];
