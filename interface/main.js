@@ -55,6 +55,11 @@ new Vue({
 			nombre: ''
 			
 		  },
+		  alerta:{
+			  show:false,
+			  name:'',
+			  desc:''
+		  },
 		  viewList:true,
 		  viewAddNew:false,
 		  viewListAchived:false,
@@ -400,8 +405,11 @@ new Vue({
 			});
 			
 		},
-		gimmeError:function(){
-			alert('Hole!');
+		gimmeError:function(alerta, desc){
+			this.alerta.show=true;
+			this.alerta.name = alerta;
+			this.alerta.desc = desc;
+			
 		}
 		
 	}
