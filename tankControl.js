@@ -17,7 +17,7 @@ setInterval(function(){
 			}
 		}
 	}
-},5000);
+},30000);
 initializePort();
 
 //functions
