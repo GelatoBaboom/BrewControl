@@ -17,7 +17,7 @@ setInterval(function(){
 			}
 		}
 	}
-},30000);
+},5000);
 initializePort();
 
 //functions
@@ -177,6 +177,7 @@ function analizeTank(obj)
 			}
 		})
 		connection.end();
+		checkFailures(obj);
 	}else if(obj.f.startsWith('bf'))
 	{
 		var connection = mysql.createConnection(mysqlconfig);
@@ -210,7 +211,7 @@ function analizeTank(obj)
 		})
 		connection.end();
 	}
-	checkFailures(obj);
+	
 }
 function checkFailures(obj){
 		
@@ -225,7 +226,8 @@ function checkFailures(obj){
 			}
 			var r = results[0];
 			var error='00000';
-			if(r.ps==1 || r.fc ==1){
+			if(r.ps==1 || r.fc==1){
+				console.log('hay error!');
 				if(r.ps==1){
 					error='000ps';
 				}else if(r.fc==1)
@@ -233,14 +235,17 @@ function checkFailures(obj){
 					error='000fc';
 				}
 				var params = [];
-				params = params.concat([obj.f,error]);
+				params = params.concat([error, obj.f]);
 				var qry = "UPDATE fermentadores SET alerta = (SELECT id FROM alertas WHERE code = ?) WHERE getFermentadorFormTanqueCurrent(?);";
 				var conn2 = mysql.createConnection(mysqlconfig);
 				conn2.query(qry,params,function(err, resultsData, fields) {})
 				conn2.end();
 			}else
 			{
+				
 				if(r.currentAlerta!='00000'){
+					console.log('---------ALERTA ACTUAL----------');
+					console.log(r.currentAlerta);
 					var params = [];
 					params = params.concat([obj.f]);
 					var qry = "UPDATE fermentadores SET alerta = 0 WHERE getFermentadorFormTanqueCurrent(?);";

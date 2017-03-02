@@ -28,7 +28,7 @@ CREATE TABLE `alertas` (
   `nombre` varchar(100) DEFAULT NULL,
   `descripcion` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `configs` (
   `refritemp` decimal(3,1) DEFAULT '1.0',
   `tolerancia` decimal(3,1) DEFAULT '0.0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +64,7 @@ CREATE TABLE `fermentadores` (
   `notas` text,
   `alerta` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +83,7 @@ CREATE TABLE `mapatemp` (
   `profile` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IX_profile` (`profile`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `profiles` (
   `duration` int(11) DEFAULT NULL,
   `nombre` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +116,7 @@ CREATE TABLE `registrotemp` (
   `temp_prog` decimal(3,1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ix_fermentador` (`fermentador`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2940 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `tanques` (
   `descripcion` varchar(200) DEFAULT NULL,
   `temp_calibration` decimal(3,1) DEFAULT '0.0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +188,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `getAlertaByFermentador`(fermId int) RETURNS varchar(5) CHARSET latin1
 BEGIN
- RETURN (select ifnull(a.code,'00000') from fermentadores as f left join alertas as a on f.alerta = a.id where f.id = fermId);
+ RETURN (select ifnull(a.code,'00000') from fermentadores as f left join alertas as a on f.alerta = a.id where f.id = fermId limit 1);
 
 END ;;
 DELIMITER ;
@@ -206,7 +206,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `getFermentadorFormTanqueCurrent`(tCode varchar(4)) RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `getFermentadorFormTanqueCurrent`(tCode varchar(5)) RETURNS int(11)
 BEGIN
 RETURN (select f.id from fermentadores as f inner join tanques as t on f.tanque = t.id where t.code = tCode and f.activo = 1 );
 END ;;
@@ -379,10 +379,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertFermentacion`(nombre varchar(200), tanque int, perfil int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertFermentacion`(nombre varchar(200), tanqueId int, perfil int)
 BEGIN
-insert into fermentadores (profile, tanque , nombre, fecha_inicio,activo) values(perfil, tanque, nombre, now(), 1);
-
+declare idCurrent int;
+SET idCurrent = (select id from fermentadores as f where f.tanque = tanqueId and activo = 1 limit 1);
+if(idCurrent is null) then 
+	insert into fermentadores (profile, tanque , nombre, fecha_inicio,activo) values(perfil, tanqueId, nombre, now(), 1);
+end if;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -442,4 +445,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-02 15:31:10
+-- Dump completed on 2017-03-02 17:20:19
