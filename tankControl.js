@@ -6,7 +6,7 @@ var mysql = require('mysql');
 var readyToSerialWrite = false;
 var tanks = [];
 var checkingFerms = false;
-setInterval(function(){
+SETInterval(function(){
 	if(readyToSerialWrite){
 		
 		if(tanks.length==0){
@@ -29,7 +29,7 @@ function checkFerms(){
 	var COUNT_LOOPS = 20;
 	var waitLoops = COUNT_LOOPS;
 	
-	var thisInter =  setInterval(function(){
+	var thisInter =  SETInterval(function(){
 		var clearArray=true;
 		for(var i = 0; i < tanks.length; i++)
 		{
@@ -38,7 +38,7 @@ function checkFerms(){
 				tanks[i].status = 'waiting';
 				writePort(tanks[i].tanque_code);
 				clearArray = false;
-				 waitLoops = COUNT_LOOPS;
+				waitLoops = COUNT_LOOPS;
 				break;
 				
 			}
@@ -70,7 +70,7 @@ function writePort(argTankCode){
 
 function initializePort(){
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query('SELECT * FROM configs LIMIT 1; ',function(err, results, fields) {
+	connection.query('SELECT * FROM configs LIMIT 1;',function(err, results, fields) {
 		if (err) 
 		{
 			throw err;
@@ -111,7 +111,7 @@ function analizeTank(obj)
 		var getTempParams = [];
 		var connection = mysql.createConnection(mysqlconfig);
 		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f,obj.f]);
-		var selTempProgQry ="select getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as alerta;"
+		var selTempProgQry ="SELECT getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as alerta;"
 		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
 			if (err) 
 			{
@@ -143,7 +143,7 @@ function analizeTank(obj)
 					port.write('pmpOff');
 					//intenta cerrar la valvula nuevamente
 					//con delay para esperar al arduino
-					setTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
+					SETTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
 					
 				break;
 				
@@ -217,7 +217,7 @@ function checkFailures(obj){
 		var getTempParams = [];
 		var connection = mysql.createConnection(mysqlconfig);
 		getTempParams = getTempParams.concat([obj.f,obj.f,obj.f]);
-		var selTempProgQry ="select checkTempErrorTooCold(getFermentadorFormTanqueCurrent(?)) as fc, checkTempErrorNotCooling(getFermentadorFormTanqueCurrent(?)) as ps, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as currentAlerta;"
+		var selTempProgQry ="SELECT checkTempErrorTooCold(getFermentadorFormTanqueCurrent(?)) as fc, checkTempErrorNotCooling(getFermentadorFormTanqueCurrent(?)) as ps, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as currentAlerta;"
 		connection.query(selTempProgQry,getTempParams,function(err, results, fields) {
 			if (err) 
 			{
@@ -234,7 +234,7 @@ function checkFailures(obj){
 				}
 				var params = [];
 				params = params.concat([obj.f,error]);
-				var qry = "update fermentadores set alerta = (select id from alertas where code = ?) where getFermentadorFormTanqueCurrent(?);";
+				var qry = "UPDATE fermentadores SET alerta = (SELECT id FROM alertas WHERE code = ?) WHERE getFermentadorFormTanqueCurrent(?);";
 				var conn2 = mysql.createConnection(mysqlconfig);
 				conn2.query(qry,params,function(err, resultsData, fields) {})
 				conn2.end();
@@ -243,7 +243,7 @@ function checkFailures(obj){
 				if(r.currentAlerta!='00000'){
 					var params = [];
 					params = params.concat([obj.f]);
-					var qry = "update fermentadores set alerta = 0 where getFermentadorFormTanqueCurrent(?);";
+					var qry = "UPDATE fermentadores SET alerta = 0 WHERE getFermentadorFormTanqueCurrent(?);";
 					var conn2 = mysql.createConnection(mysqlconfig);
 					conn2.query(qry,params,function(err, resultsData, fields) {})
 					conn2.end();
@@ -257,7 +257,7 @@ function checkFailures(obj){
 function getFermentadores(){
 	
 	var connection = mysql.createConnection(mysqlconfig);
-	var qry="select f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta from fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id where f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
+	var qry="SELECT f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta FROM fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id WHERE f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
 	connection.query(qry, function(err, resultsData, fields) {
 		if (err) 
 		{

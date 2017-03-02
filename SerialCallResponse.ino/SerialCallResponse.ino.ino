@@ -75,56 +75,56 @@ void loop() {
     inData = Serial.readString();
     inData.trim();
     //read sensors
-    if(inData.startsWith("f1t"))
+    if(inData.startsWith("tank1t"))
     {
-      outData = "{\"f\":\"f1\",\"t\":" + String(getTemp(sTemp01)) + ",\"r\":"+String(r1)+"}";
+      outData = "{\"f\":\"tank1\",\"t\":" + String(getTemp(sTemp01)) + ",\"r\":"+String(r1)+"}";
     }
-    if(inData.startsWith("f2t"))
+    if(inData.startsWith("tank2t"))
     {
-      outData = "{\"f\":\"f2\",\"t\":" + String(getTemp(sTemp02)) + ",\"r\":"+String(r2)+"}";
+      outData = "{\"f\":\"tank2\",\"t\":" + String(getTemp(sTemp02)) + ",\"r\":"+String(r2)+"}";
     }
-     if(inData.startsWith("f3t"))
+     if(inData.startsWith("tank3t"))
     {
-      outData = "{\"f\":\"f3\",\"t\":" + String(getTemp(sTemp03)) + ",\"r\":"+String(r3)+"}";
+      outData = "{\"f\":\"tank3\",\"t\":" + String(getTemp(sTemp03)) + ",\"r\":"+String(r3)+"}";
     }
-     if(inData.startsWith("f4t"))
+     if(inData.startsWith("tank4t"))
     {
-      outData = "{\"f\":\"f4\",\"t\":" + String(getTemp(sTemp04)) + ",\"r\":"+String(r4)+"}";
+      outData = "{\"f\":\"tank4\",\"t\":" + String(getTemp(sTemp04)) + ",\"r\":"+String(r4)+"}";
     }
-     if(inData.startsWith("f5t"))
+     if(inData.startsWith("tank5t"))
     {
-      outData = "{\"f\":\"f5\",\"t\":" + String(getTemp(sTemp05)) + ",\"r\":"+String(r5)+"}";
+      outData = "{\"f\":\"tank5\",\"t\":" + String(getTemp(sTemp05)) + ",\"r\":"+String(r5)+"}";
     }
      if(inData.startsWith("bf1t"))
     {
       outData = "{\"f\":\"bf1\",\"t\":" + String(getTemp(sTemp06)) + ",\"r\":"+String(r6)+"}";
     }
     //realays
-    if(inData.startsWith("f1r"))
+    if(inData.startsWith("tank1r"))
     {
       r1=!r1;
       digitalWrite(RY1,r1);
       outData ="n/r";
     }
-    if(inData.startsWith("f2r"))
+    if(inData.startsWith("tank2r"))
     {
       r2=!r2;
       digitalWrite(RY2,r2);
       outData ="n/r";
     }
-     if(inData.startsWith("f3r"))
+     if(inData.startsWith("tank3r"))
     {
       r3=!r3;
       digitalWrite(RY3,r3);
       outData ="n/r";
     }
-     if(inData.startsWith("f4r"))
+     if(inData.startsWith("tank4r"))
     {
       r4=!r4;
       digitalWrite(RY4,r4);
       outData ="n/r";
     }
-     if(inData.startsWith("f5r"))
+     if(inData.startsWith("tank5r"))
     {
       r5=!r5;
       digitalWrite(RY5,r5);
