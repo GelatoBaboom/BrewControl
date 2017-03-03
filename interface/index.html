@@ -143,8 +143,7 @@ body,
 </style>
 </head>
 <body>
-
-<div class="app-viewport" id="file-list">
+<div class="app-viewport" id="file-list" v-show="ready" style="display:none;">
   <md-sidenav class="md-left md-fixed" ref="sidebar">
     <md-toolbar class="md-account-header">
       <md-list class="md-transparent">
@@ -384,25 +383,25 @@ body,
 									<md-table-row>
 										<md-table-cell>
 											<md-input-container>
-												<label>Desde la hora</label>
+												<label>Desde (hs)</label>
 												<md-input v-model="mp.tempFrom"></md-input>
 											</md-input-container>
 										</md-table-cell>
 										<md-table-cell>
 											<md-input-container>
-												<label>Hasta la hora</label>
+												<label>Hasta (hs)</label>
 												<md-input v-model="mp.tempTo"></md-input>
 											</md-input-container>
 										</md-table-cell>
 										<md-table-cell>
 											<md-input-container>
-												<label>Temperatura</label>
+												<label>Temp</label>
 												<md-input v-model="mp.temp"></md-input>
 											</md-input-container>
 										</md-table-cell>
 										<md-table-cell>
 											<md-input-container>
-												<label>Tolerancia</label>
+												<label>Tol</label>
 												<md-input v-model="mp.tolerancia"></md-input>
 											</md-input-container>
 										</md-table-cell>
@@ -420,9 +419,10 @@ body,
 							<md-icon>add</md-icon>
 						</md-button>
 						</md-list-item>
+						</md-list>
 				</md-list-expand>
 			</md-list-item>
-        </md-list>
+        
       </md-list-expand>
     </md-list-item>
 	

@@ -60,6 +60,7 @@ new Vue({
 			  name:'',
 			  desc:''
 		  },
+		  ready:true,
 		  viewList:true,
 		  viewAddNew:false,
 		  viewListAchived:false,
