@@ -12,14 +12,18 @@
 html,
 body,
 .app-viewport {
-  min-height: 100%;
+  height: 100%;
   overflow: hidden;
-  
- }
+}
 
 .app-viewport {
   display: flex;
   flex-flow: column;
+}
+
+.main-toolbar {
+  position: relative;
+  z-index: 10;
 }
 
 .md-fab {
@@ -27,6 +31,7 @@ body,
   position: absolute;
   bottom: -20px;
   left: 16px;
+  z-index: 10;
   
   .md-icon {
     color: #fff;
@@ -38,7 +43,9 @@ body,
   color: #fff;
 }
 
-.md-list {
+.main-content {
+  position: relative;
+  z-index: 1;
   overflow: auto;
 }
 
@@ -208,7 +215,7 @@ body,
 		 
 		</md-toolbar>
 	</md-whiteframe>
-  
+   <main class="main-content">
 	<md-list v-if="viewList" class="md-double-line">
     <md-subheader class="md-inset">Fermentaciones activas</md-subheader>
 		<md-list-item v-for="frm in fermentadores"  >
@@ -508,7 +515,7 @@ body,
       </div>
     </div>
   </transition>
-
+</main>
 </div>
 
 </body>
