@@ -190,7 +190,7 @@ new Vue({
 			}, function(){ 
 				//error 
 			});
-			this.refreshInterval();
+			
 			
 		},
 		viewFermentacion:function(argId){
@@ -421,10 +421,6 @@ new Vue({
 			this.alerta.name = alerta;
 			this.alerta.desc = desc;
 			
-		},
-		openDialog: function(ref)
-		{
-			this.$refs[ref].open();
 		}
 		
 	}
