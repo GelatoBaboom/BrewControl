@@ -138,6 +138,7 @@ body,
 .md-toolbar.md-large{min-height: 80px;}
 .md-toolbar.md-large .md-toolbar-container:nth-child(2) .md-title:first-child {margin-left: 0px;}
 .innerButton{padding: 0;margin: 0;min-width: 0;}
+.notes{width:100%; height:800px;}
 
 
 </style>
@@ -175,22 +176,22 @@ body,
 		<span>OPCIONES DE CONTROL</span>
       </md-list-item>
   
-      <md-list-item @click="$refs.sidebar.toggle()" v-on:click="startNewFerm">
+      <md-list-item @click.native="$refs.sidebar.toggle();startNewFerm()">
         <md-icon>add_circle</md-icon> <span>Nueva fermentacion</span>
       </md-list-item>
 	  
-	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="getActiveFerms()">
+	  <md-list-item @click.native="$refs.sidebar.toggle();getActiveFerms()">
         <md-icon>home</md-icon> <span>Fermentaciones activas</span>
       </md-list-item>
   
-      <md-list-item @click="$refs.sidebar.toggle()" v-on:click="getArchivedFerms()">
+      <md-list-item @click.native="$refs.sidebar.toggle();getArchivedFerms()" >
         <md-icon>restore</md-icon> <span>Fermentaciones archivadas</span>
       </md-list-item>
 
-      <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editProfiles()">
+      <md-list-item @click.native="$refs.sidebar.toggle();editProfiles()" >
         <md-icon>show_chart</md-icon> <span>Editar perfiles</span>
       </md-list-item>	
-	  <md-list-item @click="$refs.sidebar.toggle()" v-on:click="editTanques()">
+	  <md-list-item @click.native="$refs.sidebar.toggle();editTanques()">
         <md-icon>settings</md-icon> <span>Configurar tanques</span>
       </md-list-item>
 	  
@@ -200,14 +201,14 @@ body,
 	<md-whiteframe md-elevation="3">
 		<md-toolbar class="md-large">
 		  <div class="md-toolbar-container">
-			<md-button class="md-icon-button" @click="$refs.sidebar.toggle()">
+			<md-button class="md-icon-button" @click.native="$refs.sidebar.toggle()">
 			  <md-icon>menu</md-icon>
 			</md-button>
 			 <div class="md-toolbar-container">
 				<h2 class="md-title" >{{strs.headerTitle}}</h2>
 			  </div>
 			<span style="flex: 1"></span>
-			 <md-button class="md-icon-button" v-on:click="getActiveFerms()">
+			 <md-button class="md-icon-button" @click.native="getActiveFerms()">
 				<md-icon>home</md-icon>
 			 </md-button>
 		  </div>
@@ -217,7 +218,7 @@ body,
    <main class="main-content">
 	<md-list v-if="viewList" class="md-double-line">
     <md-subheader class="md-inset">Fermentaciones activas</md-subheader>
-		<md-list-item v-for="frm in fermentadores"  >
+		<md-list-item :key="frm.id"  v-for="frm in fermentadores" >
 		  <md-avatar class="md-avatar-icon md-primary">
 			<md-icon>delete_sweep</md-icon>
 		  </md-avatar>
@@ -226,32 +227,43 @@ body,
 				<p>Perf: {{frm.profile}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
 				<p>Temp: <b>{{frm.currentTemp}}</b>ºC</p>
 			</div>
-			<md-button v-if="frm.alerta==1" v-on:click="gimmeError(frm.alerta_name, frm.alerta_desc)" class="innerButton">
-			<md-avatar class="md-avatar-icon md-accent innerButton" style="margin:3;">
-			<md-icon>error</md-icon>
-			</md-avatar>
+			<md-button v-if="frm.alerta==1" @click.native="gimmeError(frm.alerta_name, frm.alerta_desc)" class="innerButton">
+				<md-icon class="md-accent" >error</md-icon>
 			</md-button>
 			<md-menu md-size="4">
 				<md-button class="md-icon-button" md-menu-trigger>
 					<md-icon>more_vert</md-icon>
 				</md-button>
 				<md-menu-content>
-					<md-menu-item v-on:click="viewFermentacion(frm.id)">
+					<md-menu-item @click.native="viewFermentacion(frm.id)">
 						<md-icon>timeline</md-icon>
 						<span>Ver detalles</span>
 					</md-menu-item>
 
-					<md-menu-item v-on:click="manageFerm(frm.id,'archivar')">
+					<md-menu-item @click.native="manageFerm(frm.id,'archivar')">
 						<md-icon>assignment_returned</md-icon>
 						<span>Archivar</span>
 					</md-menu-item>
 
-					<md-menu-item v-on:click="manageFerm(frm.id,'delete')">
+					<md-menu-item id="custom" @click.native="openDialog('dialog1'+frm.id)">
 						<md-icon>delete</md-icon>
 						<span>Eliminar</span>
 					</md-menu-item>
 				</md-menu-content>
 			</md-menu>
+			
+
+			<md-dialog md-open-from="#custom" md-close-to="#custom" :ref="'dialog1'+frm.id">
+			  <md-dialog-title>Lorem ipsum dolor sit amet</md-dialog-title>
+
+			  <md-dialog-content>Nemo, nobis necessitatibus ut illo, ducimus ex.</md-dialog-content>
+
+			  <md-dialog-actions>
+				<md-button class="md-primary" @click.native="closeDialog('dialog1')">Cancel</md-button>
+				<md-button class="md-primary" @click.native="closeDialog('dialog1')">Ok</md-button>
+			  </md-dialog-actions>
+			</md-dialog>
+
 		</md-list-item>
 	</md-list>
 	
@@ -271,12 +283,12 @@ body,
 					<md-icon>more_vert</md-icon>
 				</md-button>
 				<md-menu-content>
-					<md-menu-item v-on:click="viewFermentacion(frm.id)">
+					<md-menu-item @click.native="viewFermentacion(frm.id)">
 						<md-icon>timeline</md-icon>
 						<span>Ver detalles</span>
 					</md-menu-item>
 
-					<md-menu-item v-on:click="manageFerm(frm.id,'delete')">
+					<md-menu-item @click.native="manageFerm(frm.id,'delete')">
 						<md-icon>delete</md-icon>
 						<span>Eliminar</span>
 					</md-menu-item>
@@ -302,7 +314,7 @@ body,
 			<md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
 		</md-select>
 	  </md-input-container>
-	  <md-button class="md-raised md-primary" v-on:click="createFerm" >CREAR AHORA</md-button>
+	  <md-button class="md-raised md-primary" @click.native="createFerm" >CREAR AHORA</md-button>
   
 	</form>
 	<md-tabs md-fixed v-if="viewFerm">
@@ -338,18 +350,13 @@ body,
 		  </md-card-content>
 
 		  <md-card-actions>
-			<md-button class="md-raised md-accent" v-on:click="manageFerm(frm.id,'archivar')">Archivar</md-button>
+			<md-button class="md-raised md-accent" @click.native="manageFerm(frm.id,'archivar')">Archivar</md-button>
 		  </md-card-actions>
 		</md-card>
 	  </md-tab>
 	  <md-tab id="notas" md-label="Notas">
 		<md-subheader class="md-inset">Notas</md-subheader>
-			
-				<md-input-container>
-				<label>Area de notas</label>
-				<md-textarea v-model="selectedFerm.notas"></md-textarea>
-				</md-input-container>
-			
+			<textarea class="notes" v-model="selectedFerm.notas"> Area de notas</textarea>
 	  </md-tab>
 	</md-tabs>
 	
@@ -361,7 +368,7 @@ body,
 		<label>Nombre del perfil</label>
 		<md-input v-model="prf.nombre"></md-input>
 	  </md-input-container>
-		<md-button class="md-icon-button" v-on:click="deleteProf(prf.id)">
+		<md-button class="md-icon-button" @click.native="deleteProf(prf.id)">
 			<md-icon>delete</md-icon>
 		</md-button>
       <md-list-expand>
@@ -406,7 +413,7 @@ body,
 											</md-input-container>
 										</md-table-cell>
 										<md-table-cell>
-										<md-button class="md-icon-button" v-on:click="deleteMapPoint(prf.id,mp.id)">
+										<md-button class="md-icon-button" @click.native="deleteMapPoint(prf.id,mp.id)">
 											<md-icon>delete</md-icon>
 										</md-button>
 										</md-table-cell>
@@ -415,7 +422,7 @@ body,
 							</md-table>
 						</md-list-item>
 						<md-list-item>
-						<md-button class="md-icon-button md-raised md-primary" v-on:click="createMapPoint(prf.id)">
+						<md-button class="md-icon-button md-raised md-primary" @click.native="createMapPoint(prf.id)">
 							<md-icon>add</md-icon>
 						</md-button>
 						</md-list-item>
@@ -427,7 +434,7 @@ body,
     </md-list-item>
 	
   </md-list>
-  <md-button class="md-raised md-accent" v-on:click="createProfile()">Agregar</md-button>
+  <md-button class="md-raised md-accent" @click.native="createProfile()">Agregar</md-button>
 	
  </div>
 <div v-if="viewTanques" >
@@ -478,7 +485,7 @@ body,
 					</md-input-container>
 				</md-table-cell>
 				<md-table-cell>
-					<md-button class="md-icon-button" v-on:click="deleteTank(tk.id)">
+					<md-button class="md-icon-button" @click.native="deleteTank(tk.id)">
 						<md-icon>delete</md-icon>
 					</md-button>
 				</md-table-cell>
@@ -486,7 +493,7 @@ body,
 			</md-table-row>
 		<md-table-body>								
 	</md-table>	
-	<md-button class="md-raised md-accent" v-on:click="createTank()">Agregar</md-button>
+	<md-button class="md-raised md-accent" @click.native="createTank()">Agregar</md-button>
 	 </md-card-content>
   </md-card>
 	
@@ -513,7 +520,7 @@ body,
 
           <div class="modal-footer">
             <slot name="footer">
-              <md-button class="md-raised md-primary" @click="alerta.show=false">OK</md-button>
+              <md-button class="md-raised md-primary" @click.native="alerta.show=false">OK</md-button>
             </slot>
           </div>
         </div>
