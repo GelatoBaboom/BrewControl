@@ -39,9 +39,10 @@ new Vue({
 	data : function(){
 	  return{
 		  config:{
-			  comport:'',
-			  availablePorts:[],
-			  refritemp:0
+			  comport: '',
+			  availablePorts: [],
+			  refritemp: 0,
+			  refri_tol: 0
 		  },
 		  fermentadores:[],
 		  tanques:[],
@@ -333,14 +334,22 @@ new Vue({
 			this.viewFerm = false;
 			this.viewProfiles=false;
 			this.viewTanques=true;
-			
+			//watch tanks
 			this.attachWatchToTanques();
 			var viewUnwatch = this.$watch('viewTanques',function(){
 				this.tanquesUnWatch();
+				unwatchConfig();
 				viewUnwatch();
 			},{
 				deep: true
 			});
+			//watch configs
+			var unwatchConfig = this.$watch('config',_.debounce(function(nVal,oVal){
+				this.$http.post('/updateConfigs.json', JSON.stringify(nVal)).then(function(reponse){}, function(){ /*error*/});
+			},500),{
+				deep: true
+			});
+			
 			
 			
 		},
@@ -391,6 +400,7 @@ new Vue({
 				console.log(response.body);
 				this.config.comport = response.body.comport;
 				this.config.refritemp = response.body.refritemp;
+				this.config.refri_tol = response.body.refri_tol;
 				
 			}, function(){ 
 				//error 

@@ -41,19 +41,14 @@ app.use('/getSerial.json', function (req, res, next) {
 });
 app.use(bodyParser.json());
 app.use('/getConfigs.json', function (req, res, next) {
-
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("SELECT * FROM	configs LIMIT 1;", function(err, resultsData, fields) {
-		if (err) 
-		{
-			throw err;
-		}
-		
-			
+		if (err){throw err;}
 		var config = {
 			id: resultsData[0].id,
 			comport: resultsData[0].comport,
-			refritemp: resultsData[0].refritemp
+			refritemp: resultsData[0].refritemp,
+			refri_tol: resultsData[0].tolerancia
 		}
 		res.json(config);
 	})
@@ -71,12 +66,19 @@ app.use('/createFerm.json', function (req, res, next) {
 	var connection = mysql.createConnection(mysqlconfig);
 	selParams = selParams.concat([req.body.nombre,req.body.tanque,req.body.perfil]);
 	connection.query("call insertFermentacion(?,?,?);",selParams, function(err, resultsData, fields) {
-		if (err) 
-		{
-			throw err;
-		}
+		if (err){throw err;}
 	})
 	connection.end();
+});
+app.use('/updateConfigs.json', function (req, res, next) {
+	console.log('update configs!');
+	var connection = mysql.createConnection(mysqlconfig);
+	var params = [];
+	params = params.concat([req.body.comport,req.body.refritemp,req.body.refri_tol]);
+	connection.query("call updateConfig(?,?,?)",params, function(err, resultsData, fields) { if (err){throw err;}});			
+		
+	connection.end();
+	res.json({'done':true});
 });
 
 app.use('/tankUpdate.json', function (req, res, next) {

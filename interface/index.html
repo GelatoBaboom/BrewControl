@@ -440,11 +440,16 @@ body,
 			<md-select name="port" id="port" v-model="config.comport">
 				<md-option v-for="p in config.availablePorts" :value="p.comName">{{p.comName}}</md-option>
 			</md-select>
+			</md-input-container>
 			<md-input-container>
 				<label>Temperatura banco de frio</label>
 				<md-input v-model="config.refritemp"></md-input>
 			</md-input-container>
-		  </md-input-container>
+			<md-input-container>	
+				<label>tolerancia</label>
+				<md-input v-model="config.refri_tol"></md-input>
+			</md-input-container>
+		  
 	  </md-card-content>
   </md-card>
   <br/>
