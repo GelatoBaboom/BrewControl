@@ -98,7 +98,7 @@ CREATE TABLE `profiles` (
   `duration` int(11) DEFAULT NULL,
   `nombre` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +116,7 @@ CREATE TABLE `registrotemp` (
   `temp_prog` decimal(3,1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ix_fermentador` (`fermentador`)
-) ENGINE=InnoDB AUTO_INCREMENT=2940 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3196 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `tanques` (
   `descripcion` varchar(200) DEFAULT NULL,
   `temp_calibration` decimal(3,1) DEFAULT '0.0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +320,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `getTempCalibration`(tCode VARCHAR(4)) RETURNS decimal(3,1)
+CREATE DEFINER=`root`@`localhost` FUNCTION `getTempCalibration`(tCode VARCHAR(5)) RETURNS decimal(3,1)
 BEGIN
 RETURN (SELECT temp_calibration FROM tanques where code = tCode limit 1);
 END ;;
@@ -435,6 +435,36 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `updateConfig` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateConfig`(comPort varchar(100), refriTemp decimal(3,1), refriTol decimal(3,1) )
+BEGIN
+declare idConfig int default 0;
+set idConfig = ifnull((select id from configs limit 1), 0);
+if(idConfig = 0) then
+	insert into configs(comport, refritemp, tolerancia) values (ComPort, refriTemp, refriTol);
+else 
+	if(comPort <> '') then
+		update configs set comport = comPort, refritemp = refriTemp, tolerancia = refriTol;
+	else
+		update configs set refritemp = refriTemp, tolerancia = refriTol;
+    end if;
+end if;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -445,4 +475,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-02 17:20:19
+-- Dump completed on 2017-03-03 18:09:00
