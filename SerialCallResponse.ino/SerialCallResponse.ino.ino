@@ -7,8 +7,9 @@
 #define RY2 12
 #define RY3 8
 #define RY4 7
-#define RY5 4
+#define RY5 6
 #define RY6 5
+#define RY7 4 //not used
 #define PUMP01 2
 
 //Setup sensor on one wire pin
@@ -32,7 +33,7 @@ boolean r3 = false;
 boolean r4 = false;
 boolean r5 = false;
 boolean r6 = false;
-boolean r7 = false;
+boolean r8 = false;
 
 void setup() {
   //setup Relay OUTPUT
@@ -162,13 +163,13 @@ void switchPump(bool error)
 {
   if((!r1&&!r2&&!r3&&!r4&&!r5)||error)
   {
-      r7=false;
+      r8=false;
       
   }else
   {
-      r7=true;
+      r8=true;
   }
-  digitalWrite(PUMP01,r7);
+  digitalWrite(PUMP01,r8);
 }
 void establishContact() {
   while (Serial.available() <= 0 && serialAvailable==false) {
