@@ -53,6 +53,9 @@ function checkFerms(){
 			checkingFerms=false;
 			tanks = [];
 			clearInterval(thisInter);
+			if(waitLoops<=0){
+				console.log('Waiting timeout...');
+			}
 		}
 		waitLoops--;
 	},500);
