@@ -143,7 +143,7 @@ function analizeTank(obj)
 					port.write('pmpOff');
 					//intenta cerrar la valvula nuevamente
 					//con delay para esperar al arduino
-					SETTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
+					setTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
 					
 				break;
 				

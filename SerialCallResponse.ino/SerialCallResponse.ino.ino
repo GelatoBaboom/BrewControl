@@ -27,13 +27,13 @@ String outData = "";
 String inData = "";         
 boolean serialAvailable = false;
 //bind an event to this variables to turn on/off relays
-boolean r1 = false;
-boolean r2 = false;
-boolean r3 = false;
-boolean r4 = false;
-boolean r5 = false;
-boolean r6 = false;
-boolean r8 = false;
+boolean r1 = true;
+boolean r2 = true;
+boolean r3 = true;
+boolean r4 = true;
+boolean r5 = true;
+boolean r6 = true;
+boolean r8 = true;
 
 void setup() {
   //setup Relay OUTPUT
@@ -44,9 +44,10 @@ void setup() {
    pinMode(RY5, OUTPUT);
    pinMode(RY6, OUTPUT);
    pinMode(PUMP01, OUTPUT);
-   
+   setClose();
   //sensors begin
   sensors.begin();
+  
   // set the resolution to 10 bit (Can be 9 to 12 bits .. lower is faster)
   sensors.setResolution(sTemp01, 10);
   sensors.setResolution(sTemp02, 10);
@@ -54,7 +55,7 @@ void setup() {
   sensors.setResolution(sTemp04, 10);
   sensors.setResolution(sTemp05, 10);
   sensors.setResolution(sTemp06, 10);
-  
+
   // start serial port at 9600 bps:
   Serial.begin(9600);
   outData.reserve(200);
@@ -161,13 +162,13 @@ void loop() {
 }
 void switchPump(bool error)
 {
-  if((!r1&&!r2&&!r3&&!r4&&!r5)||error)
+  if((r1&&r2&&r3&&r4&&r5)||error)
   {
-      r8=false;
+      r8=true;
       
   }else
   {
-      r8=true;
+      r8=false;
   }
   digitalWrite(PUMP01,r8);
 }
@@ -186,5 +187,15 @@ float getTemp(DeviceAddress deviceAddress)
    //throw error
   } 
   return  tempC;
+}
+void setClose()
+{
+  digitalWrite(RY1,HIGH);  
+  digitalWrite(RY2,HIGH);  
+  digitalWrite(RY3,HIGH);  
+  digitalWrite(RY4,HIGH);  
+  digitalWrite(RY5,HIGH);  
+  digitalWrite(RY6,HIGH);  
+  digitalWrite(PUMP01,HIGH);
 }
 
