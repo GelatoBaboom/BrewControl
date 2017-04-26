@@ -93,7 +93,7 @@ function initializePort(){
 					analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
 				}	
 			}
-			port.flush();
+			//port.flush();
 				
 		});
 	})
