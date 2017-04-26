@@ -128,7 +128,7 @@ function analizeTank(obj)
 			conn2.end();
 			//chequea las alertas aca abajo antes de enviar datos al arduino para saber si debe apagar algo
 			//zona
-			
+			//los obj.r estan al reves, porque los relays funcionan al reves...
 			var error = false;
 			switch(r.alerta)
 			{
@@ -143,7 +143,7 @@ function analizeTank(obj)
 					port.write('pmpOff');
 					//intenta cerrar la valvula nuevamente
 					//con delay para esperar al arduino
-					setTimeout(function(){if(obj.r == 1 ){port.write(obj.f+'r0');}},1000);
+					setTimeout(function(){if(obj.r == 0 ){port.write(obj.f+'r0');}},1000);
 					
 				break;
 				
@@ -161,15 +161,16 @@ function analizeTank(obj)
 			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 			console.log("temp ref: " + tempRef);
 			if(!error){
+				//los obj.r estan al reves, porque los relays funcionan al reves...
 				if(tankTemp>tempRef)
 				{
-					if(obj.r == 0 ){
+					if(obj.r == 1 ){
 						port.write(obj.f+'r');
 						console.log("Turn On R: " + obj.f);
 					}
 				}else
 				{
-					if(obj.r == 1 ){
+					if(obj.r == 0 ){
 						port.write(obj.f+'r');
 						console.log("Turn Off R: " + obj.f);
 					}
@@ -194,16 +195,17 @@ function analizeTank(obj)
 			
 			//Chequeo de temperatura
 			var progTolerancia = r.tolerancia;
-			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
+			//los obj.r estan al reves, porque los relays funcionan al reves...
+			var tempRef = obj.r == 1 ? progTemp: progTemp-progTolerancia;
 			if(tankTemp>tempRef)
 			{
-				if(obj.r == 0 ){
+				if(obj.r == 1 ){
 					port.write(obj.f+'r0');
 					console.log("Turn On R: " + obj.f);
 				}
 			}else
 			{
-				if(obj.r == 1 ){
+				if(obj.r == 0 ){
 					port.write(obj.f+'r0');
 					console.log("Turn Off R: " + obj.f);
 				}
