@@ -86,7 +86,9 @@ function initializePort(){
 				
 			}else{
 				console.log('Data: ' + data.toString());
-				analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
+				if(data.toString().startsWith('{')){
+					analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
+				}	
 			}
 			port.flush();
 				
