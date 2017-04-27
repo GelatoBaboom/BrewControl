@@ -27,11 +27,13 @@ String outData = "";
 String inData = "";         
 boolean serialAvailable = false;
 //bind an event to this variables to turn on/off relays
+boolean error = false;
 boolean r1 = true;
 boolean r2 = true;
 boolean r3 = true;
 boolean r4 = true;
 boolean r5 = true;
+boolean r6 = true;//not used
 boolean r7 = true;
 boolean r8 = true;
 
@@ -142,11 +144,14 @@ void loop() {
     //Decide si prender la bomba
      if(inData.startsWith("pmpOff"))
     {
-      switchPump(true);
+      error = true;
+      switchPump();
       outData ="n/r";
     }else
     {
-      switchPump(false);
+      //esto requiere que se resetee manualmente
+      //error = false;
+      switchPump();
     }
     //response
     if(outData=="")
@@ -162,7 +167,7 @@ void loop() {
   Serial.flush();
   delay(100);
 }
-void switchPump(bool error)
+void switchPump()
 {
   if((r1&&r2&&r3&&r4&&r5)||error)
   {
@@ -193,12 +198,21 @@ float getTemp(DeviceAddress deviceAddress)
 void setClose()
 {
   digitalWrite(RY1,HIGH);  
+  r1=true;
   digitalWrite(RY2,HIGH);  
+  r2=true;
   digitalWrite(RY3,HIGH);  
+  r3=true;
   digitalWrite(RY4,HIGH);  
+  r4=true;
   digitalWrite(RY5,HIGH);  
+  r5=true;
   digitalWrite(RY6,HIGH);  
+  r6=true;
   digitalWrite(RY7,HIGH);  
+  r7=true;
   digitalWrite(PUMP01,HIGH);
+  r8=true;
 }
+
 

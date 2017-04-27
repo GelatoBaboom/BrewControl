@@ -37,7 +37,7 @@ function checkFerms(){
 			if(tanks[i].status == 'pending')
 			{
 				tanks[i].status = 'waiting';
-				setTimeout(function(){writePort(tanks[i].tanque_code)},1000);
+				setTimeout(function(){writePort(tanks[i].tanque_code)},2000);
 				clearArray = false;
 				waitLoops = COUNT_LOOPS;
 				break;
@@ -207,13 +207,13 @@ function analizeTank(obj)
 			if(tankTemp>tempRef)
 			{
 				if(obj.r == 1 ){
-					port.write(obj.f+'r0');
+					port.write(obj.f+'r');
 					console.log("Turn On R: " + obj.f);
 				}
 			}else
 			{
 				if(obj.r == 0 ){
-					port.write(obj.f+'r0');
+					port.write(obj.f+'r');
 					console.log("Turn Off R: " + obj.f);
 				}
 			}
