@@ -9,7 +9,7 @@
 #define RY4 7
 #define RY5 6
 #define RY6 5 //not used
-#define RY7 4 //not used
+#define RY7 4 
 #define PUMP01 2
 
 //Setup sensor on one wire pin
@@ -32,6 +32,7 @@ boolean r2 = true;
 boolean r3 = true;
 boolean r4 = true;
 boolean r5 = true;
+boolean r7 = true;
 boolean r8 = true;
 
 void setup() {
@@ -42,7 +43,7 @@ void setup() {
    pinMode(RY4, OUTPUT);
    pinMode(RY5, OUTPUT);
    pinMode(RY6, OUTPUT);//not used
-   pinMode(RY7, OUTPUT);//not used
+   pinMode(RY7, OUTPUT);
    pinMode(PUMP01, OUTPUT);
    setClose();
   //sensors begin
@@ -99,7 +100,7 @@ void loop() {
     }
      if(inData.startsWith("bf1t"))
     {
-      outData = "{\"f\":\"bf1\",\"t\":" + String(getTemp(sTemp06)) + ",\"r\":"+String(r8)+"}";
+      outData = "{\"f\":\"bf1\",\"t\":" + String(getTemp(sTemp06)) + ",\"r\":"+String(r7)+"}";
     }
     //realays
     if(inData.startsWith("tank1r"))
@@ -134,8 +135,8 @@ void loop() {
     }
      if(inData.startsWith("bf1r"))
     {
-      r8=!r8;
-      digitalWrite(PUMP01,r8);
+      r7=!r7;
+      digitalWrite(RY7,r7);
       outData ="n/r";
     }
     //Decide si prender la bomba
@@ -158,7 +159,7 @@ void loop() {
   }
   outData="";
   inData="";
-  //Serial.flush();
+  Serial.flush();
   delay(100);
 }
 void switchPump(bool error)

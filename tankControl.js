@@ -10,6 +10,7 @@ setInterval(function(){
 	if(readyToSerialWrite){
 		
 		if(tanks.length==0){
+			console.log('----------INICIO DEL LOOP-----------------');
 			getFermentadores();
 		}else{
 			if(!checkingFerms){
@@ -23,7 +24,7 @@ initializePort();
 //functions
 var port = null;
 function checkFerms(){
-	console.log('chequear los tanks');
+	console.log('---------------Chequear los tanks-----------------------');
 	console.log(tanks);
 	checkingFerms=true;
 	var COUNT_LOOPS = 20;
@@ -36,7 +37,7 @@ function checkFerms(){
 			if(tanks[i].status == 'pending')
 			{
 				tanks[i].status = 'waiting';
-				writePort(tanks[i].tanque_code);
+				setTimeout(function(){writePort(tanks[i].tanque_code)},1000);
 				clearArray = false;
 				waitLoops = COUNT_LOOPS;
 				break;
@@ -64,7 +65,8 @@ function checkFerms(){
 
 function writePort(argTankCode){
 	console.log('Writting: ' +argTankCode+'t' );
-	port.write(argTankCode+'t', function(err){
+	port.flush();
+	port.write(Buffer.from(argTankCode+'t'), function(err){
 		if(err){
 			console.log('Error on write: ' + err.message );
 		}
@@ -93,7 +95,7 @@ function initializePort(){
 					analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
 				}	
 			}
-			//port.flush();
+			port.flush();
 				
 		});
 	})
@@ -276,7 +278,7 @@ function getFermentadores(){
 			throw err;
 		}
 		//console.log(resultsData)
-		
+		tanks.push({id:0,tanque_code:'bf1', alerta:'00000', status : 'pending'});
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var ferm = {
@@ -287,7 +289,7 @@ function getFermentadores(){
 			}
 			tanks.push(ferm);
 		}
-		tanks.push({id:0,tanque_code:'bf1', alerta:'00000', status : 'pending'});
+		
 	})
 	connection.end();
 }
