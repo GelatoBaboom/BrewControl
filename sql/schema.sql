@@ -64,7 +64,7 @@ CREATE TABLE `fermentadores` (
   `notas` text,
   `alerta` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +83,7 @@ CREATE TABLE `mapatemp` (
   `profile` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IX_profile` (`profile`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `profiles` (
   `duration` int(11) DEFAULT NULL,
   `nombre` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +116,7 @@ CREATE TABLE `registrotemp` (
   `temp_prog` decimal(3,1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ix_fermentador` (`fermentador`)
-) ENGINE=InnoDB AUTO_INCREMENT=3196 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5429 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +150,13 @@ CREATE TABLE `tanques` (
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `checkTempErrorNotCooling`(fermId int) RETURNS int(11)
 BEGIN
-RETURN  (SELECT min(temp_reg)> max(temp_prog) as tempHighError FROM registrotemp where fermentador = fermId and timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE)) < timestamp(date)  order by id desc);
+declare mindate datetime;
+set mindate = (select min(date) FROM registrotemp where fermentador = fermId);
+if(TIMESTAMPDIFF(MINUTE,mindate,NOW()) > 20) then 
+	RETURN  (SELECT min(temp_reg)> max(temp_prog) as tempHighError FROM registrotemp where fermentador = fermId and timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE)) < timestamp(date)  order by id desc);
+else 
+	RETURN 0;
+END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -475,4 +481,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-03 18:09:00
+-- Dump completed on 2017-05-02 18:03:30

@@ -3,7 +3,7 @@
 #include <DallasTemperature.h>
 #define ONE_WIRE_BUS_PIN 3
 //relays
-#define RY1 13
+#define RY1 11
 #define RY2 12
 #define RY3 8
 #define RY4 7
