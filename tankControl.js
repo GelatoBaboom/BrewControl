@@ -76,39 +76,38 @@ function writePort(argTankCode){
 		}
 	});
 }
-
 function initializePort(){
-	try{
-	var connection = mysql.createConnection(mysqlconfig);
-	connection.query('SELECT * FROM configs LIMIT 1;',function(err, results, fields) {
-		if (err) 
-		{
-			throw err;
-		}
-		var COM_PORT = results[0].comport;
-		port = new SerialPort(COM_PORT, { autoOpen: true, baudRate: 9600 });
+		var connection = mysql.createConnection(mysqlconfig);
+		connection.query('SELECT * FROM configs LIMIT 1;',function(err, results, fields) {
+			try{
+				if (err) 
+				{
+					throw err;
+				}
+				var COM_PORT = results[0].comport;
+				port = new SerialPort(COM_PORT, { autoOpen: true, baudRate: 9600 });
 
-		port.on('data', function (data) {
-			if(data.toString().match(/ready/i)){
-				readyToSerialWrite  = true;
-				console.log('Port: ' + data.toString());
-				//linea de abajo solo test
-				
-			}else{
-				console.log('Data: ' + data.toString());
-				if(data.toString().startsWith('{')){
-					analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
-				}	
+				port.on('data', function (data) {
+					if(data.toString().match(/ready/i)){
+						readyToSerialWrite  = true;
+						console.log('Port: ' + data.toString());
+						//linea de abajo solo test
+						
+					}else{
+						console.log('Data: ' + data.toString());
+						if(data.toString().startsWith('{')){
+							analizeTank(JSON.parse(data.toString().replace(/\n/,'').replace(/\r/,'')));
+						}	
+					}
+					port.flush();
+			});
+			}catch(err)
+			{
+				console.log('Error: ' + err.message);
+				//initializePort()
 			}
-			port.flush();
-				
-		});
-	})
-	connection.end();
-	}catch(err)
-	{
-		console.log('Error: ' + err.message);
-	}
+		})
+		connection.end();
 }
 
 function analizeTank(obj)
@@ -278,10 +277,10 @@ function checkFailures(obj){
 		connection.end();
 }
 function getFermentadores(){
-	try{
-		var connection = mysql.createConnection(mysqlconfig);
-		var qry="SELECT f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta FROM fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id WHERE f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
-		connection.query(qry, function(err, resultsData, fields) {
+	var connection = mysql.createConnection(mysqlconfig);
+	var qry="SELECT f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta FROM fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id WHERE f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
+	connection.query(qry, function(err, resultsData, fields) {
+		try{
 			if (err) 
 			{
 				throw err;
@@ -298,12 +297,12 @@ function getFermentadores(){
 				}
 				tanks.push(ferm);
 			}
-			
-		})
-		connection.end();
-	}catch(err)
-	{
-		console.log('Error: ' + err.message);		
-	}
+		}catch(err)
+		{
+			console.log('Error: ' + err.message);		
+		}
+	})
+	connection.end();
+	
 }
 
