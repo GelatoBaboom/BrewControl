@@ -258,7 +258,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 	var selParams = [];
 	selParams = selParams.concat([q.id]);
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.notas as notas, (select rt.date from rt limit 1)as lastdate  from [fermentadores] as f INNER JOIN [profiles] as p on f.profile = p.id INNER JOIN [tanques] as t on t.id = f.tanque LEFT JOIN [registrotemp] as rt on f.id = rt.fermentador where f.id = ?;",selParams, function(err, resultsData, fields) {
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.notas from fermentadores as f INNER JOIN profiles as p on f.profile = p.id INNER JOIN tanques as t on t.id = f.tanque where f.id = ?;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			//throw err;
@@ -277,8 +277,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 				currentTemp: resultsData[0].currentTemp,
 				progTemp: resultsData[0].progTemp,
 				promTemp: resultsData[0].promTemp,
-				notas: resultsData[0].notas,
-				lastdate: resultsData[0].lastdate
+				notas: resultsData[0].notas
 			}
 			res.json(ferm);
 		}	
@@ -293,7 +292,7 @@ app.use('/getFermData.json', function (req, res, next) {
 	console.log((q.activo=='1'?true:false));
 	selParams = selParams.concat([(q.activo=='1'?true:false)]);
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.alerta, a.nombre as alerta_name, a.descripcion as alerta_desc,(select rt.date from rt limit 1)as lastdate from fermentadores as f INNER JOIN profiles as p on f.profile = p.id INNER JOIN tanques as t on t.id = f.tanque LEFT JOIN alertas as a on a.id = f.alerta, LEFT JOIN [registrotemp] as rt on f.id = rt.fermentador where f.activo = ?;",selParams, function(err, resultsData, fields) {
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile , f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.alerta, a.nombre as alerta_name, a.descripcion as alerta_desc, getLastUpdate(f.id) as lastupdate  FROM fermentadores as f INNER JOIN profiles as p on f.profile = p.id INNER JOIN tanques as t on t.id = f.tanque LEFT JOIN alertas as a on a.id = f.alerta where f.activo = ?;",selParams, function(err, resultsData, fields) {
 		if (err) 
 		{
 			//throw err;
@@ -319,7 +318,7 @@ app.use('/getFermData.json', function (req, res, next) {
 				alerta: resultsData[i].alerta,
 				alerta_name: resultsData[i].alerta_name,
 				alerta_desc: resultsData[i].alerta_desc,
-				lastdate: resultsData[0].lastdate
+				lastupdate: resultsData[i].lastupdate
 			}
 			ferms.push(ferm);
 		}
