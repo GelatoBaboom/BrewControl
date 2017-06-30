@@ -226,7 +226,7 @@ body,
 			<div class="md-list-text-container">
 				<span>{{frm.tanque_descripcion}} - {{frm.nombre_fermentacion}}</span>
 				<p>Perf: {{frm.profile}}, {{frm.total_hours}}/{{frm.duration}}hs</p>
-				<p>Temp: <b>{{frm.currentTemp}}</b>ºC</p>
+				<p>Temp: <b>{{frm.currentTemp}}</b>ºC - Ultima act.: {{frm.lastupdate}}</p>
 			</div>
 			<md-button v-if="frm.alerta==1" @click.native="gimmeError(frm.alerta_name, frm.alerta_desc)" class="innerButton">
 				<md-icon class="md-accent" >error</md-icon>
