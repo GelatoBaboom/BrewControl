@@ -11,6 +11,7 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser')
 var serveStatic = require('serve-static')
 var url = require('url');
+var moment = require('moment');
 
 var httpport = 85;
 //app.use('/get/ticker.json', gettableexpress.expressjson("tickers"));
@@ -318,7 +319,7 @@ app.use('/getFermData.json', function (req, res, next) {
 				alerta: resultsData[i].alerta,
 				alerta_name: resultsData[i].alerta_name,
 				alerta_desc: resultsData[i].alerta_desc,
-				lastupdate: resultsData[i].lastupdate
+				lastupdate: moment().diff(resultsData[i].lastupdate, 'minutes') 
 			}
 			ferms.push(ferm);
 		}
