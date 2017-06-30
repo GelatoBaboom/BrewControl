@@ -277,7 +277,8 @@ app.use('/getFermDataById.json', function (req, res, next) {
 				currentTemp: resultsData[0].currentTemp,
 				progTemp: resultsData[0].progTemp,
 				promTemp: resultsData[0].promTemp,
-				notas: resultsData[0].notas
+				notas: resultsData[0].notas,
+				lastdate: resultsData[0].lastdate
 			}
 			res.json(ferm);
 		}	
