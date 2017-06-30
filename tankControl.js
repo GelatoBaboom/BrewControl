@@ -24,43 +24,47 @@ initializePort();
 //functions
 var port = null;
 function checkFerms(){
-	console.log('---------------Chequear los tanks-----------------------');
-	console.log(tanks);
-	checkingFerms=true;
-	var COUNT_LOOPS = 20;
-	var waitLoops = COUNT_LOOPS;
-	
-	var thisInter =  setInterval(function(){
-		var clearArray=true;
-		for(var i = 0; i < tanks.length; i++)
-		{
-			if(tanks[i].status == 'pending')
+	try{
+		console.log('---------------Chequear los tanks-----------------------');
+		console.log(tanks);
+		checkingFerms=true;
+		var COUNT_LOOPS = 20;
+		var waitLoops = COUNT_LOOPS;
+		
+		var thisInter =  setInterval(function(){
+			var clearArray=true;
+			for(var i = 0; i < tanks.length; i++)
 			{
-				tanks[i].status = 'waiting';
-				setTimeout(function(){writePort(tanks[i].tanque_code)},2000);
-				clearArray = false;
-				waitLoops = COUNT_LOOPS;
-				break;
-				
+				if(tanks[i].status == 'pending')
+				{
+					tanks[i].status = 'waiting';
+					setTimeout(function(){writePort(tanks[i].tanque_code)},2000);
+					clearArray = false;
+					waitLoops = COUNT_LOOPS;
+					break;
+					
+				}
+				else if(tanks[i].status == 'waiting')
+				{
+					clearArray = false;
+					break;
+				}
 			}
-			else if(tanks[i].status == 'waiting')
+			if(clearArray || waitLoops<=0)			
 			{
-				clearArray = false;
-				break;
+				checkingFerms=false;
+				tanks = [];
+				clearInterval(thisInter);
+				if(waitLoops<=0){
+					console.log('Waiting timeout...');
+				}
 			}
-		}
-		if(clearArray || waitLoops<=0)			
-		{
-			checkingFerms=false;
-			tanks = [];
-			clearInterval(thisInter);
-			if(waitLoops<=0){
-				console.log('Waiting timeout...');
-			}
-		}
-		waitLoops--;
-	},500);
-	
+			waitLoops--;
+		},500);
+	}catch(err)
+	{
+		console.log('Error: ' + err.message);		
+	}
 }
 
 function writePort(argTankCode){
@@ -74,6 +78,7 @@ function writePort(argTankCode){
 }
 
 function initializePort(){
+	try{
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query('SELECT * FROM configs LIMIT 1;',function(err, results, fields) {
 		if (err) 
@@ -100,6 +105,10 @@ function initializePort(){
 		});
 	})
 	connection.end();
+	}catch(err)
+	{
+		console.log('Error: ' + err.message);
+	}
 }
 
 function analizeTank(obj)
@@ -269,28 +278,32 @@ function checkFailures(obj){
 		connection.end();
 }
 function getFermentadores(){
-	
-	var connection = mysql.createConnection(mysqlconfig);
-	var qry="SELECT f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta FROM fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id WHERE f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
-	connection.query(qry, function(err, resultsData, fields) {
-		if (err) 
-		{
-			throw err;
-		}
-		//console.log(resultsData)
-		tanks.push({id:0,tanque_code:'bf1', alerta:'00000', status : 'pending'});
-		for(var i = 0; i < resultsData.length; i++)
-		{
-			var ferm = {
-				id: resultsData[i].id,
-				tanque_code: resultsData[i].tanque_code,
-				alerta: resultsData[i].alerta,
-				status : 'pending'
+	try{
+		var connection = mysql.createConnection(mysqlconfig);
+		var qry="SELECT f.id as id, t.code as tanque_code, ifnull(a.code,'00000') as alerta FROM fermentadores as f inner join profiles as p on f.profile = p.id inner join tanques as t on t.id = f.tanque left join alertas as a on f.alerta = a.id WHERE f.activo = 1 and getHours(f.fecha_inicio) <= p.duration;";
+		connection.query(qry, function(err, resultsData, fields) {
+			if (err) 
+			{
+				throw err;
 			}
-			tanks.push(ferm);
-		}
-		
-	})
-	connection.end();
+			//console.log(resultsData)
+			tanks.push({id:0,tanque_code:'bf1', alerta:'00000', status : 'pending'});
+			for(var i = 0; i < resultsData.length; i++)
+			{
+				var ferm = {
+					id: resultsData[i].id,
+					tanque_code: resultsData[i].tanque_code,
+					alerta: resultsData[i].alerta,
+					status : 'pending'
+				}
+				tanks.push(ferm);
+			}
+			
+		})
+		connection.end();
+	}catch(err)
+	{
+		console.log('Error: ' + err.message);		
+	}
 }
 
