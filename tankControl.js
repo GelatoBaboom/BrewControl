@@ -109,7 +109,7 @@ function initializePort(){
 			}catch(err)
 			{
 				console.log('Error: ' + err.message);
-				//initializePort()
+				initializePort()
 			}
 		})
 		connection.end();
