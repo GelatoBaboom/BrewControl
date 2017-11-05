@@ -7,16 +7,21 @@ var readyToSerialWrite = false;
 var tanks = [];
 var checkingFerms = false;
 setInterval(function(){
-	if(readyToSerialWrite){
-		
-		if(tanks.length==0){
-			console.log('----------INICIO DEL LOOP-----------------');
-			getFermentadores();
-		}else{
-			if(!checkingFerms){
-				checkFerms();
+	try{
+		if(readyToSerialWrite){
+			
+			if(tanks.length==0){
+				console.log('----------INICIO DEL LOOP-----------------');
+				getFermentadores();
+			}else{
+				if(!checkingFerms){
+					checkFerms();
+				}
 			}
 		}
+	}catch(err)
+	{
+		console.log('Error: ' + err.message);		
 	}
 },5000);
 initializePort();
