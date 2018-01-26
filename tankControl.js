@@ -198,7 +198,7 @@ function analizeTank(obj)
 			}
 		})
 		connection.end();
-		checkFailures(obj);
+		//checkFailures(obj);
 	}else if(obj.f.startsWith('bf'))
 	{
 		var connection = mysql.createConnection(mysqlconfig);
