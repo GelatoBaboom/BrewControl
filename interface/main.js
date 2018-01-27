@@ -104,7 +104,7 @@ new Vue({
 			
 				this.getFerms(0);
 				this.getBancoFrio();
-			
+				
 			}.bind(this),5000);
 			
 		},
@@ -124,6 +124,7 @@ new Vue({
 			this.refreshInterval =  setInterval(function(){
 			
 				this.getFerms(1);
+				this.getBancoFrio();
 			
 			}.bind(this),5000);
 		}, 
