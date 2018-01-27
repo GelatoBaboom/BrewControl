@@ -178,6 +178,7 @@ function analizeTank(obj)
 			var progTolerancia = r.tolerancia;
 			console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal); 
 			console.log("temp calibrada: " + tankTemp);
+			//los obj.r estan al reves, porque los relays funcionan al reves...
 			var tempRef = obj.r == 1 ? progTemp: progTemp-progTolerancia;
 			console.log("temp ref: " + tempRef);
 			if(progTemp==0)console.log("No hay valor de temperatura de referencia en el perfil!!");
@@ -213,6 +214,13 @@ function analizeTank(obj)
 			
 			var progTemp = r.refritemp;
 			var tankTemp = obj.t;
+			
+			var updateParams = [];
+			var updQry = "UPDATE bancofrio SET temperatura = ? WHERE code =?;";
+			updateParams = updateParams.concat([obj.t,obj.f]);
+			var conn2 = mysql.createConnection(mysqlconfig);
+			conn2.query(updQry,updateParams,function(err, resultsData, fields) {})
+			conn2.end();
 			
 			//Chequeo de temperatura
 			var progTolerancia = r.tolerancia;
