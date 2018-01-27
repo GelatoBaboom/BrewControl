@@ -61,6 +61,7 @@ new Vue({
 			  name:'',
 			  desc:''
 		  },
+		  tempBancoFrio:0,
 		  ready:true,
 		  viewList:true,
 		  viewAddNew:false,
@@ -125,6 +126,14 @@ new Vue({
 			
 			}.bind(this),5000);
 		}, 
+		getBancoFrio:function(active){
+			this.$http.get('/getBancoFrio.json?code=bf1').then(function(response){
+				this.tempBancoFrio = response.body.temp;
+				return this.tempBancoFrio;
+			}, function(){ 
+				//error 
+			});
+		},
 		getFerms:function(active){
 			this.$http.get('/getFermData.json?activo='+active).then(function(response){
 				this.fermentadores = response.body;

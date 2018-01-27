@@ -41,6 +41,22 @@ app.use('/getSerial.json', function (req, res, next) {
 	
 });
 app.use(bodyParser.json());
+
+app.use('/getBancoFrio.json', function (req, res, next) {
+	var connection = mysql.createConnection(mysqlconfig);
+	var selParams = [];
+	selParams = selParams.concat([req.body.code]);
+	connection.query("SELECT * FROM	bancofrio WHERE code = ?;", function(err, resultsData, fields) {
+		if (err){throw err;}
+		var obj = {
+			id: resultsData[0].id,
+			temp: resultsData[0].temperatura
+		}
+		res.json(obj);
+	})
+	connection.end();
+});
+
 app.use('/getConfigs.json', function (req, res, next) {
 	var connection = mysql.createConnection(mysqlconfig);
 	connection.query("SELECT * FROM	configs LIMIT 1;", function(err, resultsData, fields) {
