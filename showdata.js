@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 
 app.use('/getBancoFrio.json', function (req, res, next) {
 	var url = require('url');
-	var q = url.parse(req.code, true).query;
+	var q = url.parse(req.url, true).query;
 	var connection = mysql.createConnection(mysqlconfig);
 	var selParams = [];
 	selParams = selParams.concat([q.code]);
