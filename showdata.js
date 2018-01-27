@@ -48,7 +48,7 @@ app.use('/getBancoFrio.json', function (req, res, next) {
 	var connection = mysql.createConnection(mysqlconfig);
 	var selParams = [];
 	selParams = selParams.concat([q.code]);
-	connection.query("SELECT * FROM	bancofrio WHERE code = ?;", function(err, resultsData, fields) {
+	connection.query("SELECT * FROM bancofrio WHERE code = ?;",selParams, function(err, resultsData, fields) {
 		if (err){throw err;}
 		var obj = {
 			id: resultsData[0].id,
