@@ -52,7 +52,7 @@ app.use('/getBancoFrio.json', function (req, res, next) {
 		if (err){throw err;}
 		var obj = {
 			id: resultsData[0].id,
-			temp: resultsData[0].temperatura
+			temperatura: resultsData[0].temperatura
 		}
 		res.json(obj);
 	})
