@@ -180,7 +180,8 @@ function analizeTank(obj)
 			console.log("temp calibrada: " + tankTemp);
 			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 			console.log("temp ref: " + tempRef);
-			if(!error){
+			if(obj.t==0)console.log("No hay valor de temperatura de referencia en el perfil!!");
+			if(!error && obj.t > 0){
 				//los obj.r estan al reves, porque los relays funcionan al reves...
 				if(tankTemp>tempRef)
 				{
