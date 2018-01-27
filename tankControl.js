@@ -176,7 +176,7 @@ function analizeTank(obj)
 			}
 			//Chequeo de temperatura
 			var progTolerancia = r.tolerancia;
-			console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal);
+			console.log("temp real: " + obj.t + " tol: " + r.tolerancia + " cal: " + r.cal); 
 			console.log("temp calibrada: " + tankTemp);
 			var tempRef = obj.r == 0 ? progTemp: progTemp-progTolerancia;
 			console.log("temp ref: " + tempRef);
