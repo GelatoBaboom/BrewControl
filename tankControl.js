@@ -213,7 +213,7 @@ function analizeTank(obj)
 			var r = results[0];
 			
 			var progTemp = r.refritemp;
-			var tankTemp = obj.t;
+			var tankTemp = obj.t; 
 			
 			var updateParams = [];
 			var updQry = "UPDATE bancofrio SET temperatura = ? WHERE code =?;";
