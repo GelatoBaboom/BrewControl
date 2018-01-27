@@ -129,7 +129,7 @@ new Vue({
 		}, 
 		getBancoFrio:function(active){
 			this.$http.get('/getBancoFrio.json?code=bf1').then(function(response){
-				this.tempBancoFrio = response.body.temp;
+				this.tempBancoFrio = response.body.temperatura;
 				return this.tempBancoFrio;
 			}, function(){ 
 				//error 
