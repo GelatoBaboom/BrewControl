@@ -73,11 +73,11 @@ function checkFerms(){
 }
 
 function writePort(argTankCode){
-	console.log('Writting: ' +argTankCode+'t' );
+	console.log('Serial get: ' +argTankCode+'t' );
 	port.flush();
 	port.write(Buffer.from(argTankCode+'t'), function(err){
 		if(err){
-			console.log('Error on write: ' + err.message );
+			console.log('Error on serial get: ' + err.message );
 		}
 	});
 }
