@@ -103,6 +103,7 @@ new Vue({
 			this.refreshInterval =  setInterval(function(){
 			
 				this.getFerms(0);
+				this.getBancoFrio();
 			
 			}.bind(this),5000);
 			
