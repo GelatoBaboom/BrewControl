@@ -33,10 +33,9 @@ setInterval(function () {
 					}
 				}
 			}
-		}
 		})
 		connection.end();
-	}, 60000);
+	}}, 60000);
 
 	setInterval(function () {
 		try {
