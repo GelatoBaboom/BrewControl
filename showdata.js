@@ -347,7 +347,54 @@ app.use('/getFermData.json', function (req, res, next) {
 	connection.end();
 	
 });
-
+app.use('/getFermGraphData.json', function (req, res, next) {
+	var url = require('url');
+	var mysqlconfig = require("./dbconfig.js").out;
+	var streams = require('memory-streams');
+	var mysql = require('mysql');
+	var csv = require("fast-csv");
+	
+	var queryData = url.parse(req.url, true).query;
+	
+	//get csv data
+	var csvdataCsv = '';
+	var queryData = url.parse(req.url, true).query;
+	var params = [queryData.id];
+	var csvconfig = {headers: true};
+		
+	var connection = mysql.createConnection(mysqlconfig);
+	connection.connect();
+	var query = "select * from registrotemp where fermentador = ?";
+	
+	connection.query(query, params, function(err, results, fields) {
+		if (err) 
+		{
+			throw err;
+		}
+		var writer = new streams.WritableStream();
+		var csvStream = csv.createWriteStream(csvconfig);
+		csvStream.pipe(writer);
+		var resultsData = results
+		var obj = {labels:[], values:[]};
+		for(var i = 0; i < resultsData.length; i++)
+		{
+			var csvdata = resultsData[i];
+			var date = csvdata.date.getFullYear() + "-" + (csvdata.date.getMonth() + 1) + "-" + csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() + ":" + csvdata.date.getSeconds();
+			console.log(date);
+			console.log(csvdata.temp_reg);
+			
+			obj.labels.push(date);
+			obj.values.push(csvdata.temp_reg);
+		}
+		
+		
+		res.write(JSON.stringify(obj));
+		res.end()
+	
+		//next();
+	});
+	connection.end();
+});
 app.use('/getSvg.svg', function (req, res, next) {
 	var url = require('url');
 	var mysqlconfig = require("./dbconfig.js").out;

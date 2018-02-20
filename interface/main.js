@@ -9,12 +9,17 @@ requirejs.config({
 	  "vue-resource": "//cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min",
       "moment": "//cdn.jsdelivr.net/momentjs/2.17.0/moment-with-locales.min",
 	  "polyfill": "//cdn.polyfill.io/v2/polyfill.min.js",
-	  "loadsh":"//unpkg.com/lodash@4.13.1/lodash.min"
-	  
+	  "loadsh":"//unpkg.com/lodash@4.13.1/lodash.min",
+	  "chartRender":"/interface/chartRender",
+	  "chartjs":"/interface/chartjs/Chart.min"
+	},
+	"shim":{
+		"chartRender": [ "jquery", "chartjs"]
+		
 	}
 });
-requirejs (["polyfill", "vue", "vue-material","vue-resource","loadsh"],
-function(Polyfill, Vue, VueMaterial, VueResource,loadsh ){
+requirejs (["polyfill", "vue", "vue-material","vue-resource","loadsh","jquery","chartRender"],
+function(Polyfill, Vue, VueMaterial, VueResource,loadsh, jquery, chartRender ){
 Vue.use(VueMaterial)
 Vue.use(VueResource)
 

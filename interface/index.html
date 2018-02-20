@@ -333,7 +333,10 @@ body,
 	<md-tabs md-fixed v-if="viewFerm">
 	  <md-tab id="grafico" md-label="Grafico" >
 			<md-subheader class="md-inset">Grafico progresion temperatura</md-subheader>
-			<object  v-bind:data="'/getSvg.svg?id=' + fermSel.id " type="image/svg+xml" style="overflow-x:scroll;"></object>
+			<div id="chart" class="demo-placeholder">
+			<input id="fermValId" type="hidden" :value="selectedFerm.id" />
+                            <canvas id="speedChart" width="600" height="220"></canvas>
+                        </div>
 	  </md-tab>
 	  <md-tab id="detalles" md-label="Detalles">
 		<md-card md-with-hover >
