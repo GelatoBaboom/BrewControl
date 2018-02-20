@@ -4,7 +4,7 @@ var chartCnf = {
 	stacked: false,
 	title: {
 		display: true,
-		text: 'Grafico de cantidad de enviados y apertura'
+		text: 'Grafico de temperatura'
 	},
 	scales: {
 		yAxes: [{
@@ -19,7 +19,7 @@ var chartCnf = {
 	var speedData = {
 		labels: [],
 		datasets: [{
-				label: "Cantidad enviados",
+				label: "Temperatura",
 				data: [],
 				borderColor: "#0368AE",
 				lineTension: 0.3,
