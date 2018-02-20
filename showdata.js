@@ -375,7 +375,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 		var csvStream = csv.createWriteStream(csvconfig);
 		csvStream.pipe(writer);
 		var resultsData = results
-		var obj = {labels:[], values:[]};
+		var obj = {labels:[], values:[], valuesExp:[]};
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var csvdata = resultsData[i];
@@ -385,6 +385,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			
 			obj.labels.push(date);
 			obj.values.push(csvdata.temp_reg);
+			obj.valuesExp.push(csvdata.temp_prog);
 		}
 		
 		
