@@ -324,17 +324,19 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "loadsh", "jquery"
 
 			},
 			deleteProf: function (argProfId) {
-				for (var i = 0; i < this.profiles.length; i++) {
-					if (this.profiles[i].id == argProfId) {
-						var context = this;
-						this.profiles[i].delete  = true;
-						this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function (reponse) {
-							setTimeout(function () {
-								context.getProfiles();
-							}, 1000);
+				if (confirm('¿Estas seguro de borrar este perfil?')) {
+					for (var i = 0; i < this.profiles.length; i++) {
+						if (this.profiles[i].id == argProfId) {
+							var context = this;
+							this.profiles[i].delete  = true;
+							this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function (reponse) {
+								setTimeout(function () {
+									context.getProfiles();
+								}, 1000);
 
-						}, function () { /*error*/
-						});
+							}, function () { /*error*/
+							});
+						}
 					}
 				}
 			},
@@ -414,17 +416,19 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "loadsh", "jquery"
 
 			},
 			deleteTank: function (argTankId) {
-				for (var i = 0; i < this.tanques.length; i++) {
-					if (this.tanques[i].id == argTankId) {
-						var context = this;
-						this.tanques[i].delete  = true;
-						this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
-							setTimeout(function () {
-								context.getTanques();
-							}, 1000);
+				if (confirm('¿Estas seguro de borrar este tanque?')) {
+					for (var i = 0; i < this.tanques.length; i++) {
+						if (this.tanques[i].id == argTankId) {
+							var context = this;
+							this.tanques[i].delete  = true;
+							this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
+								setTimeout(function () {
+									context.getTanques();
+								}, 1000);
 
-						}, function () { /*error*/
-						});
+							}, function () { /*error*/
+							});
+						}
 					}
 				}
 			},
