@@ -12,8 +12,7 @@ var chartCnf = {
 				display: true,
 				position: "left",
 				id: "y-axis-1",
-			},
-			{
+			}, {
 				type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 				display: true,
 				position: "left",
@@ -42,6 +41,7 @@ var speedData = {
 	]
 
 };
+var graphRendered = false;
 function renderMainChart(data) {
 	speedData.labels = data.labels;
 	speedData.datasets[0].data = data.values;
@@ -52,22 +52,27 @@ function renderMainChart(data) {
 			data: speedData,
 			options: chartCnf
 		});
+	graphRendered = true;
 }
 $(document).ready(function () {
 	var interval = setInterval(function () {
 			if ($('#speedChart').length) {
-				$.ajax({
-					type: 'GET',
-					dataType: "json",
-					url: '/getFermGraphData.json?id=' + $('#fermValId').val(),
-					processData: true,
-					async: false,
-					success: function (resp) {
-						renderMainChart(resp);
-					}
-				});
-				clearInterval(interval);
-				//reiniciarlo en algun lado
+				if (!graphRendered) {
+					$.ajax({
+						type: 'GET',
+						dataType: "json",
+						url: '/getFermGraphData.json?id=' + $('#fermValId').val(),
+						processData: true,
+						async: false,
+						success: function (resp) {
+							renderMainChart(resp);
+						}
+					});
+
+				}
+			} else {
+				graphRendered = false;
 			}
-		}, 5000);
+		},
+			5000);
 });

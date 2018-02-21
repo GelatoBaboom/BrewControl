@@ -380,9 +380,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 		{
 			var csvdata = resultsData[i];
 			var date = csvdata.date.getFullYear() + "-" + (csvdata.date.getMonth() + 1) + "-" + csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() + ":" + csvdata.date.getSeconds();
-			console.log(date);
-			console.log(csvdata.temp_reg);
-			
+				
 			obj.labels.push(date);
 			obj.values.push(csvdata.temp_reg);
 			obj.valuesExp.push(csvdata.temp_prog);
