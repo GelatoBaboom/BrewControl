@@ -140,7 +140,7 @@ define([], function () {
 
 			startNewFerm: function () {
 				if (this.refreshInterval != null) {
-					this.strs.headerTitle = 'NUEVA FERMENTACIÓN';
+					this.strs.headerTitle = 'NUEVA FERMENTACIÃ“N';
 					clearInterval(this.refreshInterval);
 					this.viewList = false;
 					this.viewListAchived = false;
@@ -240,7 +240,7 @@ define([], function () {
 
 			},
 			deleteTank: function (argTankId) {
-				if (confirm('¿Estas seguro de borrar este tanque?')) {
+				if (confirm('Â¿Estas seguro de borrar este tanque?')) {
 					for (var i = 0; i < this.tanques.length; i++) {
 						if (this.tanques[i].id == argTankId) {
 							var context = this;

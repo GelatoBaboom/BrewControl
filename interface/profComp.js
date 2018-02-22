@@ -99,7 +99,7 @@ define([], function () {
 
 			},
 			deleteProf: function (argProfId) {
-				if (confirm('¿Estas seguro de borrar este perfil?')) {
+				if (confirm('Â¿Estas seguro de borrar este perfil?')) {
 					for (var i = 0; i < this.profiles.length; i++) {
 						if (this.profiles[i].id == argProfId) {
 							var context = this;
