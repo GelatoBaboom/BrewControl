@@ -47,6 +47,7 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 		},
 	})
 
+	
 	var routes = [{
 			path: '/',
 			name: 'home',
