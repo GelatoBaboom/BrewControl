@@ -667,10 +667,18 @@
                                     </md-input-container>
                                 </md-table-cell>
                                 <md-table-cell>
-                                    <md-button class="md-icon-button" @click.native="deleteTank(tk.id)">
+                                    <md-button class="md-icon-button" @click.native="$refs['deleteConfirm'+tk.id][0].open();">
                                         <md-icon>delete</md-icon>
                                     </md-button>
                                 </md-table-cell>
+                                <md-dialog :ref="'deleteConfirm'+tk.id">
+                                    <md-dialog-title>Confirmar</md-dialog-title>
+                                    <md-dialog-content>¿Estas seguro de borrar el tanque: '{{tk.code}}'?</md-dialog-content>
+                                    <md-dialog-actions>
+                                        <md-button class="md-primary" @click.native="$refs['deleteConfirm'+tk.id][0].close()">Cancel</md-button>
+                                        <md-button class="md-primary" @click.native="$refs['deleteConfirm'+tk.id][0].close();deleteTank(tk.id)">Ok</md-button>
+                                    </md-dialog-actions>
+                                </md-dialog>
                             </md-table-row>
                         </md-table-body>
                     </md-table>

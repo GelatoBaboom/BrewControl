@@ -82,19 +82,17 @@ define([], function () {
 
 			},
 			deleteTank: function (argTankId) {
-				if (confirm('¿Estas seguro de borrar este tanque?')) {
-					for (var i = 0; i < this.tanques.length; i++) {
-						if (this.tanques[i].id == argTankId) {
-							var context = this;
-							this.tanques[i].delete  = true;
-							this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
-								setTimeout(function () {
-									context.getTanques();
-								}, 1000);
+				for (var i = 0; i < this.tanques.length; i++) {
+					if (this.tanques[i].id == argTankId) {
+						var context = this;
+						this.tanques[i].delete  = true;
+						this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
+							setTimeout(function () {
+								context.getTanques();
+							}, 1000);
 
-							}, function () { /*error*/
-							});
-						}
+						}, function () { /*error*/
+						});
 					}
 				}
 			},
