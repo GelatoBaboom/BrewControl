@@ -507,15 +507,33 @@ body,
 </div>
 </script>
 <script type="text/x-template" id="fermTemplate">
-<md-tabs md-fixed >
-	
-	  <md-tab id="grafico" md-label="Grafico" >
-			<md-subheader class="md-inset">
+<div class="app-viewport" id="file-list"  style="">
+	<md-whiteframe md-elevation="3">
+		<md-toolbar class="md-large">
+		  <div class="md-toolbar-container">
 			<router-link :to="{name:'home'}">
 			<md-button class="md-icon-button">
 			<md-icon>arrow_back</md-icon>
 			</md-button>
 			</router-link>
+			 <div class="md-toolbar-container">
+				<h2 class="md-title" style="color:#FFF;line-height: 18px;" >{{selectedFerm.nombre_fermentacion}}</h2>
+			 </div>
+			<span style="flex: 1"></span>
+			<router-link :to="{name:'home'}">
+			<md-button class="md-icon-button">
+			<md-icon>home</md-icon>
+			</md-button>
+			</router-link>
+		  </div>
+		 
+		</md-toolbar>
+	</md-whiteframe>
+<md-tabs md-fixed>
+	
+	  <md-tab id="grafico" md-label="Grafico" >
+			<md-subheader class="md-inset">
+			
 			Grafico progresion temperatura</md-subheader>
 			<div id="chart" class="demo-placeholder">
 			<input id="fermValId" type="hidden" :value="selectedFerm.id" />
@@ -559,6 +577,7 @@ body,
 			<textarea class="notes" v-model="selectedFerm.notas"> Area de notas</textarea>
 	  </md-tab>
 	</md-tabs>
+	</div>
 </script>
 </body>
 </html>
