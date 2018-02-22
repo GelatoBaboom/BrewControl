@@ -13,7 +13,7 @@
         body,
         .app-viewport {
             height: 100%;
-            overflow: hidden;
+            /*overflow: hidden;*/
         }
 
         .app-viewport {
@@ -32,12 +32,10 @@
             bottom: -20px;
             left: 16px;
             z-index: 10;
-            .md-icon;
-
-        {
-            color: #fff;
         }
 
+        .md-icon {
+            color: #fff;
         }
 
         .md-title {
@@ -64,9 +62,10 @@
         }
 
         .md-account-header {
-            .md-list-item:hover .md-button:hover;
+            background-color: inherit;
+        }
 
-        {
+        .md-list-item:hover .md-button:hover {
             background-color: inherit;
         }
 
@@ -74,7 +73,7 @@
             background: none !important;
         }
 
-        }
+
         /*personalized*/
         .modal-mask {
             position: fixed;
@@ -333,66 +332,6 @@
                     </md-list-item>
 
                 </md-list>
-                <div v-if="viewTanques">
-
-                    <md-subheader class="md-inset">Configuraciones varias</md-subheader>
-                    <md-card md-with-hover>
-                        <md-card-content>
-                            <md-input-container>
-                                <label for="tanque">Puerto de comunicacion</label>
-                                <md-select name="port" id="port" v-model="config.comport">
-                                    <md-option v-for="p in config.availablePorts" :value="p.comName">{{p.comName}}</md-option>
-                                </md-select>
-                            </md-input-container>
-                            <md-input-container>
-                                <label>Temperatura banco de frio</label>
-                                <md-input v-model="config.refritemp"></md-input>
-                            </md-input-container>
-                            <md-input-container>
-                                <label>tolerancia</label>
-                                <md-input v-model="config.refri_tol"></md-input>
-                            </md-input-container>
-
-                        </md-card-content>
-                    </md-card>
-                    <br />
-                    <md-card md-with-hover>
-                        <md-card-content>
-                            <md-subheader class="md-inset">Tanques de fermentacion</md-subheader>
-                            <md-table>
-                                <md-table-body>
-                                    <md-table-row v-for="tk in tanques">
-                                        <md-table-cell>
-                                            <md-input-container>
-                                                <label>Descripcion</label>
-                                                <md-input v-model="tk.descripcion"></md-input>
-                                            </md-input-container>
-                                        </md-table-cell>
-                                        <md-table-cell>
-                                            <md-input-container>
-                                                <label>Codigo</label>
-                                                <md-input v-model="tk.code"></md-input>
-                                            </md-input-container>
-                                        </md-table-cell>
-                                        <md-table-cell>
-                                            <md-input-container>
-                                                <label>Calibracion</label>
-                                                <md-input v-model="tk.cal"></md-input>
-                                            </md-input-container>
-                                        </md-table-cell>
-                                        <md-table-cell>
-                                            <md-button class="md-icon-button" @click.native="deleteTank(tk.id)">
-                                                <md-icon>delete</md-icon>
-                                            </md-button>
-                                        </md-table-cell>
-                                    </md-table-row>
-                                </md-table-body>
-                            </md-table>
-                            <md-button class="md-raised md-accent" @click.native="createTank()">Agregar</md-button>
-                        </md-card-content>
-                    </md-card>
-
-                </div>
                 <transition name="modal" v-if="alerta.show">
                     <div class="modal-mask">
                         <div class="modal-wrapper">
@@ -501,7 +440,7 @@
     </script>
     <script type="text/x-template" id="profTemplate">
 
-        <div class="app-viewport" id="file-list" style="">
+        <div id="file-list" style="">
             <md-whiteframe md-elevation="3">
                 <md-toolbar class="md-large">
                     <div class="md-toolbar-container">
@@ -631,26 +570,114 @@
 
                 </md-toolbar>
             </md-whiteframe>
-            <form @submit.prevent="doThis" novalidate @submit.stop.prevent="submit">
-                <md-input-container>
-                    <label>Nombre de la fermentacion</label>
-                    <md-input v-model="fermModel.nombre"></md-input>
-                </md-input-container>
-                <md-input-container>
-                    <label for="tanque">Tanque</label>
-                    <md-select name="tanque" id="tanque" v-model="fermModel.tanque">
-                        <md-option v-for="tnq in getInactiveTanks()" :value="tnq.id">{{tnq.descripcion}}</md-option>
-                    </md-select>
-                </md-input-container>
-                <md-input-container>
-                    <label for="perfil">Perfil</label>
-                    <md-select name="perfil" id="perfil" v-model="fermModel.perfil">
-                        <md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
-                    </md-select>
-                </md-input-container>
-                <md-button class="md-raised md-primary" @click.native="createFerm">CREAR AHORA</md-button>
+            <md-card md-with-hover>
+                <md-card-content>
+                    <md-subheader class="md-inset">Completa los datos para la nueva fermentación</md-subheader>
+                    <form @submit.prevent="doThis" novalidate @submit.stop.prevent="submit">
+                        <md-input-container>
+                            <label>Nombre de la fermentacion</label>
+                            <md-input v-model="fermModel.nombre"></md-input>
+                        </md-input-container>
+                        <md-input-container>
+                            <label for="tanque">Tanque</label>
+                            <md-select name="tanque" id="tanque" v-model="fermModel.tanque">
+                                <md-option v-for="tnq in getInactiveTanks()" :value="tnq.id">{{tnq.descripcion}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label for="perfil">Perfil</label>
+                            <md-select name="perfil" id="perfil" v-model="fermModel.perfil">
+                                <md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-button class="md-raised md-primary" @click.native="createFerm">CREAR AHORA</md-button>
 
-            </form>
+                    </form>
+                </md-card-content>
+            </md-card>
+        </div>
+    </script>
+    <script type="text/x-template" id="tankTemplate">
+        <div class="app-viewport" id="file-list" style="">
+            <md-whiteframe md-elevation="3">
+                <md-toolbar class="md-large">
+                    <div class="md-toolbar-container">
+                        <router-link :to="{name:'home'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>arrow_back</md-icon>
+                            </md-button>
+                        </router-link>
+                        <div class="md-toolbar-container">
+                            <h2 class="md-title" style="color:#FFF;line-height: 18px;">{{strs.headerTitle}}</h2>
+                        </div>
+                        <span style="flex: 1"></span>
+                        <router-link :to="{name:'home'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>home</md-icon>
+                            </md-button>
+                        </router-link>
+                    </div>
+
+                </md-toolbar>
+            </md-whiteframe>
+
+            <md-subheader class="md-inset">Configuraciones varias</md-subheader>
+            <md-card md-with-hover>
+                <md-card-content>
+                    <md-input-container>
+                        <label for="tanque">Puerto de comunicacion</label>
+                        <md-select name="port" id="port" v-model="config.comport">
+                            <md-option v-for="p in config.availablePorts" :value="p.comName">{{p.comName}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>Temperatura banco de frio</label>
+                        <md-input v-model="config.refritemp"></md-input>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>tolerancia</label>
+                        <md-input v-model="config.refri_tol"></md-input>
+                    </md-input-container>
+
+                </md-card-content>
+            </md-card>
+            <br />
+            <md-card md-with-hover>
+                <md-card-content>
+                    <md-subheader class="md-inset">Tanques de fermentacion</md-subheader>
+                    <md-table>
+                        <md-table-body>
+                            <md-table-row v-for="tk in tanques">
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Descripcion</label>
+                                        <md-input v-model="tk.descripcion"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Codigo</label>
+                                        <md-input v-model="tk.code"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Calibracion</label>
+                                        <md-input v-model="tk.cal"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-button class="md-icon-button" @click.native="deleteTank(tk.id)">
+                                        <md-icon>delete</md-icon>
+                                    </md-button>
+                                </md-table-cell>
+                            </md-table-row>
+                        </md-table-body>
+                    </md-table>
+                    <md-button class="md-raised md-accent" @click.native="createTank()">Agregar</md-button>
+                </md-card-content>
+            </md-card>
+
         </div>
     </script>
 

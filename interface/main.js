@@ -17,7 +17,8 @@ requirejs.config({
 		"homeComp": "/interface/homeComp",
 		"fermComp": "/interface/fermComp",
 		"profComp": "/interface/profComp",
-		"newfermComp": "/interface/newfermComp"
+		"newfermComp": "/interface/newfermComp",
+		"tankComp": "/interface/tankComp"
 	},
 	"shim": {
 		"chartRender": ["jquery", "chartjs"],
@@ -25,8 +26,8 @@ requirejs.config({
 
 	}
 });
-requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp", "newfermComp"],
-	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp, newfermComp) {
+requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp", "newfermComp", "tankComp"],
+	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp, newfermComp, tankComp) {
 	Vue.use(VueRouter)
 	Vue.use(VueMaterial)
 	Vue.use(VueResource)
@@ -66,7 +67,12 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			path: '/newferm',
 			name: 'newferm',
 			component: newfermComp
+		}, {
+			path: '/tanques',
+			name: 'tankComp',
+			component: tankComp
 		}
+
 	]
 
 	var router = new VueRouter({

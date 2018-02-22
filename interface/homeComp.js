@@ -34,9 +34,7 @@ define([], function () {
 				tempBancoFrio: 0,
 				ready: true,
 				viewList: true,
-				viewAddNew: false,
 				viewListAchived: false,
-				viewTanques: false,
 				refreshInterval: null,
 				profileUnWatch: null,
 				selectedFerm: null,
@@ -51,9 +49,7 @@ define([], function () {
 				} else {
 					this.getActiveFerms();
 				}
-				this.getTanques();
 				this.getConfigs();
-				this.getPorts();
 			}
 		},
 		created: function () {
@@ -62,18 +58,13 @@ define([], function () {
 			} else {
 				this.getActiveFerms();
 			}
-			this.getTanques();
 			this.getConfigs();
-			this.getPorts();
-
 		},
 		methods: {
 			getArchivedFerms: function () {
 				this.$router.push("/home/archive")
 				this.viewList = false;
 				this.viewListAchived = true;
-				this.viewAddNew = false;
-				this.viewTanques = false;
 				this.strs.headerTitle = 'HISTORIAL';
 
 				this.getFerms(0);
@@ -94,8 +85,6 @@ define([], function () {
 				this.strs.headerTitle = 'CONTROL DE FERMENTADORES';
 				this.viewList = true;
 				this.viewListAchived = false;
-				this.viewAddNew = false;
-				this.viewTanques = false;
 				this.getFerms(1);
 				if (this.refreshInterval != null) {
 					clearInterval(this.refreshInterval);
@@ -153,94 +142,7 @@ define([], function () {
 				this.$router.push("/profiles");
 			},
 			editTanques: function () {
-				this.strs.headerTitle = 'TANQUES FERMENTADORES';
-				this.viewList = false;
-				this.viewListAchived = false;
-				this.viewAddNew = false;
-				this.viewTanques = true;
-				//watch tanks
-				this.attachWatchToTanques();
-				var viewUnwatch = this.$watch('viewTanques', function () {
-						this.tanquesUnWatch();
-						unwatchConfig();
-						viewUnwatch();
-					}, {
-						deep: true
-					});
-				//watch configs
-				var unwatchConfig = this.$watch('config', _.debounce(function (nVal, oVal) {
-							this.$http.post('/updateConfigs.json', JSON.stringify(nVal)).then(function (reponse) {}, function () { /*error*/
-							});
-						}, 500), {
-						deep: true
-					});
-
-			},
-			attachWatchToTanques: function () {
-				this.tanquesUnWatch = this.$watch('tanques', _.debounce(function (nVal, oVal) {
-							this.$http.post('/tankUpdate.json', JSON.stringify(nVal)).then(function (reponse) {}, function () { /*error*/
-							});
-
-						}, 500), {
-						deep: true
-					});
-
-			},
-			createTank: function () {
-				this.tanquesUnWatch();
-				var context = this;
-				var tk = {
-					id: 0,
-					descripcion: '',
-					code: '',
-					cal: 0,
-					insert: true
-				}
-				this.tanques.push(tk);
-				this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
-					setTimeout(function () {
-						context.getTanques();
-						//reattach watch to profiles
-						context.attachWatchToTanques();
-					}, 1000);
-				}, function () {});
-
-			},
-			deleteTank: function (argTankId) {
-				if (confirm('¿Estas seguro de borrar este tanque?')) {
-					for (var i = 0; i < this.tanques.length; i++) {
-						if (this.tanques[i].id == argTankId) {
-							var context = this;
-							this.tanques[i].delete  = true;
-							this.$http.post('/tankUpdate.json', JSON.stringify(this.tanques)).then(function (reponse) {
-								setTimeout(function () {
-									context.getTanques();
-								}, 1000);
-
-							}, function () { /*error*/
-							});
-						}
-					}
-				}
-			},
-			getConfigs: function () {
-				this.$http.get('/getConfigs.json').then(function (response) {
-					this.config.comport = response.body.comport;
-					this.config.refritemp = response.body.refritemp;
-					this.config.refri_tol = response.body.refri_tol;
-
-				}, function () {
-					//error
-				});
-
-			},
-			getPorts: function () {
-				this.$http.get('/getPorts.json').then(function (response) {
-					this.config.availablePorts = response.body;
-				}, function () {
-					//error
-				});
-
+				this.$router.push("/tanques");
 			},
 			gimmeError: function (alerta, desc) {
 				this.alerta.show = true;
