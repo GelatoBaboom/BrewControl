@@ -379,7 +379,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var csvdata = resultsData[i];
-			var date = csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() ;
+			var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() ;
 				
 			obj.labels.push(date);
 			obj.values.push(csvdata.temp_reg);
