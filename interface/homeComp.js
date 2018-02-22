@@ -132,41 +132,8 @@ define([], function () {
 					//error
 				});
 			},
-			getInactiveTanks: function () {
-				return this.tanques.filter(function (t) {
-					return t.inUse == 0
-				})
-			},
-
 			startNewFerm: function () {
-				if (this.refreshInterval != null) {
-					this.strs.headerTitle = 'NUEVA FERMENTACIÓN';
-					clearInterval(this.refreshInterval);
-					this.viewList = false;
-					this.viewListAchived = false;
-					this.viewAddNew = true;
-					this.viewTanques = false;
-
-				}
-
-			},
-			createFerm: function () {
-				this.viewList = true;
-				this.viewListAchived = false;
-				this.viewAddNew = false;
-				this.viewTanques = false;
-				this.getTanques();
-				this.$http.post('/createFerm.json', JSON.stringify(this.fermModel)).then(function (reponse) {
-					this.fermModel = {
-						nombre: '',
-						tanque: 0,
-						perfil: 0,
-						notas: ''
-					};
-				}, function () {
-					//error
-				});
-				this.getActiveFerms();
+				this.$router.push("/newferm");
 			},
 			manageFerm: function (argId, argAction) {
 				this.$http.post('/manageFerm.json', JSON.stringify({

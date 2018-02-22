@@ -16,7 +16,8 @@ requirejs.config({
 		"scripting": "/interface/scripting",
 		"homeComp": "/interface/homeComp",
 		"fermComp": "/interface/fermComp",
-		"profComp": "/interface/profComp"
+		"profComp": "/interface/profComp",
+		"newfermComp": "/interface/newfermComp"
 	},
 	"shim": {
 		"chartRender": ["jquery", "chartjs"],
@@ -24,8 +25,8 @@ requirejs.config({
 
 	}
 });
-requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp"],
-	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp) {
+requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp", "newfermComp"],
+	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp, newfermComp) {
 	Vue.use(VueRouter)
 	Vue.use(VueMaterial)
 	Vue.use(VueResource)
@@ -61,6 +62,10 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			path: '/profiles',
 			name: 'profiles',
 			component: profComp
+		}, {
+			path: '/newferm',
+			name: 'newferm',
+			component: newfermComp
 		}
 	]
 

@@ -333,29 +333,6 @@
                     </md-list-item>
 
                 </md-list>
-
-                <form v-if="viewAddNew" @submit.prevent="doThis" novalidate @submit.stop.prevent="submit">
-                    <md-input-container>
-                        <label>Nombre de la fermentacion</label>
-                        <md-input v-model="fermModel.nombre"></md-input>
-                    </md-input-container>
-                    <md-input-container>
-                        <label for="tanque">Tanque</label>
-                        <md-select name="tanque" id="tanque" v-model="fermModel.tanque">
-                            <md-option v-for="tnq in getInactiveTanks()" :value="tnq.id">{{tnq.descripcion}}</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label for="perfil">Perfil</label>
-                        <md-select name="perfil" id="perfil" v-model="fermModel.perfil">
-                            <md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-button class="md-raised md-primary" @click.native="createFerm">CREAR AHORA</md-button>
-
-                </form>
-
-
                 <div v-if="viewTanques">
 
                     <md-subheader class="md-inset">Configuraciones varias</md-subheader>
@@ -553,7 +530,7 @@
                         <label>Nombre del perfil</label>
                         <md-input v-model="prf.nombre"></md-input>
                     </md-input-container>
-                    <md-button class="md-icon-button" @click.native="deleteProf(prf.id)">
+                    <md-button class="md-icon-button" @click.native="$refs['deleteConfirm'+prf.id][0].open();">
                         <md-icon>delete</md-icon>
                     </md-button>
                     <md-list-expand>
@@ -616,6 +593,14 @@
                             </md-list-item>
                         </md-list>
                     </md-list-expand>
+                    <md-dialog :ref="'deleteConfirm'+prf.id">
+                        <md-dialog-title>Confirmar</md-dialog-title>
+                        <md-dialog-content>¿Estas seguro de borrar el perfil: '{{prf.nombre}}'?</md-dialog-content>
+                        <md-dialog-actions>
+                            <md-button class="md-primary" @click.native="$refs['deleteConfirm'+prf.id][0].close()">Cancel</md-button>
+                            <md-button class="md-primary" @click.native="$refs['deleteConfirm'+prf.id][0].close();deleteProf(prf.id)">Ok</md-button>
+                        </md-dialog-actions>
+                    </md-dialog>
                 </md-list-item>
             </md-list>
             <div md-size="4">
@@ -623,5 +608,51 @@
             </div>
         </div>
     </script>
+    <script type="text/x-template" id="newfermTemplate">
+        <div class="app-viewport" id="file-list" style="">
+            <md-whiteframe md-elevation="3">
+                <md-toolbar class="md-large">
+                    <div class="md-toolbar-container">
+                        <router-link :to="{name:'home'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>arrow_back</md-icon>
+                            </md-button>
+                        </router-link>
+                        <div class="md-toolbar-container">
+                            <h2 class="md-title" style="color:#FFF;line-height: 18px;">{{strs.headerTitle}}</h2>
+                        </div>
+                        <span style="flex: 1"></span>
+                        <router-link :to="{name:'home'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>home</md-icon>
+                            </md-button>
+                        </router-link>
+                    </div>
+
+                </md-toolbar>
+            </md-whiteframe>
+            <form @submit.prevent="doThis" novalidate @submit.stop.prevent="submit">
+                <md-input-container>
+                    <label>Nombre de la fermentacion</label>
+                    <md-input v-model="fermModel.nombre"></md-input>
+                </md-input-container>
+                <md-input-container>
+                    <label for="tanque">Tanque</label>
+                    <md-select name="tanque" id="tanque" v-model="fermModel.tanque">
+                        <md-option v-for="tnq in getInactiveTanks()" :value="tnq.id">{{tnq.descripcion}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label for="perfil">Perfil</label>
+                    <md-select name="perfil" id="perfil" v-model="fermModel.perfil">
+                        <md-option v-for="prf in profiles" :value="prf.id">{{prf.nombre}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-raised md-primary" @click.native="createFerm">CREAR AHORA</md-button>
+
+            </form>
+        </div>
+    </script>
+
 </body>
 </html>
