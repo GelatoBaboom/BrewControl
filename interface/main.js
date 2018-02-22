@@ -14,7 +14,8 @@ requirejs.config({
 		"chartRender": "/interface/chartRender",
 		"chartjs": "/interface/chartjs/Chart.min",
 		"scripting": "/interface/scripting",
-		"homeComp": "/interface/homeComp"
+		"homeComp": "/interface/homeComp",
+		"fermComp": "/interface/fermComp"
 	},
 	"shim": {
 		"chartRender": ["jquery", "chartjs"],
@@ -22,8 +23,8 @@ requirejs.config({
 
 	}
 });
-requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp"],
-	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp) {
+requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp"],
+	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp) {
 	Vue.use(VueRouter)
 	Vue.use(VueMaterial)
 	Vue.use(VueResource)
@@ -47,16 +48,19 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			path: '/',
 			name: 'home',
 			component: homeComp
-		},
-		{
-			path: '/poo/:id',
-			name: 'home1',
+		}, {
+			path: '/:view',
+			name: 'home',
 			component: homeComp
+		}, {
+			path: '/ferm/:id',
+			name: 'fermentacion',
+			component: fermComp
 		}
 	]
 
 	var router = new VueRouter({
-		    mode: 'hash',
+			mode: 'hash',
 			routes: routes
 		});
 	var app = new Vue({

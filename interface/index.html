@@ -334,51 +334,7 @@ body,
 	  <md-button class="md-raised md-primary" @click.native="createFerm" >CREAR AHORA</md-button>
   
 	</form>
-	<md-tabs md-fixed v-if="viewFerm">
-	  <md-tab id="grafico" md-label="Grafico" >
-			<md-subheader class="md-inset">Grafico progresion temperatura</md-subheader>
-			<div id="chart" class="demo-placeholder">
-			<input id="fermValId" type="hidden" :value="selectedFerm.id" />
-                            <canvas id="speedChart" width="600" height="220"></canvas>
-                        </div>
-	  </md-tab>
-	  <md-tab id="detalles" md-label="Detalles">
-		<md-card md-with-hover >
-		 <md-toolbar class="md-warn">
-			<div class="md-title">{{selectedFerm.nombre_fermentacion}}</div>
-			</md-toolbar>
-		  <md-card-header>
-		 	<div class="md-subhead">
-			<md-icon>info_outline</md-icon>
-			<span>Perfil usado: <b>{{selectedFerm.profile}}</b></span>
-			</div>
-		  </md-card-header>
-
-		  <md-card-content>
-			<div class="md-subhead">
-				<md-icon>remove</md-icon>
-				<span>Temperatura promedio: <b>{{selectedFerm.promTemp}}</b></span>
-			 </div>
-			 <div class="md-subhead">
-				<md-icon>remove</md-icon>
-				<span>Temperatura actual: <b>{{selectedFerm.currentTemp}}</b></span>
-			 </div>
-			 <div class="md-subhead">
-				<md-icon>remove</md-icon>
-				<span>Duracion total: <b>{{selectedFerm.duration}}</b></span>
-			 </div>
-		  </md-card-content>
-
-		  <md-card-actions>
-			<md-button class="md-raised md-accent" @click.native="manageFerm(frm.id,'archivar')">Archivar</md-button>
-		  </md-card-actions>
-		</md-card>
-	  </md-tab>
-	  <md-tab id="notas" md-label="Notas">
-		<md-subheader class="md-inset">Notas</md-subheader>
-			<textarea class="notes" v-model="selectedFerm.notas"> Area de notas</textarea>
-	  </md-tab>
-	</md-tabs>
+	
 	
 	<div v-if="viewProfiles">
 	<md-list>
@@ -549,6 +505,60 @@ body,
   </transition>
 </main>
 </div>
+</script>
+<script type="text/x-template" id="fermTemplate">
+<md-tabs md-fixed >
+	
+	  <md-tab id="grafico" md-label="Grafico" >
+			<md-subheader class="md-inset">
+			<router-link :to="{name:'home'}">
+			<md-button class="md-icon-button">
+			<md-icon>arrow_back</md-icon>
+			</md-button>
+			</router-link>
+			Grafico progresion temperatura</md-subheader>
+			<div id="chart" class="demo-placeholder">
+			<input id="fermValId" type="hidden" :value="selectedFerm.id" />
+                            <canvas id="speedChart" width="600" height="220"></canvas>
+                        </div>
+	  </md-tab>
+	  <md-tab id="detalles" md-label="Detalles">
+		<md-card md-with-hover >
+		 <md-toolbar class="md-warn">
+			<div class="md-title">{{selectedFerm.nombre_fermentacion}}</div>
+			</md-toolbar>
+		  <md-card-header>
+		 	<div class="md-subhead">
+			<md-icon>info_outline</md-icon>
+			<span>Perfil usado: <b>{{selectedFerm.profile}}</b></span>
+			</div>
+		  </md-card-header>
+
+		  <md-card-content>
+			<div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Temperatura promedio: <b>{{selectedFerm.promTemp}}</b></span>
+			 </div>
+			 <div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Temperatura actual: <b>{{selectedFerm.currentTemp}}</b></span>
+			 </div>
+			 <div class="md-subhead">
+				<md-icon>remove</md-icon>
+				<span>Duracion total: <b>{{selectedFerm.duration}}</b></span>
+			 </div>
+		  </md-card-content>
+
+		  <md-card-actions>
+			<md-button class="md-raised md-accent" @click.native="manageFerm(frm.id,'archivar')">Archivar</md-button>
+		  </md-card-actions>
+		</md-card>
+	  </md-tab>
+	  <md-tab id="notas" md-label="Notas">
+		<md-subheader class="md-inset">Notas</md-subheader>
+			<textarea class="notes" v-model="selectedFerm.notas"> Area de notas</textarea>
+	  </md-tab>
+	</md-tabs>
 </script>
 </body>
 </html>
