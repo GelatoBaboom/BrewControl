@@ -56,8 +56,12 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			name: 'homeview',
 			component: homeComp
 		}, {
-			path: '/ferm/:id',
+			path: '/ferm/:id/:returl',
 			name: 'fermentacion',
+			component: fermComp
+		}, {
+			path: '/ferm/:id',
+			name: 'fermentacionSingle',
 			component: fermComp
 		}, {
 			path: '/profiles',

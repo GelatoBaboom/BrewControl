@@ -6,6 +6,7 @@ define([], function () {
 				strs: {
 					headerTitle: 'CONTROL DE FERMENTADORES'
 				},
+				urlback: '/',
 				fermSel: {
 					id: 0,
 					nombre: ''
@@ -18,7 +19,7 @@ define([], function () {
 		},
 		created: function () {
 			this.viewFermentacion(this.$route.params.id);
-
+			this.urlback =  '/'+this.$route.params.returl.replace(/\-/i,'/');
 		},
 		methods: {
 

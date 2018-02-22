@@ -49,7 +49,6 @@ define([], function () {
 				} else {
 					this.getActiveFerms();
 				}
-				this.getConfigs();
 			}
 		},
 		created: function () {
@@ -58,7 +57,6 @@ define([], function () {
 			} else {
 				this.getActiveFerms();
 			}
-			this.getConfigs();
 		},
 		methods: {
 			getArchivedFerms: function () {
@@ -121,9 +119,6 @@ define([], function () {
 					//error
 				});
 			},
-			startNewFerm: function () {
-				this.$router.push("/newferm");
-			},
 			manageFerm: function (argId, argAction) {
 				this.$http.post('/manageFerm.json', JSON.stringify({
 						id: argId,
@@ -135,8 +130,12 @@ define([], function () {
 				});
 
 			},
+			startNewFerm: function () {
+				this.$router.push("/newferm");
+			},
 			viewFermentacion: function (argId) {
-				this.$router.push("/ferm/" + argId);
+				console.log(window.location.hash.replace(/\/#\//i,''));
+				this.$router.push("/ferm/" + argId + '/' + window.location.hash.replace(/#\//i,'').replace(/\//i,'-') );
 			},
 			editProfiles: function () {
 				this.$router.push("/profiles");
