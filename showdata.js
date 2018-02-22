@@ -379,7 +379,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var csvdata = resultsData[i];
-			var date = csvdata.date.getFullYear() + "-" + (csvdata.date.getMonth() + 1) + "-" + csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() + ":" + csvdata.date.getSeconds();
+			var date = csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() ;
 				
 			obj.labels.push(date);
 			obj.values.push(csvdata.temp_reg);
@@ -429,7 +429,7 @@ app.use('/getSvg.svg', function (req, res, next) {
 		for(var i = 0; i < resultsData.length; i++)
 		{
 			var csvdata = resultsData[i];
-			csvdata.date = csvdata.date.getFullYear() + "-" + (csvdata.date.getMonth() + 1) + "-" + csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() + ":" + csvdata.date.getSeconds();
+			csvdata.date =  csvdata.date.getDate() + " " + csvdata.date.getHours() + ":" + csvdata.date.getMinutes() + ":" + csvdata.date.getSeconds();
 			csvStream.write(csvdata);
 		}
 		

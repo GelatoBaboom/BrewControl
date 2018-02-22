@@ -388,15 +388,10 @@
                 </md-toolbar>
             </md-whiteframe>
             <md-tabs md-fixed>
-
                 <md-tab id="grafico" md-label="Grafico">
-                    <md-subheader class="md-inset">
-
-                        Grafico progresion temperatura
-                    </md-subheader>
                     <div id="chart" class="demo-placeholder">
                         <input id="fermValId" type="hidden" :value="selectedFerm.id" />
-                        <canvas id="speedChart" width="600" height="220"></canvas>
+                        <canvas id="speedChart" style="width:100%;height:400px;"></canvas>
                     </div>
                 </md-tab>
                 <md-tab id="detalles" md-label="Detalles">

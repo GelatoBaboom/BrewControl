@@ -12,11 +12,6 @@ var chartCnf = {
 				display: true,
 				position: "left",
 				id: "y-axis-1",
-			}, {
-				type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-				display: true,
-				position: "left",
-				id: "y-axis-2",
 			}
 		],
 	}
@@ -36,7 +31,7 @@ var speedData = {
 			borderColor: "#26B99A",
 			lineTension: 0.3,
 			fill: 'start',
-			yAxisID: "y-axis-2"
+			yAxisID: "y-axis-1"
 		}
 	]
 
