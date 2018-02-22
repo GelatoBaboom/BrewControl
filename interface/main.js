@@ -46,6 +46,7 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			accent: 'green'
 		},
 	})
+
 	var routes = [{
 			path: '/',
 			name: 'home',
