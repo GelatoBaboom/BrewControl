@@ -15,7 +15,8 @@ requirejs.config({
 		"chartjs": "/interface/chartjs/Chart.min",
 		"scripting": "/interface/scripting",
 		"homeComp": "/interface/homeComp",
-		"fermComp": "/interface/fermComp"
+		"fermComp": "/interface/fermComp",
+		"profComp": "/interface/profComp"
 	},
 	"shim": {
 		"chartRender": ["jquery", "chartjs"],
@@ -23,8 +24,8 @@ requirejs.config({
 
 	}
 });
-requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp"],
-	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp) {
+requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp"],
+	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp) {
 	Vue.use(VueRouter)
 	Vue.use(VueMaterial)
 	Vue.use(VueResource)
@@ -49,13 +50,17 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			name: 'home',
 			component: homeComp
 		}, {
-			path: '/:view',
-			name: 'home',
+			path: '/home/:view',
+			name: 'homeview',
 			component: homeComp
 		}, {
 			path: '/ferm/:id',
 			name: 'fermentacion',
 			component: fermComp
+		}, {
+			path: '/profiles',
+			name: 'profiles',
+			component: profComp
 		}
 	]
 
