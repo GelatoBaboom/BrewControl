@@ -13,7 +13,16 @@ define([], function () {
 
 				},
 				tempBancoFrio: 0,
-				selectedFerm: null
+				selectedFerm: {
+					id:0,
+					nombre:'',
+					profile:0,
+					tanque:0,
+					activo:0,
+					notas:'',
+					alerta:0					
+					
+				}
 
 			}
 		},
