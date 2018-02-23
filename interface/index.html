@@ -459,74 +459,16 @@
             </md-whiteframe>
             <md-list>
                 <md-list-item v-for="prf in profiles">
-                    <md-icon>folder</md-icon>
-                    <md-input-container>
-                        <label>Nombre del perfil</label>
-                        <md-input v-model="prf.nombre"></md-input>
-                    </md-input-container>
+                    <md-avatar class="md-avatar-icon md-primary">
+                        <md-icon>folder</md-icon>
+                    </md-avatar>
+                    <div class="md-list-text-container">
+
+                        <router-link style="color:#000;" :to="{path:'/profiles/' + prf.id}"><span>{{prf.nombre}}</span></router-link>
+                    </div>
                     <md-button class="md-icon-button" @click.native="$refs['deleteConfirm'+prf.id][0].open();">
                         <md-icon>delete</md-icon>
                     </md-button>
-                    <md-list-expand>
-                        <md-list>
-                            <md-list-item class="md-inset">
-                                <md-input-container>
-                                    <label>Horas de duracion</label>
-                                    <md-input v-model="prf.duration"></md-input>
-                                </md-input-container>
-                            </md-list-item>
-                            <md-list-item class="md-inset">
-                                <md-icon>broken_image</md-icon>
-                                <label>Mapa de temperatura</label>
-                                <md-list-expand>
-                                    <md-list>
-                                        <md-list-item md-flex="true" class="md-inset" :key="mp.id" v-if="prf.mapa.length != 0" v-for="mp in prf.mapa">
-                                            <md-table>
-                                                <md-table-body>
-                                                    <md-table-row>
-                                                        <md-table-cell>
-                                                            <md-input-container>
-                                                                <label>Desde (hs)</label>
-                                                                <md-input v-model="mp.tempFrom"></md-input>
-                                                            </md-input-container>
-                                                        </md-table-cell>
-                                                        <md-table-cell>
-                                                            <md-input-container>
-                                                                <label>Hasta (hs)</label>
-                                                                <md-input v-model="mp.tempTo"></md-input>
-                                                            </md-input-container>
-                                                        </md-table-cell>
-                                                        <md-table-cell>
-                                                            <md-input-container>
-                                                                <label>Temp</label>
-                                                                <md-input v-model="mp.temp"></md-input>
-                                                            </md-input-container>
-                                                        </md-table-cell>
-                                                        <md-table-cell>
-                                                            <md-input-container>
-                                                                <label>Tol</label>
-                                                                <md-input v-model="mp.tolerancia"></md-input>
-                                                            </md-input-container>
-                                                        </md-table-cell>
-                                                        <md-table-cell>
-                                                            <md-button class="md-icon-button" @click.native="deleteMapPoint(prf.id,mp.id)">
-                                                                <md-icon>delete</md-icon>
-                                                            </md-button>
-                                                        </md-table-cell>
-                                                    </md-table-row>
-                                                </md-table-body>
-                                            </md-table>
-                                        </md-list-item>
-                                        <md-list-item>
-                                            <md-button class="md-icon-button md-raised md-primary" @click.native="createMapPoint(prf.id)">
-                                                <md-icon>add</md-icon>
-                                            </md-button>
-                                        </md-list-item>
-                                    </md-list>
-                                </md-list-expand>
-                            </md-list-item>
-                        </md-list>
-                    </md-list-expand>
                     <md-dialog :ref="'deleteConfirm'+prf.id">
                         <md-dialog-title>Confirmar</md-dialog-title>
                         <md-dialog-content>¿Estas seguro de borrar el perfil: '{{prf.nombre}}'?</md-dialog-content>
@@ -540,6 +482,96 @@
             <div md-size="4">
                 <md-button class="md-raised md-accent" @click.native="createProfile()">Agregar</md-button>
             </div>
+        </div>
+    </script>
+    <script type="text/x-template" id="profeditTemplate">
+        <div id="file-list" style="">
+            <md-whiteframe md-elevation="3">
+                <md-toolbar class="md-large">
+                    <div class="md-toolbar-container">
+                        <router-link :to="{name:'profiles'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>arrow_back</md-icon>
+                            </md-button>
+                        </router-link>
+                        <div class="md-toolbar-container">
+                            <h2 class="md-title" style="color:#FFF;line-height: 18px;">{{strs.headerTitle}}</h2>
+                        </div>
+                        <span style="flex: 1"></span>
+                        <router-link :to="{name:'home'}">
+                            <md-button class="md-icon-button">
+                                <md-icon>home</md-icon>
+                            </md-button>
+                        </router-link>
+                    </div>
+
+                </md-toolbar>
+            </md-whiteframe>
+            <md-subheader class="md-inset">Datos perfil</md-subheader>
+            <md-table>
+                <md-table-body>
+                    <md-table-row>
+                        <md-table-cell>
+                            <md-list>
+                                <md-input-container>
+                                    <label>Nombre del perfil</label>
+                                    <md-input v-model="profile.nombre"></md-input>
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Horas de duracion</label>
+                                    <md-input v-model="profile.duration"></md-input>
+                                </md-input-container>
+                            </md-list>
+                        </md-table-cell>
+                    </md-table-row>
+                </md-table-body>
+            </md-table>
+            <md-subheader class="md-inset">Mapa de temperatura</md-subheader>
+            <md-list>
+                <md-list-item md-flex="true" class="md-inset" :key="mp.id" v-if="profile.mapa.length != 0" v-for="mp in profile.mapa">
+                    <md-table>
+                        <md-table-body>
+                            <md-table-row>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Desde (hs)</label>
+                                        <md-input v-model="mp.tempFrom"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Hasta (hs)</label>
+                                        <md-input v-model="mp.tempTo"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Temp</label>
+                                        <md-input v-model="mp.temp"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-input-container>
+                                        <label>Tol</label>
+                                        <md-input v-model="mp.tolerancia"></md-input>
+                                    </md-input-container>
+                                </md-table-cell>
+                                <md-table-cell>
+                                    <md-button class="md-icon-button" @click.native="deleteMapPoint(profile.id,mp.id)">
+                                        <md-icon>delete</md-icon>
+                                    </md-button>
+                                </md-table-cell>
+                            </md-table-row>
+                        </md-table-body>
+                    </md-table>
+                </md-list-item>
+                <md-list-item>
+                    <md-button class="md-icon-button md-raised md-primary" @click.native="createMapPoint(profile.id)">
+                        <md-icon>add</md-icon>
+                    </md-button>
+                </md-list-item>
+            </md-list>
+      
         </div>
     </script>
     <script type="text/x-template" id="newfermTemplate">

@@ -1,36 +1,53 @@
 define([], function () {
 	return {
-		template: '#profTemplate',
+		template: '#profeditTemplate',
 		data: function () {
 			return {
 				profiles: [],
 				strs: {
 					headerTitle: 'PERFILES'
-				}
+				},
+				profile: {
+					id: 0,
+					nombre: '',
+					duration: 0,
+					mapa: []
+				},
+				profileUnWatch: null
 			}
 		},
 		watch: {
-			'$route': function (to, from) {
-				// if (this.$route.params.view == 'archive') {
-				// this.getArchivedFerms();
-				// } else {
-				// this.getActiveFerms();
-				// }
+			'this.profile': function (newval) {
+				console.log(newval);
 
 			}
 		},
 		created: function () {
+			this.profile.id = this.$route.params.id;
 			this.getProfiles();
-			this.editProfiles();
 		},
 		methods: {
 			getProfiles: function () {
 				this.$http.get('/getProfiles.json').then(function (response) {
 					this.profiles = response.body;
+					this.profile = this.getProfileById(this.$route.params.id);
+					console.log(this.profile);
+					this.editProfiles();
 					return this.profiles;
 				}, function () {
 					//error
 				});
+			},
+			getProfileById: function (id) {
+				var el = this.profiles.filter(function (t) {
+						return t.id == id
+					})[0];
+				return {
+					id: el.id,
+					nombre: el.nombre,
+					duration: el.duration,
+					mapa: el.mapa
+				}
 			},
 			editProfiles: function () {
 				this.strs.headerTitle = 'PERFILES';
@@ -112,25 +129,6 @@ define([], function () {
 						});
 					}
 				}
-			},
-			createProfile: function () {
-				this.profileUnWatch();
-				var context = this;
-				var prf = {
-					id: 0,
-					nombre: 'Nuevo',
-					duration: 0,
-					mapa: [],
-					insert: true
-				}
-				this.profiles.push(prf);
-				this.$http.post('/profUpdate.json', JSON.stringify(this.profiles)).then(function (reponse) {
-					setTimeout(function () {
-						context.getProfiles();
-						//reattach watch to profiles
-						context.attachWatchToProfiles();
-					}, 1000);
-				}, function () {});
 			}
 
 		}

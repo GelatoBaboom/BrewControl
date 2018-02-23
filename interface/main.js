@@ -17,6 +17,7 @@ requirejs.config({
 		"homeComp": "/interface/homeComp",
 		"fermComp": "/interface/fermComp",
 		"profComp": "/interface/profComp",
+		"profeditComp": "/interface/profeditComp",
 		"newfermComp": "/interface/newfermComp",
 		"tankComp": "/interface/tankComp"
 	},
@@ -26,8 +27,8 @@ requirejs.config({
 
 	}
 });
-requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp", "newfermComp", "tankComp"],
-	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp, newfermComp, tankComp) {
+requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loadsh", "jquery", "chartRender", "scripting", "homeComp", "fermComp", "profComp", "newfermComp", "tankComp", "profeditComp"],
+	function (Polyfill, Vue, VueMaterial, VueResource, VueRouter, loadsh, jquery, chartRender, scripting, homeComp, fermComp, profComp, newfermComp, tankComp, profeditComp) {
 	Vue.use(VueRouter)
 	Vue.use(VueMaterial)
 	Vue.use(VueResource)
@@ -67,6 +68,10 @@ requirejs(["polyfill", "vue", "vue-material", "vue-resource", "vue-router", "loa
 			path: '/profiles',
 			name: 'profiles',
 			component: profComp
+		}, {
+			path: '/profiles/:id',
+			name: 'profilesedit',
+			component: profeditComp
 		}, {
 			path: '/newferm',
 			name: 'newferm',
