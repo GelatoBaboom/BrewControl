@@ -69,5 +69,5 @@ $(document).ready(function () {
 				graphRendered = false;
 			}
 		},
-			5000);
+			2000);
 });
