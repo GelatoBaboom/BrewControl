@@ -19,8 +19,9 @@ define([], function () {
 		},
 		created: function () {
 			this.viewFermentacion(this.$route.params.id);
-			console.log(this.$route);
-			this.urlback =  '/'+this.$route.params.returl.replace(/\-/i,'/');
+			//this.urlback =  '/'+this.$route.params.returl.replace(/\-/i,'/')			;
+			console.log(this.$route.path.replace(/\/ferm\/\d?\//i,'').replace(/\-/i,'/'));
+			this.urlback =  '/'+this.$route.path.replace(/\/ferm\/\d?\//i,'').replace(/\-/i,'/');
 		},
 		methods: {
 
