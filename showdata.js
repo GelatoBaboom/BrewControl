@@ -473,13 +473,21 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			values: [],
 			valuesExp: []
 		};
+		var dStart = moment('1995-12.25');
+		var spliterVal = 100;
+		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
 		for (var i = 0; i < resultsData.length; i++) {
 			var csvdata = resultsData[i];
-			var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
-
-			obj.labels.push(date);
-			obj.values.push(csvdata.temp_reg);
-			obj.valuesExp.push(csvdata.temp_prog);
+			d = moment(csvdata.date);
+			var mins = d.diff(dStart, 'minutes');
+			console.log(spliter);
+			if (mins > spliter) {
+				dStart = d;
+				var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
+				obj.labels.push(date);
+				obj.values.push(csvdata.temp_reg);
+				obj.valuesExp.push(csvdata.temp_prog);
+			}
 		}
 
 		res.write(JSON.stringify(obj));
