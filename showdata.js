@@ -481,7 +481,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			d = moment(csvdata.date);
 			var mins = d.diff(dStart, 'minutes');
 			console.log(spliter);
-			if (mins > spliter) {
+			if (mins > spliter && csvdata.temp_reg>-90 &&csvdata.temp_reg<80 ) {
 				dStart = d;
 				var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
 				obj.labels.push(date);
