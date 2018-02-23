@@ -19,6 +19,7 @@ define([], function () {
 		},
 		created: function () {
 			this.viewFermentacion(this.$route.params.id);
+			console.log(this.$route.params);
 			this.urlback =  '/'+this.$route.params.returl.replace(/\-/i,'/');
 		},
 		methods: {
