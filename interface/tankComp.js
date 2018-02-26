@@ -13,7 +13,8 @@ define([], function () {
 				strs: {
 					headerTitle: 'TANQUES FERMENTADORES'
 				},
-				tanquesUnWatch: null
+				tanquesUnWatch: null,
+				unwatchConfig: null
 
 			}
 		},
@@ -21,6 +22,8 @@ define([], function () {
 		created: function () {
 			this.getTanques();
 			this.editTanques();
+			this.getConfigs();
+			this.getPorts();
 		},
 		methods: {
 			getTanques: function () {
@@ -43,7 +46,7 @@ define([], function () {
 						deep: true
 					});
 				//watch configs
-				var unwatchConfig = this.$watch('config', _.debounce(function (nVal, oVal) {
+				this.unwatchConfig = this.$watch('config', _.debounce(function (nVal, oVal) {
 							this.$http.post('/updateConfigs.json', JSON.stringify(nVal)).then(function (reponse) {}, function () { /*error*/
 							});
 						}, 500), {
