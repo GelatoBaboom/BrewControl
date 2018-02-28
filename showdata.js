@@ -421,7 +421,7 @@ app.use('/getFermData.json', function (req, res, next) {
 				profile: resultsData[i].profile,
 				tanque_code: resultsData[i].tanque_code,
 				tanque_descripcion: resultsData[i].tanque_descripcion,
-				total_hours: (resultsData[i].total_hours <= resultsData[i].duration ? resultsData[i].total_hours : resultsData[i].duration),
+				total_hours: parseHour(resultsData[i].total_hours <= resultsData[i].duration ? resultsData[i].total_hours : resultsData[i].duration),
 				duration: resultsData[i].duration,
 				currentTemp: resultsData[i].currentTemp,
 				progTemp: resultsData[i].progTemp,
@@ -439,6 +439,22 @@ app.use('/getFermData.json', function (req, res, next) {
 	connection.end();
 
 });
+function parseHour(decimalTimeString) {
+	var decimalTime = parseFloat(decimalTimeString);
+	decimalTime = decimalTime * 60 * 60;
+	var hours = Math.floor((decimalTime / (60 * 60)));
+	decimalTime = decimalTime - (hours * 60 * 60);
+	var minutes = Math.floor((decimalTime / 60));
+
+	if (hours < 10) {
+		hours = "0" + hours;
+	}
+	if (minutes < 10) {
+		minutes = "0" + minutes;
+	}
+	return(hours + ":" + minutes );
+
+}
 app.use('/getFermGraphData.json', function (req, res, next) {
 	var url = require('url');
 	var mysqlconfig = require("./dbconfig.js").out;
@@ -473,15 +489,15 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			values: [],
 			valuesExp: []
 		};
-		
-		var dStart = moment('1995-12-25'); 
+
+		var dStart = moment('1995-12-25');
 		var spliterVal = 100;
 		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
 		for (var i = 0; i < resultsData.length; i++) {
 			var csvdata = resultsData[i];
 			d = moment(csvdata.date);
 			var mins = d.diff(dStart, 'minutes');
-			if (mins > spliter && csvdata.temp_reg>-90 &&csvdata.temp_reg<80 ) {
+			if (mins > spliter && csvdata.temp_reg > -90 && csvdata.temp_reg < 80) {
 				dStart = d;
 				var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
 				obj.labels.push(date);
