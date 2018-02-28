@@ -473,6 +473,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			values: [],
 			valuesExp: []
 		};
+		
 		var dStart = moment('1995-12-25'); 
 		var spliterVal = 100;
 		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
