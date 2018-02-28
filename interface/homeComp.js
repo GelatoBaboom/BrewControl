@@ -134,7 +134,6 @@ define([], function () {
 				this.$router.push("/newferm");
 			},
 			viewFermentacion: function (argId) {
-				console.log(window.location.hash.replace(/\/#\//i,''));
 				this.$router.push("/ferm/" + argId + '/' + window.location.hash.replace(/#\//i,'').replace(/\//i,'-') );
 			},
 			editProfiles: function () {

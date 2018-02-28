@@ -74,10 +74,13 @@ void loop() {
   // if we get a valid byte, read analog ins:
   //if (serialEvent()) {
   if (Serial.available()>0){
+    char buff[50];
+    Serial.readBytes(buff, Serial.available());
+    inData = String(buff);
     // Command all devices on bus to read temperature  
     sensors.requestTemperatures();  
     // get incoming byte:
-    inData = Serial.readString();
+    //inData = Serial.readString();
     inData.trim();
     //read sensors
     if(inData.startsWith("tank1t"))
@@ -164,7 +167,10 @@ void loop() {
   }
   outData="";
   inData="";
-  Serial.flush();
+  if (Serial.available()>0){
+   char bufFlush[100];
+   Serial.readBytes(bufFlush, Serial.available());
+  }
   delay(100);
 }
 void switchPump()
