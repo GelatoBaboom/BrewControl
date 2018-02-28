@@ -385,7 +385,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 				profile: resultsData[0].profile,
 				tanque_code: resultsData[0].tanque_code,
 				tanque_descripcion: resultsData[0].tanque_descripcion,
-				total_hours: (resultsData[0].total_hours <= resultsData[0].duration ? resultsData[0].total_hours : resultsData[0].duration),
+				total_hours: parseHour(resultsData[0].total_hours <= resultsData[0].duration ? resultsData[0].total_hours : resultsData[0].duration),
 				duration: resultsData[0].duration,
 				currentTemp: resultsData[0].currentTemp,
 				progTemp: resultsData[0].progTemp,
