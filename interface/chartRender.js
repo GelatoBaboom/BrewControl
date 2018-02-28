@@ -37,34 +37,42 @@ var speedData = {
 
 };
 var graphRendered = false;
+var lineChart = null;
 function renderMainChart(data) {
 	speedData.labels = data.labels;
 	speedData.datasets[0].data = data.values;
 	speedData.datasets[1].data = data.valuesExp;
 
-	var lineChart = new Chart($("#speedChart"), {
+	lineChart = new Chart($("#speedChart"), {
 			type: 'line',
 			data: speedData,
 			options: chartCnf
 		});
 	graphRendered = true;
 }
+function updateChart(data) {
+	lineChart.data.labels = data.labels;
+	lineChart.data.datasets[0].data = data.values;
+	lineChart.data.datasets[1].data = data.valuesExp
+	lineChart.update();
+}
 $(document).ready(function () {
 	var interval = setInterval(function () {
 			if ($('#speedChart').length) {
-				if (!graphRendered) {
-					$.ajax({
-						type: 'GET',
-						dataType: "json",
-						url: '/getFermGraphData.json?id=' + $('#fermValId').val(),
-						processData: true,
-						async: false,
-						success: function (resp) {
+				$.ajax({
+					type: 'GET',
+					dataType: "json",
+					url: '/getFermGraphData.json?id=' + $('#fermValId').val(),
+					processData: true,
+					async: false,
+					success: function (resp) {
+						if (!graphRendered) {
 							renderMainChart(resp);
+						} else {
+							updateChart(resp);
 						}
-					});
-
-				}
+					}
+				});
 			} else {
 				graphRendered = false;
 			}
