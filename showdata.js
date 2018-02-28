@@ -447,7 +447,7 @@ function parseHour(decimalTimeString) {
 	var minutes = Math.floor((decimalTime / 60));
 
 	if (hours < 10) {
-		hours = "0" + hours;
+		hours =  hours;
 	}
 	if (minutes < 10) {
 		minutes = "0" + minutes;
