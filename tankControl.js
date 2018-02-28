@@ -68,10 +68,10 @@ function initializePort() {
 			var COM_PORT = results[0].comport;
 			SerialPort.list(function (err, ports) {
 				ports.forEach(function (p) {
-					console.log(p.comName);
 					if (p.comName.match(/ttyUSB/i)) {
 						COM_PORT = p.comName;
 						//inicializa
+						console.log("Puerto selecciado: " + p.comName);
 						port = new SerialPort(COM_PORT, {
 								autoOpen: true,
 								baudRate: 9600
