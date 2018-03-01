@@ -161,17 +161,8 @@ function analizeTank(obj) {
 		}
 	}
 	if (obj.f.startsWith('tank')) {
-		//insert status
-		var connection = mysql.createConnection(mysqlconfig);
-		var updStatus = [];
-		updStatus = updStatus.concat(obj.r, obj.f);
-		connection.query("UPDATE tanques SET status = ? where code = ?;", updStatus, function (err, resultsData, fields) {
-			if (err) {
-				throw err;
-			}
-		});
-
 		//
+		var connection = mysql.createConnection(mysqlconfig);
 		var insParams = [];
 		var getTempParams = [];
 		getTempParams = getTempParams.concat([obj.f, obj.f, obj.f, obj.f]);
@@ -242,8 +233,17 @@ function analizeTank(obj) {
 						}
 					}
 				}
-			})
-			connection.end();
+			});
+		//insert status
+
+		var updStatus = [];
+		updStatus = updStatus.concat(obj.r, obj.f);
+		connection.query("UPDATE tanques SET status = ? where code = ?;", updStatus, function (err, resultsData, fields) {
+			if (err) {
+				throw err;
+			}
+		});
+		connection.end();
 		//checkFailures(obj);
 	} else if (obj.f.startsWith('bf')) {
 		var connection = mysql.createConnection(mysqlconfig);
