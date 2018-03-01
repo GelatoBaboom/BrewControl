@@ -447,12 +447,12 @@ function parseHour(decimalTimeString) {
 	var minutes = Math.floor((decimalTime / 60));
 
 	if (hours < 10) {
-		hours =  hours;
+		hours = hours;
 	}
 	if (minutes < 10) {
 		minutes = "0" + minutes;
 	}
-	return(hours + ":" + minutes );
+	return (hours + ":" + minutes);
 
 }
 app.use('/getFermGraphData.json', function (req, res, next) {
@@ -493,6 +493,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 		var dStart = moment('1995-12-25');
 		var spliterVal = 100;
 		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
+		var lasIndexAdded = 0;
 		for (var i = 0; i < resultsData.length; i++) {
 			var csvdata = resultsData[i];
 			d = moment(csvdata.date);
@@ -503,6 +504,16 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 				obj.labels.push(date);
 				obj.values.push(csvdata.temp_reg);
 				obj.valuesExp.push(csvdata.temp_prog);
+				lasIndexAdded = i;
+			} else {
+				if (resultsData.length > lasIndexAdded + 1) {
+					dStart = d;
+					var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
+					obj.labels.push(date);
+					obj.values.push(csvdata.temp_reg);
+					obj.valuesExp.push(csvdata.temp_prog);
+				}
+
 			}
 		}
 
