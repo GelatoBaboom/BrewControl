@@ -254,6 +254,9 @@
                         <md-button v-if="frm.alerta==1" @click.native="gimmeError(frm.alerta_name, frm.alerta_desc)" class="innerButton">
                             <md-icon class="md-accent">error</md-icon>
                         </md-button>
+						<md-button v-if="frm.tank_status==1" class="innerButton">
+                            <md-icon class="md-accent">arrow-circle-down</md-icon>
+                        </md-button>
                         <md-menu md-size="4">
                             <md-button class="md-icon-button" md-menu-trigger>
                                 <md-icon>more_vert</md-icon>
