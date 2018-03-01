@@ -161,9 +161,19 @@ function analizeTank(obj) {
 		}
 	}
 	if (obj.f.startsWith('tank')) {
+		//insert status
+		var connection = mysql.createConnection(mysqlconfig);
+		var updStatus = [];
+		updStatus = updStatus.concat(obj.r, obj.f);
+		connection.query("UPDATE tanques SET status = ? where code = ?;", updStatus, function (err, resultsData, fields) {
+			if (err) {
+				throw err;
+			}
+		});
+
+		//
 		var insParams = [];
 		var getTempParams = [];
-		var connection = mysql.createConnection(mysqlconfig);
 		getTempParams = getTempParams.concat([obj.f, obj.f, obj.f, obj.f]);
 		var selTempProgQry = "SELECT getProgTemp(getFermentadorFormTanqueCurrent(?)) as temp, getProgTempTolerancia(getFermentadorFormTanqueCurrent(?)) as tolerancia, getTempCalibration(?) as cal, getAlertaByFermentador(getFermentadorFormTanqueCurrent(?)) as alerta;"
 			connection.query(selTempProgQry, getTempParams, function (err, results, fields) {
