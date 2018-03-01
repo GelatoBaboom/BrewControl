@@ -505,16 +505,15 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 				obj.values.push(csvdata.temp_reg);
 				obj.valuesExp.push(csvdata.temp_prog);
 				lasIndexAdded = i;
-			} else {
-				if (resultsData.length > lasIndexAdded + 1) {
-					dStart = d;
-					var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
-					obj.labels.push(date);
-					obj.values.push(csvdata.temp_reg);
-					obj.valuesExp.push(csvdata.temp_prog);
-				}
-
 			}
+		}
+		if (resultsData.length > lasIndexAdded + 1) {
+			var i = resultsData.length - 1;
+			var csvdata = resultsData[i];
+			var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
+			obj.labels.push(date);
+			obj.values.push(csvdata.temp_reg);
+			obj.valuesExp.push(csvdata.temp_prog);
 		}
 
 		res.write(JSON.stringify(obj));
