@@ -426,7 +426,7 @@ app.use('/getFermData.json', function (req, res, next) {
 				currentTemp: resultsData[i].currentTemp,
 				progTemp: resultsData[i].progTemp,
 				promTemp: resultsData[i].promTemp,
-				tank_status : resultsData[i].tank_status,
+				tank_status: resultsData[i].tank_status,
 				alerta: resultsData[i].alerta,
 				alerta_name: resultsData[i].alerta_name,
 				alerta_desc: resultsData[i].alerta_desc,
@@ -491,21 +491,20 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			valuesExp: []
 		};
 
-		var dStart = moment('1995-12-25');
 		var spliterVal = 100;
 		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
 		var lasIndexAdded = 0;
+		var splitIndex = 0;
 		for (var i = 0; i < resultsData.length; i++) {
 			var csvdata = resultsData[i];
-			d = moment(csvdata.date);
-			var mins = d.diff(dStart, 'minutes');
-			if (mins > spliter && csvdata.temp_reg > -90 && csvdata.temp_reg < 80) {
-				dStart = d;
+			splitIndex ++;
+			if (splitIndex > spliter && csvdata.temp_reg > -90 && csvdata.temp_reg < 80) {
 				var date = csvdata.date.getDate() + "-" + csvdata.date.getHours() + ":" + csvdata.date.getMinutes();
 				obj.labels.push(date);
 				obj.values.push(csvdata.temp_reg);
 				obj.valuesExp.push(csvdata.temp_prog);
 				lasIndexAdded = i;
+				splitIndex=0;
 			}
 		}
 		if (resultsData.length > lasIndexAdded + 1) {

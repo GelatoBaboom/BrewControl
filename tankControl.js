@@ -238,7 +238,7 @@ function analizeTank(obj) {
 
 		var updStatus = [];
 		//lo guarda al reves porque los relay trabajan al reves¿?¿?¿
-		updStatus = updStatus.concat(obj.r, (obj.f == 1 ? 0 : 1));
+		updStatus = updStatus.concat((obj.r == 1 ? 0 : 1), obj.f);
 		connection.query("UPDATE tanques SET status = ? where code = ?;", updStatus, function (err, resultsData, fields) {
 			if (err) {
 				throw err;
