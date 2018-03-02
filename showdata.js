@@ -372,7 +372,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 	var selParams = [];
 	selParams = selParams.concat([q.id]);
 	var connection = mysql.createConnection(mysqlconfig);
-	connection.query("select f.id as id, f.nombre as nombre_fermentacion ,p.nombre as profile, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.notas from fermentadores as f INNER JOIN profiles as p on f.profile = p.id INNER JOIN tanques as t on t.id = f.tanque where f.id = ?;", selParams, function (err, resultsData, fields) {
+	connection.query("select f.id as id, f.nombre as nombre_fermentacion, p.id as id_profile, p.nombre as profile, f.fecha_inicio as fecha_inicio, getHours(f.fecha_inicio) as total_hours, f.activo as activo, p.duration as duration, t.code as tanque_code, getLastTemp(f.id) as currentTemp, getProgTemp(f.id) as progTemp, getTempPromedio(f.id) as promTemp, t.descripcion as tanque_descripcion, f.notas from fermentadores as f INNER JOIN profiles as p on f.profile = p.id INNER JOIN tanques as t on t.id = f.tanque where f.id = ?;", selParams, function (err, resultsData, fields) {
 		if (err) {
 			//throw err;
 			console.log('ERROR SQL');
@@ -382,6 +382,7 @@ app.use('/getFermDataById.json', function (req, res, next) {
 			var ferm = {
 				id: resultsData[0].id,
 				nombre_fermentacion: resultsData[0].nombre_fermentacion,
+				id_profile : resultsData[0].id_profile,
 				profile: resultsData[0].profile,
 				tanque_code: resultsData[0].tanque_code,
 				tanque_descripcion: resultsData[0].tanque_descripcion,
@@ -491,7 +492,7 @@ app.use('/getFermGraphData.json', function (req, res, next) {
 			valuesExp: []
 		};
 
-		var spliterVal = 100;
+		var spliterVal = 30;
 		var spliter = resultsData.length > spliterVal ? (resultsData.length / spliterVal) : -1;
 		var lasIndexAdded = 0;
 		var splitIndex = 0;

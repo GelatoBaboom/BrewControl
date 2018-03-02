@@ -405,7 +405,7 @@
                         <md-card-header>
                             <div class="md-subhead">
                                 <md-icon>info_outline</md-icon>
-                                <span>Perfil usado: <b>{{selectedFerm.profile}}</b></span>
+                                <span>Perfil usado: <router-link :to="{path:'/profiles/' + selectedFerm.id_profile}"><b>{{selectedFerm.profile}}</b></router-link></span>
                             </div>
                         </md-card-header>
 

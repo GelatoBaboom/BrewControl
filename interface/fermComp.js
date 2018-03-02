@@ -16,6 +16,7 @@ define([], function () {
 				selectedFerm: {
 					id:0,
 					nombre:'',
+					id_profile:0,
 					profile:0,
 					tanque:0,
 					activo:0,
